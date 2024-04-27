@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="report_pricetag_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="page">
+                    <div class="pricetag" style="border: 1px solid black; padding: 10px; width: 200px;">
+                        <div style="text-align: center; font-size: 18px; font-weight: bold;">
+                            <t t-esc="o.display_name"/>
+                        </div>
+                        <div style="text-align: center; font-size: 16px;">
+                            Price: <t t-esc="o.list_price"/> <t t-esc="o.currency_id.symbol"/>
+                        </div>
+                        <div style="text-align: center; font-size: 14px;">
+                            Barcode: <t t-esc="o.barcode"/>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <report
+        id="action_report_pricetag"
+        model="product.template"
+        string="Price Tag"
+        report_type="qweb-pdf"
+        file="custom_pricetag.report_pricetag_document"
+        name="custom_pricetag.report_pricetag_document"
+        attachment_use="False"
+        menu="True"
+    />
+</odoo>

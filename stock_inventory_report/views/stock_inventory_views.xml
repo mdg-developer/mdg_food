@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="report_quant_search_view" model="ir.ui.view">
+        <field name="name">stock.quant.search</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.quant_search_view"/>
+        <field name="arch" type="xml">
+            <search string="Quants">
+                <field name="warehouse_id"/>
+                <group expand='0' string='Group by...'>
+                    <filter string='Warehouse' name="warehousegroup" domain="[]" context="{'group_by': 'warehouse_id'}"/>
+               </group>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_stock_quant_tree_report_inherit">
+        <field name="name">stock.quant.tree.report.inherit</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.view_stock_quant_tree_editable"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='location_id']" position="before">
+                <field name="warehouse_id"/>
+            </xpath>
+            <xpath expr="//field[@name='lot_id']" position="after">
+                <field name="expiry_date" readonly="0"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

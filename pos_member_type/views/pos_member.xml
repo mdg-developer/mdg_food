@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="action_pos_member_type" model="ir.actions.act_window">
+        <field name="name">Member Types</field>
+        <field name="res_model">pos.member.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_pos_member_type"
+              name="Member Types"
+              parent="point_of_sale.menu_point_root"
+              action="action_pos_member_type"
+              sequence="15"
+              groups="point_of_sale.group_pos_manager"/>
+
+    <record id="view_pos_member_type_tree" model="ir.ui.view">
+        <field name="name">pos.member.type.tree</field>
+        <field name="model">pos.member.type</field>
+        <field name="arch" type="xml">
+            <tree string="Member Types">
+                <field name="name"/>
+                <field name="loyalty_points"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_pos_member_type_form" model="ir.ui.view">
+        <field name="name">pos.member.type.form</field>
+        <field name="model">pos.member.type</field>
+        <field name="arch" type="xml">
+            <form string="Member Type">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="Member Type Name"/></h1>
+                    </div>
+                    <group>
+                        <field name="loyalty_points"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

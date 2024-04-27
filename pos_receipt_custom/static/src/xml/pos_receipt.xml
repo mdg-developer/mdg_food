@@ -1,0 +1,26 @@
+<templates id="template" xml:space="preserve">
+    <t t-name="PosTicketCustom">
+        <t t-call="PointOfSale.chrome_widgets">
+            <t t-set="widget" t-value="ticket"/>
+        </t>
+        <div class="pos-receipt-container">
+            <div class="pos-sale-ticket">
+                <t t-esc="widget.pos.config.receipt_header"/>
+                <t t-esc="widget.pos.config.receipt_footer"/>
+                <t t-foreach="widget.get_orderlines()" t-as="line">
+                    <div class="pos-receipt-line">
+                        <span class="pos-receipt-product"><t t-esc="line.product.display_name"/></span>
+                        <span class="pos-receipt-uom"><t t-esc="line.get_product_uom()"/></span>
+                        <span class="pos-receipt-qty"><t t-esc="line.quantity"/></span>
+                        <span class="pos-receipt-unit-price"><t t-esc="line.get_display_unit_price()"/></span>
+                        <span class="pos-receipt-subtotal"><t t-esc="line.get_display_price()"/></span>
+                    </div>
+                </t>
+                <div class="pos-receipt-total">
+                    <span>Total:</span>
+                    <span><t t-esc="widget.get_total_with_tax()"/></span>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

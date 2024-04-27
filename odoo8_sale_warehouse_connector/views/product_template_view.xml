@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="action_multi_product_template" model="ir.actions.server">
+        <field name="name">Product Sync to DMS </field>
+        <field name="model_id" ref="odoo8_dms_connector.model_product_template"/>
+        <field name="binding_model_id" ref="odoo8_dms_connector.model_product_template"/>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                action = records.sync_odoo8_dms()
+        </field>
+    </record>
+
+
+
+</odoo>

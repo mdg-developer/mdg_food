@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="PartnerDetailsEdit" t-inherit="point_of_sale.PartnerDetailsEdit" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('partner-details-left')]" position="inside">
+            <div class="partner-detail">
+                <span class="label">Member Type</span>
+                <select class="detail" name="pos_member_type_id"
+                        t-on-change="captureChange">
+                    <option value="">None</option>
+                    <t t-foreach="env.pos.pos_member_type" t-as="memberType" t-key="memberType.id">
+                        <option t-att-value="memberType.id"
+                                t-att-selected="props.partner.pos_member_type_id ? ((memberType.id === props.partner.pos_member_type_id[0]) ? true : undefined) : undefined">
+                            <t t-esc="memberType.name" />
+                        </option>
+                    </t>
+                </select>
+            </div>
+        </xpath>
+    </t>
+</templates>

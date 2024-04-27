@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="point_of_sale_assets" model="ir.ui.view">
+        <field name="name">pos_receipt_custom.assets</field>
+        <field name="inherit_id" ref="point_of_sale.point_of_sale_assets"/>
+        <field name="arch" type="xml">
+            <xpath expr="//t[@t-name='PosTicket']" position="replace">
+                <t t-name="PosTicket" t-call="PosTicketCustom"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

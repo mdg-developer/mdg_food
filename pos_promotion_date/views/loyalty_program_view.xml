@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- DISCOUNT & LOYALTY -->
+    <record id="loyalty_program_view_form_inherit" model="ir.ui.view">
+        <field name="name">loyalty.program.view.form.inherit</field>
+        <field name="model">loyalty.program</field>
+        <field name="inherit_id" ref="pos_loyalty.view_loyalty_program_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='points']" position="after">
+                <div>
+                    <label for="date_from" string="Start Date"/>
+                    <field name="date_from"  required="1"/>
+                </div>
+                <div>
+                    <label for="date_to" string="End Date"/>
+                        <field name="date_to" required="1"/>
+                </div>
+
+            </xpath>
+        </field>
+    </record>
+</odoo>

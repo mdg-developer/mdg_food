@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="odoo8_connection_form_view" model="ir.ui.view">
+            <field name="name">Odoo8 Connection</field>
+            <field name="model">odoo8.connection</field>
+            <field name="arch" type="xml">
+                <form string="Odoo8 Connection">
+                    <header>
+                        <button name="test_connection" string="Test Connection" type="object"
+							class="oe_highlight" />
+
+				    </header>
+                    <sheet>
+                        <group>
+
+                            <field name="url" />
+                            <field name="username"/>
+                            <field name="password" password="True"/>
+                            <field name="dbname"/>
+
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="odoo8_connection_tree_view" model="ir.ui.view">
+            <field name="name">Odoo8 Connection</field>
+            <field name="model">odoo8.connection</field>
+            <field name="arch" type="xml">
+                <tree string="Odoo8 Connection">
+                   <field name="url" />
+                    <field name="username"/>
+                    <field name="password" password="True"/>
+                    <field name="dbname"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="odoo8_connection_action" model="ir.actions.act_window">
+			<field name="name">Odoo8 Connection</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">odoo8.connection</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" eval="odoo8_connection_tree_view" />
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">
+					Click to create new message.
+				</p>
+			</field>
+		</record>
+
+        <menuitem name="Connection" id="menu_odoo8_connection_configuration" sequence="1"
+				  parent="base.menu_administration"
+				  groups="base.group_no_one"/>
+        <menuitem name="Odoo8 Connection" parent="menu_odoo8_connection_configuration"
+				  id="menu_odoo8_connection" action="odoo8_connection_action" sequence="1"/>
+
+
+    </data>
+</odoo>

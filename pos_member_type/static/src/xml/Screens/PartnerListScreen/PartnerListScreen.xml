@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="PartnerListScreen" t-inherit="point_of_sale.PartnerListScreen" t-inherit-mode="extension" owl="1">
+        <xpath expr="//table[hasclass('partner-list')]" position="replace">
+            <table class="partner-list">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th t-if="!env.isMobile">Address</th>
+                        <th t-if="!env.isMobile" class="partner-line-email">Contact</th>
+                        <th t-if="env.isMobile">ZIP</th>
+                        <th>Member ID</th>
+                        <th>Member Type</th>
+                        <th class="pos-right-align" t-if="isBalanceDisplayed">Balance</th>
+                        <th class="partner-line-details"></th>
+                        <th class="partner-line-last-column-placeholder oe_invisible"></th>
+                    </tr>
+                </thead>
+                <tbody class="partner-list-contents">
+                    <t t-foreach="partners" t-as="partner"
+                       t-key="partner.id">
+                        <PartnerLine partner="partner"
+                                    selectedPartner="state.selectedPartner"
+                                    detailIsShown="state.detailIsShown"
+                                    isBalanceDisplayed="isBalanceDisplayed"
+                                    onClickEdit.bind="editPartner"
+                                    onClickPartner.bind="clickPartner"/>
+                    </t>
+                </tbody>
+            </table>
+        </xpath>
+    </t>
+</templates>

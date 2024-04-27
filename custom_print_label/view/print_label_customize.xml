@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <template id="report_simple_label_dymo_customization" inherit_id="product.report_simple_label_dymo">
+            <xpath expr="//div[hasclass('o_label_full')]/div[2]" position="replace">
+                 <div class="o_label_name" style="line-height: 100%;background-color: transparent;padding-top: 1px;">
+                    <div class="o_label_name" style="line-height: 100%;background-color: transparent;padding-top: 1px; font-size:13px;">
+                        <span t-if="product.is_product_variant" t-esc="product.display_name"/>
+                        <span t-else="" t-esc="product.name"/>
+                    </div>
+                 </div>
+            </xpath>
+            <xpath expr="//div[hasclass('o_label_full')]/div[4]" position="replace">
+                <div class="text-end" style="padding: 0 6px;">
+                        <t t-if="product.is_product_variant">
+                            <strong class="o_label_price_small" t-esc="'{:,} {}'.format(int(product.lst_price), product.currency_id.symbol)"/>
+                        </t>
+                        <t t-else="">
+                            <strong class="o_label_price_small" t-esc="'{:,} {}'.format(int(product.list_price), product.currency_id.symbol)"/>
+                        </t>
+                        <div class="o_label_extra_data">
+                            <t t-out="extra_html"/>
+                        </div>
+                </div>
+            </xpath>
+        </template>
+    </data>
+</odoo>

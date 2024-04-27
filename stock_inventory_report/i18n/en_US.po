@@ -1,0 +1,299 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* stock_inventory_report
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-11-22 12:02+0000\n"
+"PO-Revision-Date: 2017-11-22 12:02+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.view_inventory_list
+msgid "(If you do not select any categories it will take all categories)"
+msgstr "(If you do not select any categories it will take all categories)"
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.view_inventory_list
+msgid "(If you do not select any location, then it will take all above warehouses internal locations)"
+msgstr "(If you do not select any location, then it will take all above warehouses internal locations)"
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.view_inventory_list
+msgid "(If you do not select any products it will take all products)"
+msgstr "(If you do not select any products it will take all products)"
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.view_inventory_list
+msgid "(If you do not select company it will take all companies)"
+msgstr "(If you do not select company it will take all companies)"
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.view_inventory_list
+msgid "(If you do not select warehouse it will take all warehouses)"
+msgstr "(If you do not select warehouse it will take all warehouses)"
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_category
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_warehouse
+msgid "<strong style=\"color:#4B524F;font-size: 19px;\">Total Inventory\n"
+"                                        </strong>"
+msgstr "<strong style=\"color:#4B524F;font-size: 19px;\">Total Inventory\n"
+"                                        </strong>"
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_category
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_warehouse
+msgid "<strong>Company</strong>"
+msgstr "<strong>Company</strong>"
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_category
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_warehouse
+msgid "<strong>Date</strong>"
+msgstr "<strong>Date</strong>"
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_category
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_warehouse
+msgid "<strong>Sort By</strong>"
+msgstr "<strong>Sort By</strong>"
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_category
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_warehouse
+msgid "<strong>Warehouse</strong>"
+msgstr "<strong>Warehouse</strong>"
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_category
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_warehouse
+msgid "Adjustments"
+msgstr "Adjustments"
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_category
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_warehouse
+msgid "Beginning"
+msgstr "Beginning"
+
+#. module: stock_inventory_report
+#: model:ir.model.fields,field_description:stock_inventory_report.field_stock_inventory_reports_start_date
+msgid "Beginning Date"
+msgstr "Beginning Date"
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.view_inventory_list
+msgid "Cancel"
+msgstr "Cancel"
+
+#. module: stock_inventory_report
+#: model:ir.model.fields,field_description:stock_inventory_report.field_stock_inventory_reports_filter_product_categ_ids
+msgid "Categories"
+msgstr "Categories"
+
+#. module: stock_inventory_report
+#: model:ir.model.fields,field_description:stock_inventory_report.field_stock_inventory_reports_company_id
+#: model:ir.ui.view,arch_db:stock_inventory_report.view_inventory_list
+msgid "Company"
+msgstr "Company"
+
+#. module: stock_inventory_report
+#: model:ir.model.fields,field_description:stock_inventory_report.field_stock_inventory_reports_create_uid
+msgid "Created by"
+msgstr "Created by"
+
+#. module: stock_inventory_report
+#: model:ir.model.fields,field_description:stock_inventory_report.field_stock_inventory_reports_create_date
+msgid "Created on"
+msgstr "Created on"
+
+#. module: stock_inventory_report
+#: model:ir.model.fields,field_description:stock_inventory_report.field_report_stock_inventory_report_inventory_report_by_category_display_name
+#: model:ir.model.fields,field_description:stock_inventory_report.field_report_stock_inventory_report_inventory_report_by_warehouse_display_name
+#: model:ir.model.fields,field_description:stock_inventory_report.field_stock_inventory_reports_display_name
+msgid "Display Name"
+msgstr "Display Name"
+
+#. module: stock_inventory_report
+#: model:ir.model.fields,field_description:stock_inventory_report.field_stock_inventory_reports_display_all_products
+msgid "Display Products?"
+msgstr "Display Products?"
+
+#. module: stock_inventory_report
+#: model:ir.model.fields,field_description:stock_inventory_report.field_stock_inventory_reports_end_date
+msgid "End Date"
+msgstr "End Date"
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_category
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_warehouse
+msgid "Ending"
+msgstr "Ending"
+
+#. module: stock_inventory_report
+#: model:ir.model.fields,field_description:stock_inventory_report.field_stock_inventory_reports_sort_order
+msgid "Group By"
+msgstr "Group By"
+
+#. module: stock_inventory_report
+#: model:ir.model.fields,field_description:stock_inventory_report.field_report_stock_inventory_report_inventory_report_by_category_id
+#: model:ir.model.fields,field_description:stock_inventory_report.field_report_stock_inventory_report_inventory_report_by_warehouse_id
+#: model:ir.model.fields,field_description:stock_inventory_report.field_stock_inventory_reports_id
+msgid "ID"
+msgstr "ID"
+
+#. module: stock_inventory_report
+#: model:ir.model.fields,field_description:stock_inventory_report.field_stock_inventory_reports_include_zero
+msgid "Include Zero Movement?"
+msgstr "Include Zero Movement?"
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_category
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_warehouse
+msgid "Internal"
+msgstr "Internal"
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.view_inventory_list
+msgid "Inventory"
+msgstr "Inventory"
+
+#. module: stock_inventory_report
+#: model:ir.actions.act_window,name:stock_inventory_report.action_inventory_report
+#: model:ir.actions.report,name:stock_inventory_report.action_inventory_report_by_category
+#: model:ir.actions.report,name:stock_inventory_report.action_inventory_report_by_warehouse
+#: model:ir.ui.menu,name:stock_inventory_report.menu_action_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_category
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_warehouse
+msgid "Inventory Report"
+msgstr "Inventory Report"
+
+#. module: stock_inventory_report
+#: model:ir.model.fields,field_description:stock_inventory_report.field_report_stock_inventory_report_inventory_report_by_category___last_update
+#: model:ir.model.fields,field_description:stock_inventory_report.field_report_stock_inventory_report_inventory_report_by_warehouse___last_update
+#: model:ir.model.fields,field_description:stock_inventory_report.field_stock_inventory_reports___last_update
+msgid "Last Modified on"
+msgstr "Last Modified on"
+
+#. module: stock_inventory_report
+#: model:ir.model.fields,field_description:stock_inventory_report.field_stock_inventory_reports_write_uid
+msgid "Last Updated by"
+msgstr "Last Updated by"
+
+#. module: stock_inventory_report
+#: model:ir.model.fields,field_description:stock_inventory_report.field_stock_inventory_reports_write_date
+msgid "Last Updated on"
+msgstr "Last Updated on"
+
+#. module: stock_inventory_report
+#: model:ir.model.fields,field_description:stock_inventory_report.field_stock_inventory_reports_location_id
+#: model:ir.ui.view,arch_db:stock_inventory_report.view_inventory_list
+msgid "Location"
+msgstr "Location"
+
+#. module: stock_inventory_report
+#: code:addons/stock_inventory_report/wizard/inventory_wizard.py:110
+#, python-format
+msgid "Please select company of those warehouses to get correct view.\n"
+"You should remove all warehouses first from selection field."
+msgstr "Please select company of those warehouses to get correct view.\n"
+"You should remove all warehouses first from selection field."
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.view_inventory_list
+msgid "Print"
+msgstr "Print"
+
+#. module: stock_inventory_report
+#: selection:stock.inventory.reports,sort_order:0
+msgid "Product Category"
+msgstr "Product Category"
+
+#. module: stock_inventory_report
+#: model:ir.model.fields,field_description:stock_inventory_report.field_stock_inventory_reports_filter_product_ids
+#: model:ir.ui.view,arch_db:stock_inventory_report.view_inventory_list
+msgid "Products"
+msgstr "Products"
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_category
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_warehouse
+msgid "Received"
+msgstr "Received"
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_category
+#: model:ir.ui.view,arch_db:stock_inventory_report.inventory_report_by_warehouse
+msgid "Sales"
+msgstr "Sales"
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.view_inventory_list
+msgid "Select Categories"
+msgstr "Select Categories"
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.view_inventory_list
+msgid "Select Location"
+msgstr "Select Location"
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.view_inventory_list
+msgid "Select Products"
+msgstr "Select Products"
+
+#. module: stock_inventory_report
+#: model:ir.model.fields,help:stock_inventory_report.field_stock_inventory_reports_display_all_products
+msgid "True, if you want to display only warehouse/categories total."
+msgstr "True, if you want to display only warehouse/categories total."
+
+#. module: stock_inventory_report
+#: model:ir.model.fields,help:stock_inventory_report.field_stock_inventory_reports_include_zero
+msgid "True, if you want to see zero movements of products.\n"
+"Note: It will consider only movements done in-between dates."
+msgstr "True, if you want to see zero movements of products.\n"
+"Note: It will consider only movements done in-between dates."
+
+#. module: stock_inventory_report
+#: selection:stock.inventory.reports,sort_order:0
+msgid "Warehouse"
+msgstr "Warehouse"
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.view_inventory_list
+msgid "Warehouses"
+msgstr "Warehouses"
+
+#. module: stock_inventory_report
+#: model:ir.ui.view,arch_db:stock_inventory_report.view_inventory_list
+msgid "or"
+msgstr "or"
+
+#. module: stock_inventory_report
+#: model:ir.model,name:stock_inventory_report.model_report_stock_inventory_report_inventory_report_by_category
+msgid "report.stock_inventory_report.inventory_report_by_category"
+msgstr "report.stock_inventory_report.inventory_report_by_category"
+
+#. module: stock_inventory_report
+#: model:ir.model,name:stock_inventory_report.model_report_stock_inventory_report_inventory_report_by_warehouse
+msgid "report.stock_inventory_report.inventory_report_by_warehouse"
+msgstr "report.stock_inventory_report.inventory_report_by_warehouse"
+
+#. module: stock_inventory_report
+#: model:ir.model,name:stock_inventory_report.model_stock_inventory_reports
+msgid "stock.inventory.reports"
+msgstr "stock.inventory.reports"
+
+#. module: stock_inventory_report
+#: model:ir.model.fields,field_description:stock_inventory_report.field_stock_inventory_reports_warehouse_ids
+msgid "warehouse"
+msgstr "warehouse"
+

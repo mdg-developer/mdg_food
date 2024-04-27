@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <t t-extend="ClientDetails">
+        <t t-jquery="div.client-details-box" t-operation="append">
+            <div class="client-detail">
+                <span class="label">Member Type: </span>
+                <span class="detail member-type">
+                    <t t-esc="partner.pos_member_type_id ? partner.pos_member_type_id[1] : ''"/>
+                </span>
+            </div>
+        </t>
+    </t>
+</odoo>

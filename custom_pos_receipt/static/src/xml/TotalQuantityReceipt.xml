@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Views for showing the total items and quantities in the Receipt -->
+<templates id="template" xml:space="preserve">
+    <t t-name="OrderReceipt" t-inherit="point_of_sale.OrderReceipt"
+       t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('pos-receipt')]" position="replace">
+            <div class="pos-receipt">
+                 <t t-if="receipt.company.logo">
+                    <div style="text-align: center;"><img t-att-src="receipt.company.logo" alt="Logo" width="135" height="70"/></div>
+                    <div style="@import url('https://fonts.googleapis.com/css?family=Cabrito+Serif+Cond+3&amp;display=swap'); font-size:60; font-family: 'Cabrito Serif Cond 3', serif; font-weight:bold;text-align: center;">
+                         <h2 class="pos-receipt-center-align">
+                             <t t-esc="receipt.company.name" />
+                        </h2>
+                    </div>
+
+                </t>
+                 <div class="pos-receipt-contact">
+                     <t t-if="receipt.header_html">
+                        <t t-raw="receipt.header_html" style="text-align:center; font-weight: bolder; font-size: 12px; line-height: 1.7;margin-top: -10px;"/>
+                    </t>
+                    <t t-if="!receipt.header_html and receipt.header">
+                        <div style="white-space:pre-line;text-align:center;font-weight: bolder; font-size: 12px; line-height: 1.7;margin-top: -10px;"><t t-esc="receipt.header" style="text-align:center; font-weight: bolder; font-size: 12px; line-height: 1.7;margin-top: -10px; " /></div>
+                    </t>
+                     <br/><br/>
+                     <div class="information">
+                         <table>
+                             <tr>
+                                 <td style="width:30%;text-align:start;"><strong>Customer</strong></td>
+                                 <td><nobr>:</nobr></td>
+                                 <td style="width:70%; text-align: initial;padding-left: 5px;"><span><t t-esc="receipt.client.name" /></span></td>
+                             </tr>
+                             <tr>
+                                 <td style="width:30%;text-align:start;"><strong>Mermber ID</strong></td>
+                                 <td><nobr>:</nobr></td>
+                                 <td style="width:70%; text-align: initial;padding-left: 5px;"><span><t t-esc="receipt.client.barcode" /></span></td>
+                             </tr>
+                            <tr>
+                                 <td style="width:30%;text-align:start;"><strong>Invoice No</strong></td>
+                                 <td><nobr>:</nobr></td>
+                                 <td style="width:70%; text-align: initial;padding-left: 5px;"><span><t t-esc="receipt.name" /></span></td>
+                             </tr>
+                             <tr>
+                                 <td style="width:30%;text-align:start;"><strong>Sale Person</strong></td>
+                                 <td><nobr>:</nobr></td>
+                                 <td style="width:70%;text-align: initial;padding-left: 5px;"><span><t t-esc="receipt.cashier" /></span></td>
+                             </tr>
+                             <tr>
+                                 <td style="width:30%; text-align:start;"><strong>Date</strong></td>
+                                 <td><nobr>:</nobr></td>
+                                 <td style="width:70%; text-align: initial;padding-left: 5px;">
+                                      <span>
+                                            <t t-if="receipt.date.localestring">
+                                                <span><t t-esc="receipt.date.localestring" /></span>
+                                            </t>
+                                            <t t-else="">
+                                                <span><t t-esc="receipt.date.validation_date" /></span>
+                                            </t>
+                                      </span>
+                                 </td>
+                             </tr>
+                         </table>
+                     </div><br/><br/>
+                 </div>
+                <div class="orderlines">
+                    <div class='orderlines'>
+                                        <table class='receipt-orderlines' style="width:100%;font-size:75%;">
+                                            <colgroup>
+                                                <col width='50%' />
+                                                <col width='5%' />
+                                                <col width='20%' />
+                                                <col width='25%' />
+                                            </colgroup>
+                                            <tr style="">
+                                                <th style="text-align:left;">Item</th>
+                                                <th style="text-align:left;">Qty</th>
+                                                <th style="text-align:right;">Price</th>
+                                                <th style="text-align:right;">Total(Ks)</th>
+                                            </tr>
+                                        </table>
+                                        <t t-set="total_quantity" t-value="0" />
+                                        <t t-set="total_price" t-value="0" />
+                                        <t t-foreach="receipt.orderlines" t-as="line" t-key="line.id">
+                                            <t t-if='line.product_name == "Order line Section"'>
+                                                <t t-if='env.pos.config.enable_order_line_label_in_receipt and env.pos.config.enable_order_line_label  '>
+                                                    <h5 class='line_label' style="width:100%;">
+                                                        <span>
+                                                            <t t-esc='env.pos.get_order().get_orderline_by_id(line.id)[0].add_section' />
+                                                        </span>
+                                                    </h5>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <t t-if="isSimple(line)">
+                                                    <table style="width:100%;font-size:75%;">
+                                                        <tr>
+                                                            <t t-if="line.product_name.substring(0, 12) != 'Free Product'">
+                                                            <td style="width:50%; line-height:1.5;">
+                                                                <t t-esc='line.product_name'/>
+                                                            </td>
+                                                            </t>
+                                                            <t t-else="">
+                                                            </t>
+                                                            <t t-if="line.product_name.substring(0, 12) != 'Free Product'">
+                                                            <td style="width:5%;text-align:left;">
+                                                                     <t t-if="line.price >= 0">
+                                                                        <t t-esc="line.quantity"/>
+                                                                    </t>
+                                                                    <t t-else="">
+
+                                                                    </t>
+                                                            </td>
+                                                            </t>
+                                                            <t t-else="">
+                                                            </t>
+                                                            <t t-if="line.product_name.substring(0, 12) != 'Free Product'">
+                                                            <td style="width:20%;text-align:right;">
+                                                                <t t-esc="env.pos.format_currency_no_symbol(Math.floor(line.price)).replace('.00', '')"/>
+                                                            </td>
+                                                            </t>
+                                                            <t t-else="">
+
+                                                            </t>
+                                                            <t t-if="line.product_name.substring(0, 12) != 'Free Product'">
+                                                            <td style="width:25%;text-align:right;">
+                                                                <t t-esc="env.pos.format_currency_no_symbol(Math.floor(line.price_display)).replace('.00', '')"/>
+                                                            </td>
+                                                            </t>
+                                                            <t t-else="">
+
+                                                            </t>
+                                                        </tr>
+                                                    </table>
+                                                </t>
+                                                <t t-else="">
+                                                    <table style="width:100%;font-size:75%;">
+                                                        <tr>
+                                                            <t t-if="line.product_name.substring(0, 12) != 'Free Product'">
+                                                            <td style="width:50%; line-height:1.5;">
+                                                                <t t-esc='line.product_name'/>
+                                                            </td>
+                                                            </t>
+                                                            <t t-else="">
+                                                            </t>
+                                                            <t t-if="line.product_name.substring(0, 12) != 'Free Product'">
+                                                            <td style="width:5%;text-align:left;">
+                                                                     <t t-if="line.price >= 0">
+                                                                        <t t-esc="line.quantity"/>
+                                                                    </t>
+                                                                    <t t-else="">
+
+                                                                    </t>
+                                                            </td>
+                                                            </t>
+                                                            <t t-else="">
+                                                            </t>
+                                                            <t t-if="line.product_name.substring(0, 12) != 'Free Product'">
+                                                            <td style="width:20%;text-align:right;">
+                                                                <t t-esc="env.pos.format_currency_no_symbol(Math.floor(line.price)).replace('.00', '')"/>
+                                                            </td>
+                                                            </t>
+                                                            <t t-else="">
+
+                                                            </t>
+                                                            <t t-if="line.product_name.substring(0, 12) != 'Free Product'">
+                                                            <td style="width:25%;text-align:right;">
+                                                                <t t-esc="env.pos.format_currency_no_symbol(Math.floor(line.price_display)).replace('.00', '')"/>
+                                                            </td>
+                                                            </t>
+                                                            <t t-else="">
+
+                                                            </t>
+                                                        </tr>
+                                                    </table>
+
+                                                    <div class="pos-receipt-left-padding">
+                                                        <t t-if="env.pos.config.display_orderline_note_receipt">
+                                                            <t t-if="line.line_note">
+                                                                <div class="line_note_div">
+                                                                    <t t-esc="line.line_note" />
+                                                                </div>
+                                                            </t>
+                                                        </t>
+                                                    </div>
+                                                </t>
+                                                 <t t-if="line.price >= 0 and line.product_name.substring(0, 12) != 'Free Product'">
+                                                    <t t-set="total_quantity" t-value="total_quantity + line.quantity" />
+                                                </t>
+                                                <t t-else="">
+                                                    <t t-set="total_quantity" t-value="total_quantity" />
+                                                </t>
+                                                <t t-set="total_price" t-value="total_price + line.price_display" />
+                                            </t>
+                                        </t>
+                                    <br/>
+                                        <table style="width:100%;font-size:75%;border-top:1px dotted black;">
+                                            <tr>
+                                                <td style="width:50%;text-align:center;font-weight:bold;padding-top:5px;">Total (Tax Incl)</td>
+                                                <td style="width:5%;text-align:left;font-weight:bold;padding-top:5px;"><t t-esc="total_quantity" /></td>
+                                                <td style="width:20%;padding-top:5px;"></td>
+                                                <td style="width:25%;text-align:right;font-weight:bold;padding-top:5px;"><t t-esc="env.pos.format_currency_no_symbol(total_price).replace('.00', '')" /></td>
+                                            </tr>
+                                        </table>
+                                    </div><br/>
+                <br/>
+            <div t-if="receipt.footer_html"  class="pos-receipt-center-align">
+                <t t-raw="receipt.footer_html" />
+            </div>
+            <div t-if="!receipt.footer_html and receipt.footer"  class="pos-receipt-center-align" style="white-space:pre-line;text-align: unset;font-size: 10px; font-weight: 500;border-top:1px dotted black;">
+                <br/>
+                <t t-esc="receipt.footer" />
+                <br/>
+                <br/>
+            </div>
+
+                </div>
+            </div>
+        </xpath>
+    </t>
+</templates>

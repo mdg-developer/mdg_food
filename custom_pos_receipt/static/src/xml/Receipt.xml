@@ -6,13 +6,11 @@
         <xpath expr="//div[hasclass('pos-receipt')]" position="replace">
             <div class="pos-receipt">
                  <t t-if="receipt.company.logo">
-                    <div style="text-align: center;"><img t-att-src="receipt.company.logo" alt="Logo" width="135" height="70"/></div>
-                    <div style="@import url('https://fonts.googleapis.com/css?family=Cabrito+Serif+Cond+3&amp;display=swap'); font-size:60; font-family: 'Cabrito Serif Cond 3', serif; font-weight:bold;text-align: center;">
-                         <h2 class="pos-receipt-center-align">
+                    <div style="text-align: center;"><img t-att-src="receipt.company.logo" alt="Logo" width="135" height="70"/>
+                        <div style="@import url('https://fonts.googleapis.com/css?family=Cabrito+Serif+Cond+3&amp;display=swap'); font-size:28px; font-family: 'Cabrito Serif Cond 3', serif; font-weight:bold;text-align: center;">
                              <t t-esc="receipt.company.name" />
-                        </h2>
-                    </div>
-
+                        </div>
+                    </div><br/>
                 </t>
                  <div class="pos-receipt-contact">
                      <t t-if="receipt.header_html">

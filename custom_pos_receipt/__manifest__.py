@@ -13,9 +13,12 @@
     'depends': ['point_of_sale'],
     'data': ['views/res_partner_inherit_view.xml',],
     'assets': {
-        'point_of_sale.assets': ['custom_pos_receipt/static/src/js/Receipt.js',],
+        'point_of_sale.assets': [
+            'custom_pos_receipt/static/src/js/Receipt.js',
+            # 'custom_pos_receipt/static/src/js/main.js'
+        ],
         'web.assets_qweb': [
-            'custom_pos_receipt/static/src/xml/TotalQuantityReceipt.xml',
+            'custom_pos_receipt/static/src/xml/Receipt.xml',
         ],
     },
     'license': 'AGPL-3',

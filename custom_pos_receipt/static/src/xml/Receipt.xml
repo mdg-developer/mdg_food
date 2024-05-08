@@ -25,12 +25,24 @@
                              <tr>
                                  <td style="width:30%;text-align:start;"><strong>Customer</strong></td>
                                  <td><nobr>:</nobr></td>
-                                 <td style="width:70%; text-align: initial;padding-left: 5px;"><span><t t-esc="receipt.client.name" /></span></td>
+                                 <td style="width:70%; text-align: initial;padding-left: 5px;">
+                                     <span>
+                                         <t t-if="env.pos.get_client()">
+                                             <t t-esc="env.pos.get_client().name"/>
+                                         </t>
+                                            <t t-else="">---</t>
+                                     </span></td>
                              </tr>
                              <tr>
-                                 <td style="width:30%;text-align:start;"><strong>Mermber ID</strong></td>
+                                 <td style="width:30%;text-align:start;"><strong>Member ID</strong></td>
                                  <td><nobr>:</nobr></td>
-                                 <td style="width:70%; text-align: initial;padding-left: 5px;"><span><t t-esc="receipt.client.barcode" /></span></td>
+                                 <td style="width:70%; text-align: initial;padding-left: 5px;">
+                                     <span>
+                                         <t t-if="env.pos.get_client()">
+                                                 <t t-esc="env.pos.get_client().barcode"/>
+                                             </t>
+                                            <t t-else="">---</t>
+                                     </span></td>
                              </tr>
                             <tr>
                                  <td style="width:30%;text-align:start;"><strong>Invoice No</strong></td>
@@ -48,10 +60,11 @@
                                  <td style="width:70%; text-align: initial;padding-left: 5px;">
                                       <span>
                                             <t t-if="receipt.date.localestring">
-                                                <span><t t-esc="receipt.date.localestring" /></span>
+                                                <span><t t-esc="receipt.date.localestring"/></span>
+                                                <t t-log="receipt.date.validation_date"/>
                                             </t>
                                             <t t-else="">
-                                                <span><t t-esc="receipt.date.validation_date" /></span>
+                                                <span><t t-esc="receipt.date.validation_date"  /></span>
                                             </t>
                                       </span>
                                  </td>

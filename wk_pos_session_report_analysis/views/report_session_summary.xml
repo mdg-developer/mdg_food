@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : <https://store.webkul.com/license.html/> -->
+<odoo>
+    <data>
+        <template id="report_session_summary">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.internal_layout">
+                        <div class="page">
+                            <t t-set="product_wise_report" t-value="o.wk_session_sale_details()"/>
+                            <h2>Sales Summary Report <t t-esc="o.name"/></h2>
+                        </div>
+                        <div class="row">
+                            <div class="col-6  ml-auto">
+                                <h3>Sales Summary:</h3>
+                                <table class="table table-condensed" cellspacing="20">
+                                    <tr t-foreach="product_wise_report['total_sale_by_categ']" t-as='line' class="border-black">
+                                        <td><strong>Total Sale For <t t-esc="line[0]"/> :</strong></td>
+                                        <td class="text-right">
+                                            <t t-esc="line[1]" />
+                                        </td>
+                                    </tr>
+                                    <tr class="border-black">
+                                        <td><strong>Total Sale :</strong></td>
+                                        <td class="text-right">
+                                            <t t-esc="product_wise_report['total_sale']" />
+                                        </td>
+                                    </tr>
+                                </table>
+                                <br/>
+                                <h4>Discounts</h4>
+                                <table class="table table-condensed" cellspacing="20">
+                                    <tr class="border-black">
+                                        <td><strong>Discount Amount : </strong></td>
+                                        <td class="text-right">
+                                            <t t-esc="product_wise_report['discount_amount']" />
+                                        </td>
+                                    </tr>
+                                    <tr class="border-black">
+                                        <td><strong>Total FOC discount :</strong></td>
+                                        <td class="text-right">
+                                            <t t-esc="product_wise_report['total_foc_discount']" />
+                                        </td>
+                                    </tr>
+                                    <tr class="border-black">
+                                        <td><strong>Total Discount : </strong></td>
+                                        <td class="text-right">
+                                            <t t-esc="product_wise_report['total_discount']" />
+                                        </td>
+                                    </tr>
+                                </table>
+                                <br/>
+                                <h4>Refunds</h4>
+                                <table class="table table-condensed" cellspacing="20">
+                                    <tr class="border-black">
+                                        <td><strong>Total Refund :</strong></td>
+                                        <td class="text-right">
+                                            <t t-esc="product_wise_report['total_refund']" />
+                                        </td>
+                                    </tr>
+                                </table>
+                                <br/>
+                                <h4 style="text-align:left; margin-bottom:3px">Net Sales: <t t-esc="product_wise_report['net_sale']"/></h4>
+                                <br/>
+                                <h4>Payment Transactions</h4>
+                                <table class="table table-condensed" cellspacing="20">
+                                    <tr><td style="font-size: 18px;"><strong>Opening</strong></td></tr>
+                                    <tr class="border-black">
+                                        <td><strong>Cash : </strong></td>
+                                        <td class="text-right">
+                                            <t t-esc="product_wise_report['opening_cash_amount']" />
+                                        </td>
+                                    </tr>
+                                    <tr><td style="font-size: 18px;"><strong>Cash Sales</strong></td></tr>
+                                    <tr t-foreach="product_wise_report['amount_payment_journal']" t-as='line' class="border-black">
+                                        <td><t t-esc="line[0]"/> : </td>
+                                        <td class="text-right">
+                                            <t t-esc="line[1]" />
+                                        </td>
+                                    </tr>
+                                    <tr class="border-black">
+                                        <td><strong>Total Cash Sales : </strong></td>
+                                        <td class="text-right">
+                                            <t t-esc="product_wise_report['total_payment_amount']" />
+                                        </td>
+                                    </tr>
+                                    <tr><td style="font-size: 18px;"><strong>Summary</strong></td></tr>
+                                    <tr t-foreach="product_wise_report['amount_summary_by_journal']" t-as='line' class="border-black">
+                                        <td><t t-esc="line[0]"/> : </td>
+                                        <td class="text-right">
+                                            <t t-esc="line[1]" />
+                                        </td>
+                                    </tr>
+                                    <tr class="border-black">
+                                        <td style="font-size: 20px;"><strong>Net Total Payment : </strong></td>
+                                        <td class="text-right" style="font-size: 20px;">
+                                            <strong><t t-esc="product_wise_report['total_summary_amount']" /></strong>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+					    </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+        <template id="report_session_summary_by_date">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.internal_layout">
+                        <div class="page">
+                            <t t-set="product_wise_report" t-value="o.get_pos_details()"/>
+                            <h2>Sale Summary: <t t-esc="o.config_id.name"/></h2>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <strong>From Date</strong>:
+                                <span t-field="o.start_date"/>
+                            </div>
+                            <div class="col-3">
+                                <strong>To Date</strong>:
+                                <span t-field="o.end_date"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6  ml-auto">
+                                <h3>Sales Summary:</h3>
+                                <table class="table table-condensed" cellspacing="20">
+                                    <tr t-foreach="product_wise_report['total_sale_by_categ']" t-as='line' class="border-black">
+                                        <td><strong>Total Sale For <t t-esc="line[0]"/> :</strong></td>
+                                        <td class="text-right">
+                                            <t t-esc="line[1]" />
+                                        </td>
+                                    </tr>
+                                    <tr class="border-black">
+                                        <td><strong>Total Sale :</strong></td>
+                                        <td class="text-right">
+                                            <t t-esc="product_wise_report['total_sale']" />
+                                        </td>
+                                    </tr>
+                                </table>
+                                <br/>
+                                <h3>Discounts</h3>
+                                <table class="table table-condensed" cellspacing="20">
+                                    <tr class="border-black">
+                                        <td><strong>Discount Amount : </strong></td>
+                                        <td class="text-right">
+                                            <t t-esc="product_wise_report['discount_amount']" />
+                                        </td>
+                                    </tr>
+                                    <tr class="border-black">
+                                        <td><strong>Total FOC discount :</strong></td>
+                                        <td class="text-right">
+                                            <t t-esc="product_wise_report['total_foc_discount']" />
+                                        </td>
+                                    </tr>
+                                    <tr class="border-black">
+                                        <td><strong>Total Discount : </strong></td>
+                                        <td class="text-right">
+                                            <t t-esc="product_wise_report['total_discount']" />
+                                        </td>
+                                    </tr>
+                                </table>
+                                <br/>
+                                <h3>Refunds</h3>
+                                <table class="table table-condensed" cellspacing="20">
+                                    <tr class="border-black">
+                                        <td><strong>Total Refund :</strong></td>
+                                        <td class="text-right">
+                                            <t t-esc="product_wise_report['total_refund']" />
+                                        </td>
+                                    </tr>
+                                </table>
+                                <br/>
+                                <h3 style="text-align:left; margin-bottom:3px">Net Sales: <t t-esc="product_wise_report['net_sale']"/></h3>
+                                <br/>
+                                <h3>Payment Transactions</h3>
+                                <table class="table table-condensed" cellspacing="20">
+                                    <tr><td style="font-size: 18px;"><strong>Opening</strong></td></tr>
+                                    <tr class="border-black">
+                                        <td><strong>Cash : </strong></td>
+                                        <td class="text-right">
+                                            <t t-esc="product_wise_report['opening_cash_amount']" />
+                                        </td>
+                                    </tr>
+                                    <tr><td style="font-size: 18px;"><strong>Cash sales</strong></td></tr>
+                                    <tr t-foreach="product_wise_report['amount_payment_journal']" t-as='line' class="border-black">
+                                        <td><t t-esc="line[0]"/> : </td>
+                                        <td class="text-right">
+                                            <t t-esc="line[1]" />
+                                        </td>
+                                    </tr>
+                                    <tr class="border-black">
+                                        <td><strong>Total Cash Sales : </strong></td>
+                                        <td class="text-right">
+                                            <t t-esc="product_wise_report['total_payment_amount']" />
+                                        </td>
+                                    </tr>
+
+                                    <tr><td style="font-size: 18px;"><strong>Summary</strong></td></tr>
+                                    <tr t-foreach="product_wise_report['amount_summary_by_journal']" t-as='line' class="border-black">
+                                        <td><t t-esc="line[0]"/> : </td>
+                                        <td class="text-right">
+                                            <t t-esc="line[1]" />
+                                        </td>
+                                    </tr>
+                                    <tr class="border-black">
+                                        <td style="font-size: 20px;"><strong>Net Total Payment : </strong></td>
+                                        <td class="text-right" style="font-size: 20px;">
+                                            <strong><t t-esc="product_wise_report['total_summary_amount']" /></strong>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+					    </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

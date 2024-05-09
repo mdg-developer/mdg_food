@@ -53,29 +53,9 @@ class inventory_report(models.AbstractModel):
     total_inventory = []
     value_exist = {}
 
-    # global begining_qty
-    # global total_in
-    # global total_out
-    # global total_int
-    # global total_adj
-    # global total_begin
-    # global total_end
-    # global total_inventory
-    # global value_exist
-    # total_inventory = value_exist = []
-    # begining_qty = total_in = total_out = total_int = total_adj = total_begin = total_end = 0.0
 
     @api.model
     def get_report_values(self, docids, data=None):
-        # self.begining_qty = 0.0
-        # self.total_in = 0.0
-        # self.total_out = 0.0
-        # self.total_int = 0.0
-        # self.total_adj = 0.0
-        # self.total_begin = 0.0
-        # self.total_end = 0.0
-        # self.total_inventory = []
-        # self.value_exist = {}
 
         return {
             'doc_ids': self._ids,
@@ -166,19 +146,19 @@ class inventory_report(models.AbstractModel):
             total_adj  += warehouse.get('product_qty_adjustment',0.0)
             total_begin += warehouse.get('begining_qty',0.0)
 
-        self.total_in = total_in
-        self.total_out = total_out
-        self.total_int = total_int
-        self.total_adj = total_adj
-        self.total_begin = total_begin
-        self.total_end = total_begin + total_in + total_out + total_int + total_adj
+        total_in = total_in
+        total_out = total_out
+        total_int = total_int
+        total_adj = total_adj
+        total_begin = total_begin
+        total_end = total_begin + total_in + total_out + total_int + total_adj
         self.total_inventory.append({
                                      (warehouse_id,company_id):{'total_in': total_in,
                                                                 'total_out': total_out,
                                                                 'total_int':total_int,
                                                                 'total_adj':total_adj,
                                                                 'total_begin':total_begin,
-                                                                'total_end':total_begin + total_in + total_out + total_int + total_adj
+                                                                'total_end':total_end
                                                                 }})
         return ''
 
@@ -208,7 +188,7 @@ class inventory_report(models.AbstractModel):
         return ', '.join([lt['name'] or '' for lt in war_detail])
 
     #Added conversion with dual uom #need to check in deeply
-    def _get_beginning_inventory(self, data, warehouse_id,product_id,current_record):
+    def _get_beginning_inventory(self, data, warehouse_id,prod_id,current_record):
         """
         Process:
             -Pass locations , start date and product_id
@@ -222,65 +202,61 @@ class inventory_report(models.AbstractModel):
             locations = self._find_locations(warehouse_id)
 
         from_date = self.convert_withtimezone(data['form']['start_date']+' 00:00:00')
-        self._cr.execute(''' 
-                            SELECT id,coalesce(sum(qty), 0.0) AS qty
-                            FROM
-                                ((
-                                SELECT
-                                    pp.id, pp.default_code,m.date,
-                                    CASE WHEN pt.uom_id = m.product_uom 
-                                    THEN u.name 
-                                    ELSE (select name from uom_uom where id = pt.uom_id) end AS name,
-                                    
-                                    CASE WHEN pt.uom_id = m.product_uom  
-                                    THEN coalesce(sum(-m.product_qty)::decimal, 0.0)
-                                    ELSE coalesce(sum(-m.product_qty * pu.factor / u.factor )::decimal, 0.0) END  AS qty
-                                
+
+        self._cr.execute('''
+                                SELECT product_id,(product_qty_out + product_qty_in+ product_qty_internal+ product_qty_adjustment) AS qty from(
+                                SELECT pp.id AS product_id,
+                                    sum((
+                                        CASE WHEN spt.code in ('outgoing') AND sm.location_id in %s AND sourcel.usage !='inventory' and destl.usage !='inventory' 
+                                        THEN -(sm.qty_done * pu.factor / pu2.factor)
+                                        ELSE 0.0 
+                                        END
+                                    )) AS product_qty_out,
+                                    sum((
+                                        CASE WHEN spt.code in ('incoming','outgoing') AND sm.location_dest_id in %s AND sourcel.usage !='inventory' AND destl.usage !='inventory' 
+                                        THEN (sm.qty_done * pu.factor / pu2.factor)
+                                        ELSE 0.0 
+                                        END
+                                    )) AS product_qty_in,
+                                    sum((
+                                        CASE WHEN (spt.code ='internal' or spt.code is null) AND sm.location_dest_id in %s AND sourcel.usage !='inventory' AND destl.usage !='inventory' 
+                                        THEN (sm.qty_done * pu.factor / pu2.factor)  
+                                        WHEN (spt.code='internal' or spt.code is null) AND sm.location_id in %s AND sourcel.usage !='inventory' and destl.usage !='inventory' 
+                                        THEN -(sm.qty_done * pu.factor / pu2.factor)
+                                        ELSE 0.0 
+                                        END
+                                    )) AS product_qty_internal,
+
+                                    sum((
+                                        CASE WHEN sourcel.usage = 'inventory' AND sm.location_dest_id in %s 
+                                        THEN  (sm.qty_done * pu.factor / pu2.factor)
+                                        WHEN destl.usage ='inventory' AND sm.location_id in %s 
+                                        THEN -(sm.qty_done * pu.factor / pu2.factor)
+                                        ELSE 0.0 
+                                        END
+                                    )) AS product_qty_adjustment
+
                                 FROM product_product pp 
-                                LEFT JOIN stock_move m ON (m.product_id=pp.id)
+                                LEFT JOIN  stock_move_line sm ON (sm.product_id = pp.id and sm.date <= %s and sm.state = 'done' and sm.location_id != sm.location_dest_id)
+                                LEFT JOIN stock_picking sp ON (sm.picking_id=sp.id)
+                                LEFT JOIN stock_move move ON (sm.move_id=move.id)
+                                LEFT JOIN stock_picking_type spt ON (spt.id=move.picking_type_id)
+                                LEFT JOIN stock_location sourcel ON (sm.location_id=sourcel.id)
+                                LEFT JOIN stock_location destl ON (sm.location_dest_id=destl.id)
+                                LEFT JOIN uom_uom pu ON (sm.product_uom_id=pu.id)
+                                LEFT JOIN uom_uom pu2 ON (sm.product_uom_id=pu2.id)
                                 LEFT JOIN product_template pt ON (pp.product_tmpl_id=pt.id)
-                                LEFT JOIN stock_location l on(m.location_id=l.id)
-                                LEFT JOIN stock_picking p ON (m.picking_id=p.id)
-                                LEFT JOIN uom_uom pu ON (pt.uom_id=pu.id)
-                                LEFT JOIN uom_uom u ON (m.product_uom=u.id)
-                                
-                                WHERE m.date <  %s AND (m.location_id in %s) 
-                                AND m.state='done' and pp.active=True AND pp.id = %s
-                                GROUP BY  pp.id,pt.uom_id , m.product_uom ,
-                                pp.default_code,u.name,m.date
-                                ) 
-                                UNION ALL
-                                (
-                                SELECT
-                                    pp.id, pp.default_code,m.date,
-                                    CASE WHEN pt.uom_id = m.product_uom 
-                                    THEN u.name 
-                                    ELSE (select name from uom_uom where id = pt.uom_id) end AS name,
-                                    
-                                    CASE WHEN pt.uom_id = m.product_uom 
-                                    THEN coalesce(sum(m.product_qty)::decimal, 0.0)
-                                    ELSE coalesce(sum(m.product_qty * pu.factor / u.factor )::decimal, 0.0) END  AS qty
-                                FROM product_product pp 
-                                LEFT JOIN stock_move m ON (m.product_id=pp.id)
-                                LEFT JOIN product_template pt ON (pp.product_tmpl_id=pt.id)
-                                LEFT JOIN stock_location l on(m.location_dest_id=l.id)    
-                                LEFT JOIN stock_picking p ON (m.picking_id=p.id)
-                                LEFT JOIN uom_uom pu ON (pt.uom_id=pu.id)
-                                LEFT JOIN uom_uom u ON (m.product_uom=u.id)
-                                
-                                WHERE m.date <  %s AND (m.location_dest_id in %s) 
-                                AND m.state='done' and pp.active=True AND pp.id = %s
-                                GROUP BY  pp.id,pt.uom_id , m.product_uom ,
-                                pp.default_code,u.name,m.date
-                                ))
-                                AS foo
-                            group BY id
-                            ''',(from_date, tuple(locations),product_id, from_date, tuple(locations),product_id))
+                                WHERE  sm.state='done' and pp.active=True  AND pt.type in ('product','consu') and pp.active='true' and pp.id = %s
+                                GROUP BY pp.id order by pp.id
+                                )AA
+                                ''', (tuple(locations), tuple(locations), tuple(locations), tuple(locations), tuple(locations), tuple(locations),from_date, prod_id))
 
         res = self._cr.dictfetchall()
-        self.begining_qty = res and res[0].get('qty',0.0) or 0.0
-        current_record.update({'begining_qty': res and res[0].get('qty',0.0) or 0.0})
-        return self.begining_qty
+        # print(res[0].get('qty'))
+
+        begining_qty = res and res[0].get('qty') or 0.0
+        current_record.update({'begining_qty': begining_qty})
+        return begining_qty
 
     def _get_ending_inventory(self, in_qty, out_qty,internal_qty,adjust_qty):
         """
@@ -307,7 +283,7 @@ class inventory_report(models.AbstractModel):
             return user_datetime.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
         return user_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
 
-    def location_wise_value(self, start_date, end_date, locations , include_zero=False,filter_product_ids=[]):
+    def location_wise_value(self, start_date, end_date, locations , include_zero=True,filter_product_ids=[]):
         """
         Complete data with location wise
             - In Qty (Inward Quantity to given location)
@@ -322,47 +298,48 @@ class inventory_report(models.AbstractModel):
                         SELECT pp.id AS product_id,
                             sum((
                                 CASE WHEN spt.code in ('outgoing') AND sm.location_id in %s AND sourcel.usage !='inventory' and destl.usage !='inventory' 
-                                THEN -(sm.product_qty * pu.factor / pu2.factor)
+                                THEN -(sm.qty_done * pu.factor / pu2.factor)
                                 ELSE 0.0 
                                 END
                             )) AS product_qty_out,
                             sum((
-                                CASE WHEN spt.code in ('incoming') AND sm.location_dest_id in %s AND sourcel.usage !='inventory' AND destl.usage !='inventory' 
-                                THEN (sm.product_qty * pu.factor / pu2.factor)
+                                CASE WHEN spt.code in ('incoming','outgoing') AND sm.location_dest_id in %s AND sourcel.usage !='inventory' AND destl.usage !='inventory' 
+                                THEN (sm.qty_done * pu.factor / pu2.factor)
                                 ELSE 0.0 
                                 END
                             )) AS product_qty_in,
                             sum((
                                 CASE WHEN (spt.code ='internal' or spt.code is null) AND sm.location_dest_id in %s AND sourcel.usage !='inventory' AND destl.usage !='inventory' 
-                                THEN (sm.product_qty * pu.factor / pu2.factor)  
+                                THEN (sm.qty_done * pu.factor / pu2.factor)  
                                 WHEN (spt.code='internal' or spt.code is null) AND sm.location_id in %s AND sourcel.usage !='inventory' and destl.usage !='inventory' 
-                                THEN -(sm.product_qty * pu.factor / pu2.factor)
+                                THEN -(sm.qty_done * pu.factor / pu2.factor)
                                 ELSE 0.0 
                                 END
                             )) AS product_qty_internal,
                         
                             sum((
                                 CASE WHEN sourcel.usage = 'inventory' AND sm.location_dest_id in %s 
-                                THEN  (sm.product_qty * pu.factor / pu2.factor)
+                                THEN  (sm.qty_done * pu.factor / pu2.factor)
                                 WHEN destl.usage ='inventory' AND sm.location_id in %s 
-                                THEN -(sm.product_qty * pu.factor / pu2.factor)
+                                THEN -(sm.qty_done * pu.factor / pu2.factor)
                                 ELSE 0.0 
                                 END
                             )) AS product_qty_adjustment
                         
                         FROM product_product pp 
-                        LEFT JOIN  stock_move sm ON (sm.product_id = pp.id and sm.date >= %s and sm.date <= %s and sm.state = 'done' and sm.location_id != sm.location_dest_id)
+                        LEFT JOIN  stock_move_line sm ON (sm.product_id = pp.id and sm.date >= %s and sm.date <= %s and sm.state = 'done' and sm.location_id != sm.location_dest_id)
                         LEFT JOIN stock_picking sp ON (sm.picking_id=sp.id)
-                        LEFT JOIN stock_picking_type spt ON (spt.id=sp.picking_type_id)
+                        LEFT JOIN stock_move move ON (sm.move_id=move.id)
+                        LEFT JOIN stock_picking_type spt ON (spt.id=move.picking_type_id)
                         LEFT JOIN stock_location sourcel ON (sm.location_id=sourcel.id)
                         LEFT JOIN stock_location destl ON (sm.location_dest_id=destl.id)
-                        LEFT JOIN uom_uom pu ON (sm.product_uom=pu.id)
-                        LEFT JOIN uom_uom pu2 ON (sm.product_uom=pu2.id)
+                        LEFT JOIN uom_uom pu ON (sm.product_uom_id=pu.id)
+                        LEFT JOIN uom_uom pu2 ON (sm.product_uom_id=pu2.id)
                         LEFT JOIN product_template pt ON (pp.product_tmpl_id=pt.id)
-
+                        WHERE  sm.state='done' and pp.active=True  AND pt.type in ('product','consu') and pp.active='true'
                         GROUP BY pp.id order by pp.id
                         ''',(tuple(locations),tuple(locations),tuple(locations),tuple(locations),tuple(locations),tuple(locations),start_date, end_date))
-
+        print("Location",tuple(locations))
         values = self._cr.dictfetchall()
 
         for none_to_update in values:
@@ -370,7 +347,8 @@ class inventory_report(models.AbstractModel):
                 none_to_update.update({'product_qty_out':0.0})
             if not none_to_update.get('product_qty_in'):
                 none_to_update.update({'product_qty_in':0.0})
-
+        #add no transaction product
+        values = self._add_no_transaction_inventory(values)
         #Removed zero values dictionary
         if not include_zero:
             values = self._remove_zero_inventory(values)
@@ -378,6 +356,15 @@ class inventory_report(models.AbstractModel):
         if filter_product_ids:
             values = self._remove_product_ids(values, filter_product_ids)
         return values
+    def _add_no_transaction_inventory(self, values):
+        final_values = []
+        product_list = []
+        for rm_zero in values:
+            final_values.append(rm_zero)
+            product_list.append(rm_zero['product_id'])
+        for product in self.env['product.product'].search([('id','not in',product_list),('type','in', ['product','consu'])]):
+            final_values.append({'product_id': product.id, 'product_qty_out': 0.0, 'product_qty_in': 0.0, 'product_qty_internal': 0.0, 'product_qty_adjustment': 0.0})
+        return final_values
 
     def _remove_zero_inventory(self, values):
         final_values = []
@@ -406,8 +393,14 @@ class inventory_report(models.AbstractModel):
         """
         Find product name and assign to it
         """
-        product = self.env['product.product'].browse(product_id).name_get()
-        return product and product[0] and product[0][1] or ''
+        # product = self.env['product.product'].browse(product_id).name_get()
+        product = self.env['product.product'].browse(product_id).name
+        return product
+        # return product and product[0] and product[0][1] or ''
+
+    def _get_product_code(self, product_id):
+        code = self.env['product.product'].browse(product_id).default_code
+        return code
 
     def _product_volume(self, product_id):
         volume = self.env['product.product'].browse(product_id).volume
@@ -449,7 +442,8 @@ class inventory_report(models.AbstractModel):
             {location : [{},{},{}...], location : [{},{},{}...],...}
         """
         start_date = self.convert_withtimezone(data['form']['start_date']+' 00:00:00')
-        end_date =  self.convert_withtimezone(data['form']['end_date']+' 23:59:59')
+        end_date =  \
+            self.convert_withtimezone(data['form']['end_date']+' 23:59:59')
 
         warehouse_ids = data['form'] and data['form'].get('warehouse_ids',[]) or []
         include_zero = data['form'] and data['form'].get('include_zero') or False
@@ -473,7 +467,6 @@ class inventory_report(models.AbstractModel):
                                          warehouse:self.location_wise_value(start_date, end_date, locations, include_zero,filter_product_ids)
                                          })
         self.value_exist.update(final_values)
-        #value_exist = final_values
         return final_values
     
     def get_report_name(self):
@@ -546,9 +539,12 @@ class inventory_report(models.AbstractModel):
         y_offset += 2
         
         lines=self._get_lines(options,options['form']['company_id'])
-        
-        sheet.merge_range(y_offset, 0, y_offset, 2, _('Product'), style_result['format_header_one'])
-        sheet.set_column(0, 2, 20)
+
+        # sheet.merge_range(y_offset, 0, y_offset, 1, _('Product Code'), style_result['format_header_one'])
+        sheet.write(y_offset, 0, _('Product Code'), style_result['format_header_one'])
+        sheet.set_column(0, 0, 20)
+        sheet.merge_range(y_offset, 1, y_offset, 2, _('Product'), style_result['format_header_one'])
+        sheet.set_column(1, 2, 20)
         sheet.write(y_offset, 3,_('Beginning'), style_result['format_header_one'])
         sheet.set_column(3, 3, 20)
         sheet.write(y_offset, 4, _('In'), style_result['format_header_one'])
@@ -565,16 +561,28 @@ class inventory_report(models.AbstractModel):
         y_offset += 1
         wh_vol_total = 0
         global_vol_total = 0
+        total_begin=total_in=total_out= total_int=total_adj=total_end= 0
+        total_wh_begin=total_wh_in=total_wh_out= total_wh_int=total_wh_adj=total_wh_end= 0
         for line_wh in lines:
             for line in lines[line_wh]:
                 product_name=self._product_name(line.get('product_id'))
+                product_code = self._get_product_code(line.get('product_id'))
                 product_vol = self._product_volume(line.get('product_id'))
                 begin_qty=self._get_beginning_inventory(options,line_wh,line.get('product_id'),line)
+                total_begin+=begin_qty
+                total_in+=line.get('product_qty_in', 0.0)
+                total_out+=line.get('product_qty_out', 0.0)
+                total_int+=line.get('product_qty_internal', 0.0)
+                total_adj+=line.get('product_qty_adjustment', 0.0)
+                ending_qty = begin_qty + line.get('product_qty_in', 0.0) + line.get('product_qty_out', 0.0)+  line.get('product_qty_internal', 0.0) + line.get('product_qty_adjustment', 0.0)
+                total_end+=ending_qty
                 ending_qty = begin_qty + line.get('product_qty_in', 0.0) + line.get('product_qty_out', 0.0) + line.get('product_qty_internal', 0.0) + line.get('product_qty_adjustment', 0.0)
                 vol_total = ending_qty * product_vol
                 wh_vol_total+= vol_total
-                sheet.merge_range(y_offset, 0, y_offset, 2, product_name or '', style_result['product_format'])
-                sheet.set_column(0, 2, 20)                
+                sheet.write(y_offset, 0, product_code or '', style_result['product_format'])
+                sheet.set_column(0, 0, 20)
+                sheet.merge_range(y_offset, 1, y_offset, 2, product_name or '', style_result['product_format'])
+                sheet.set_column(1, 2, 20)
                 sheet.write(y_offset,3, begin_qty or 0.0, style_result['format_border_top'])
                 sheet.set_column(3, 3, 20)            
                 sheet.write(y_offset, 4, line.get('product_qty_in', 0.0) or 0.0, style_result['format_border_top'])
@@ -588,7 +596,7 @@ class inventory_report(models.AbstractModel):
                 sheet.write(y_offset, 8, (ending_qty) or 0.0, style_result['format_border_top'])
                 sheet.set_column(8, 8, 20)
                 y_offset += 1
-                              
+                
             if line_wh:            
                 for warehouse in self.env['stock.warehouse'].browse(line_wh).name_get():
                     warehouse_name_group = str(warehouse[1]) + ','
@@ -599,36 +607,45 @@ class inventory_report(models.AbstractModel):
             toal_val=self._total_vals(cid[0])         
             sheet.merge_range(y_offset, 0, y_offset, 2, warehouse_name_group or '', style_result['format_header_one'])
             sheet.set_column(0, 2, 20) 
-            sheet.write(y_offset,3,self._total_begin() or 0.0, style_result['format_header_one'])
+            sheet.write(y_offset,3,"{:0,.2f}".format(total_begin) or 0.0, style_result['format_header_one'])
             sheet.set_column(3, 3, 20)            
-            sheet.write(y_offset, 4,self._total_in() or 0.0, style_result['format_header_one'])
+            sheet.write(y_offset, 4,"{:0,.2f}".format(total_in) or 0.0, style_result['format_header_one'])
             sheet.set_column(4, 4, 20)
-            sheet.write(y_offset, 5, self._total_out() or 0.0, style_result['format_header_one'])
+            sheet.write(y_offset, 5, "{:0,.2f}".format(total_out) or 0.0, style_result['format_header_one'])
             sheet.set_column(5,5, 20)
-            sheet.write(y_offset, 6, self._total_int() or 0.0, style_result['format_header_one'])
+            sheet.write(y_offset, 6, "{:0,.2f}".format(total_int) or 0.0, style_result['format_header_one'])
             sheet.set_column(6, 6, 20)
-            sheet.write(y_offset, 7, self._total_adj() or 0.0, style_result['format_header_one'])
+            sheet.write(y_offset, 7, "{:0,.2f}".format(total_adj) or 0.0, style_result['format_header_one'])
             sheet.set_column(7,7, 20)
-            sheet.write(y_offset, 8, self._total_end() or 0.0, style_result['format_header_one'])
+            sheet.write(y_offset, 8, "{:0,.2f}".format(total_end) or 0.0, style_result['format_header_one'])
             sheet.set_column(8, 8, 20)
             global_vol_total+=wh_vol_total
             wh_vol_total=0
             y_offset += 2
+            
+            total_wh_begin+=total_begin
+            total_wh_in+=total_in
+            total_wh_out+=total_out
+            total_wh_int+=total_int
+            total_wh_adj+=total_adj
+            total_wh_end+=total_end
+            total_begin=total_in=total_out= total_int=total_adj=total_end= 0
+                              
         
         total_toal_val=self._total_vals(cid[0])
         sheet.merge_range(y_offset, 0, y_offset, 2, 'Total Inventory', style_result['format_header_one'])
         sheet.set_column(0, 2, 20)
-        sheet.write(y_offset,3, self._total_vals(cid[0])[0] or 0.0, style_result['format_header_one'])
+        sheet.write(y_offset,3,"{:0,.2f}".format(total_wh_begin) or 0.0, style_result['format_header_one'])
         sheet.set_column(3, 3, 20)            
-        sheet.write(y_offset, 4,self._total_vals(cid[0])[1] or 0.0, style_result['format_header_one'])
+        sheet.write(y_offset, 4,"{:0,.2f}".format(total_wh_in) or 0.0, style_result['format_header_one'])
         sheet.set_column(4, 4, 20)
-        sheet.write(y_offset, 5, self._total_vals(cid[0])[2] or 0.0, style_result['format_header_one'])
+        sheet.write(y_offset, 5, "{:0,.2f}".format(total_wh_out) or 0.0, style_result['format_header_one'])
         sheet.set_column(5,5, 20)
-        sheet.write(y_offset, 6, self._total_vals(cid[0])[3] or 0.0, style_result['format_header_one'])
+        sheet.write(y_offset, 6,"{:0,.2f}".format(total_wh_int) or 0.0, style_result['format_header_one'])
         sheet.set_column(6, 6, 20)
-        sheet.write(y_offset, 7, self._total_vals(cid[0])[4] or 0.0, style_result['format_header_one'])
+        sheet.write(y_offset, 7,"{:0,.2f}".format(total_wh_adj) or 0.0, style_result['format_header_one'])
         sheet.set_column(7,7, 20)
-        sheet.write(y_offset, 8, self._total_vals(cid[0])[5] or 0.0, style_result['format_header_one'])
+        sheet.write(y_offset, 8, "{:0,.2f}".format(total_wh_end) or 0.0, style_result['format_header_one'])
         sheet.set_column(8, 8, 20)
         y_offset += 1
         workbook.close()

@@ -43,8 +43,7 @@
 					</group>
 					<footer>
 						<button name="print_report" string="Print" type="object" class="oe_highlight" />
-							<!-- <button name="print_xlsx" string="Excel" class="oe_highlight" type="object" context="{'xls_export':1}" colspan="2"/>--> -->
-						or
+							<!-- <button name="print_xlsx" string="Excel" class="oe_highlight" type="object" context="{'xls_export':1}" colspan="2"/>--> 
 						<button name="cancel" string="Cancel" class="oe_link" special="cancel" />
 					</footer>
 				</form>

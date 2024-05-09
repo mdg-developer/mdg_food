@@ -214,47 +214,49 @@ class inventory_report_category(models.AbstractModel):
                         FROM
                             ((
                             SELECT pp.id, pp.default_code,m.date,
-                                CASE when pt.uom_id = m.product_uom 
+                                CASE when pt.uom_id = m.product_uom_id 
                                 THEN u.name 
                                 ELSE (select name from uom_uom where id = pt.uom_id) 
                                 END AS name,
                         
-                                CASE when pt.uom_id = m.product_uom  
-                                THEN coalesce(sum(-m.product_qty)::decimal, 0.0)
-                                ELSE coalesce(sum(-m.product_qty * pu.factor / u.factor )::decimal, 0.0) 
+                                CASE when pt.uom_id = m.product_uom_id  
+                                THEN coalesce(sum(-m.qty_done)::decimal, 0.0)
+                                ELSE coalesce(sum(-m.qty_done * pu.factor / u.factor )::decimal, 0.0) 
                                 END AS qty
                         
                             FROM product_product pp 
-                            LEFT JOIN stock_move m ON (m.product_id=pp.id)
+                            LEFT JOIN stock_move_line m ON (m.product_id=pp.id)
                             LEFT JOIN product_template pt ON (pp.product_tmpl_id=pt.id)
                             LEFT JOIN stock_location l ON (m.location_id=l.id)    
                             LEFT JOIN stock_picking p ON (m.picking_id=p.id)
                             LEFT JOIN uom_uom pu ON (pt.uom_id=pu.id)
-                            LEFT JOIN uom_uom u ON (m.product_uom=u.id)
+                            LEFT JOIN uom_uom u ON (m.product_uom_id=u.id)
                             WHERE m.date <  %s AND (m.location_id in %s) AND m.state='done' AND pp.active=True AND pp.id = %s
-                            GROUP BY  pp.id, pt.uom_id , m.product_uom ,pp.default_code,u.name,m.date
+                            AND pt.type in ('product','consu') and pp.active='true'  AND l.usage='internal'
+                            GROUP BY  pp.id, pt.uom_id , m.product_uom_id ,pp.default_code,u.name,m.date
                             ) 
                             UNION ALL
                             (
                             SELECT pp.id, pp.default_code,m.date,
-                                CASE when pt.uom_id = m.product_uom 
+                                CASE when pt.uom_id = m.product_uom_id 
                                 THEN u.name 
                                 ELSE (select name from uom_uom where id = pt.uom_id) 
                                 END AS name,
                         
-                                CASE when pt.uom_id = m.product_uom 
-                                THEN coalesce(sum(m.product_qty)::decimal, 0.0)
-                                ELSE coalesce(sum(m.product_qty * pu.factor / u.factor )::decimal, 0.0) 
+                                CASE when pt.uom_id = m.product_uom_id 
+                                THEN coalesce(sum(m.qty_done)::decimal, 0.0)
+                                ELSE coalesce(sum(m.qty_done * pu.factor / u.factor )::decimal, 0.0) 
                                 END  AS qty
                             FROM product_product pp 
-                            LEFT JOIN stock_move m ON (m.product_id=pp.id)
+                            LEFT JOIN stock_move_line m ON (m.product_id=pp.id)
                             LEFT JOIN product_template pt ON (pp.product_tmpl_id=pt.id)
                             LEFT JOIN stock_location l ON (m.location_dest_id=l.id)    
                             LEFT JOIN stock_picking p ON (m.picking_id=p.id)
                             LEFT JOIN uom_uom pu ON (pt.uom_id=pu.id)
-                            LEFT JOIN uom_uom u ON (m.product_uom=u.id)
+                            LEFT JOIN uom_uom u ON (m.product_uom_id=u.id)
                             WHERE m.date <  %s AND (m.location_dest_id in %s) AND m.state='done' AND pp.active=True AND pp.id = %s
-                            GROUP BY  pp.id,pt.uom_id , m.product_uom ,pp.default_code,u.name,m.date
+                            AND pt.type in ('product','consu') and pp.active='true'
+                            GROUP BY  pp.id,pt.uom_id , m.product_uom_id ,pp.default_code,u.name,m.date
                             ))
                         AS foo
                         GROUP BY id
@@ -291,45 +293,46 @@ class inventory_report_category(models.AbstractModel):
                         SELECT pp.id AS product_id,pt.categ_id,
                             sum((
                             CASE WHEN spt.code in ('outgoing') AND sm.location_id in %s AND sourcel.usage !='inventory' AND destl.usage !='inventory' 
-                            THEN -(sm.product_qty * pu.factor / pu2.factor) 
+                            THEN -(sm.qty_done * pu.factor / pu2.factor) 
                             ELSE 0.0 
                             END
                             )) AS product_qty_out,
                         
                             sum((
                             CASE WHEN spt.code in ('incoming') AND sm.location_dest_id in %s AND sourcel.usage !='inventory' AND destl.usage !='inventory' 
-                            THEN (sm.product_qty * pu.factor / pu2.factor) 
+                            THEN (sm.qty_done * pu.factor / pu2.factor) 
                             ELSE 0.0 
                             END
                             )) AS product_qty_in,
                         
                             sum((
                             CASE WHEN (spt.code ='internal' OR spt.code is null) AND sm.location_dest_id in %s AND sourcel.usage !='inventory' AND destl.usage !='inventory' 
-                            THEN (sm.product_qty * pu.factor / pu2.factor)  
+                            THEN (sm.qty_done * pu.factor / pu2.factor)  
                             WHEN (spt.code ='internal' OR spt.code is null) AND sm.location_id in %s AND sourcel.usage !='inventory' AND destl.usage !='inventory' 
-                            THEN -(sm.product_qty * pu.factor / pu2.factor) 
+                            THEN -(sm.qty_done * pu.factor / pu2.factor) 
                             ELSE 0.0 
                             END
                             )) AS product_qty_internal,
                         
                             sum((
                             CASE WHEN sourcel.usage = 'inventory' AND sm.location_dest_id in %s  
-                            THEN  (sm.product_qty * pu.factor / pu2.factor)
+                            THEN  (sm.qty_done * pu.factor / pu2.factor)
                             WHEN destl.usage ='inventory' AND sm.location_id in %s 
-                            THEN -(sm.product_qty * pu.factor / pu2.factor)
+                            THEN -(sm.qty_done * pu.factor / pu2.factor)
                             ELSE 0.0 
                             END
                             )) AS product_qty_adjustment
                         
                         FROM product_product pp 
-                        LEFT JOIN  stock_move sm ON (sm.product_id = pp.id and sm.date >= %s and sm.date <= %s and sm.state = 'done' and sm.location_id != sm.location_dest_id)
+                        LEFT JOIN  stock_move_line sm ON (sm.product_id = pp.id and sm.date >= %s and sm.date <= %s and sm.state = 'done' and sm.location_id != sm.location_dest_id)
                         LEFT JOIN stock_picking sp ON (sm.picking_id=sp.id)
                         LEFT JOIN stock_picking_type spt ON (spt.id=sp.picking_type_id)
                         LEFT JOIN stock_location sourcel ON (sm.location_id=sourcel.id)
                         LEFT JOIN stock_location destl ON (sm.location_dest_id=destl.id)
-                        LEFT JOIN uom_uom pu ON (sm.product_uom=pu.id)
-                        LEFT JOIN uom_uom pu2 ON (sm.product_uom=pu2.id)
-                        LEFT JOIN product_template pt ON (pp.product_tmpl_id=pt.id)                        
+                        LEFT JOIN uom_uom pu ON (sm.product_uom_id=pu.id)
+                        LEFT JOIN uom_uom pu2 ON (sm.product_uom_id=pu2.id)
+                        LEFT JOIN product_template pt ON (pp.product_tmpl_id=pt.id) 
+                        WHERE  sm.state='done' and pp.active=True  AND pt.type in ('product','consu') and pp.active='true'                       
                         GROUP BY pt.categ_id, pp.id order by pt.categ_id
 
                         ''',(tuple(locations),tuple(locations),tuple(locations),tuple(locations),tuple(locations),tuple(locations),start_date, end_date))
@@ -341,7 +344,8 @@ class inventory_report_category(models.AbstractModel):
                 none_to_update.update({'product_qty_out':0.0})
             if not none_to_update.get('product_qty_in'):
                 none_to_update.update({'product_qty_in':0.0})
-
+        # add no transaction product
+        values = self._add_no_transaction_inventory(values)
         #Removed zero values dictionaries
         if not include_zero:
             values = self._remove_zero_inventory(values)
@@ -349,6 +353,16 @@ class inventory_report_category(models.AbstractModel):
         if filter_product_categ_ids:
             values = self._remove_product_cate_ids(values, filter_product_categ_ids)
         return values
+
+    def _add_no_transaction_inventory(self, values):
+        final_values = []
+        product_list = []
+        for rm_zero in values:
+            final_values.append(rm_zero)
+            product_list.append(rm_zero['product_id'])
+        for product in self.env['product.product'].search([('id','not in',product_list),('type','in',['product','consu'])]):
+            final_values.append({'product_id': product.id,'categ_id':product.categ_id.id, 'product_qty_out': 0.0, 'product_qty_in': 0.0, 'product_qty_internal': 0.0, 'product_qty_adjustment': 0.0})
+        return final_values
 
     def _remove_zero_inventory(self, values):
         final_values = []

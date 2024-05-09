@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<templates id="template" xml:space="preserve">
+    <t t-name="SessionTicketScreenWidget">
+        <div class='receipt-screen screen'>
+            <div class="screen-content">
+                <div class='top-content'>
+                    <span class='button back wk_reprint_back'>
+                        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+					</span>
+                </div>
+                <div class="centered-content touch-scrollable">
+                    <div class="button print">
+                        <i class="fa fa-print"></i>Print Receipt
+                    </div>
+                    <div class="pos-receipt-container">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="wkPosSummaryTicket">
+        <div class="pos-sale-ticket">
+            <div class="pos-center-align">
+                <div><t t-esc="result.company.name" /></div>
+                <div><t t-raw="receipt.receipt_header" /></div>
+                User:  <t t-esc="widget.pos.cashier ? widget.pos.cashier.name : widget.pos.user.name"/>
+            </div>
+            <h2 style="text-align:center; margin-bottom:3px">Sale Summary</h2>
+            <t t-if="result.session_info and result.session_info.name">
+                <div style="font-size:16px;" >Session : <t t-esc="result.session_info.name"/></div>
+            </t>
+            <t t-else="widget.pos.config">
+                <div style="font-size:16px;" >Session : <t t-esc="widget.pos.config.name"/></div>
+            </t>
+            <t t-if="result.from_date">
+                <div style="font-size:16px;" >From Date: <t t-esc="result.from_date"/></div>
+            </t>
+            <t t-if="result.to_date">
+                <div style="font-size:16px;" >To Date: <t t-esc="result.to_date"/></div>
+            </t>
+            <h3 style="text-align:left; margin-bottom:3px">Sale Summary</h3>
+            <table width="100%" style="font-size:14px;">
+                <tr>
+                    <t t-foreach="result.total_sale_by_categ" t-as="data">
+                        <tr>
+                            <td  colspan="2" class="pos_summary_ticket">Total Sale for <t t-esc="data[0] + ' : '"/></td>
+                            <td class="pos-right-align">
+                            <t t-esc="widget.format_currency(data[1])"/>
+                            </td>
+                        </tr>
+                    </t>
+                    <tr>
+                        <th  colspan="2" class="pos_summary_ticket">Total Sales</th>
+                        <th class="pos-right-align"><t t-esc="widget.format_currency(result.total_sale)"/></th>
+                    </tr>
+                </tr>
+            </table>
+
+            <h3 style="text-align:left; margin-bottom:3px">Discounts</h3>
+            <table width="100%" style="font-size:14px;">
+                <tr>
+                    <td  colspan="2">Discount Amount: </td>
+                    <td class="pos-right-align">
+                        <t t-esc="widget.format_currency(result.discount_amount)"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td  colspan="2">Total FOC Discount : </td>
+                    <td class="pos-right-align">
+                        <t t-esc="widget.format_currency(result.total_foc_discount)"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th  colspan="2">Total Discount : </th>
+                    <th class="pos-right-align">
+                        <t t-esc="widget.format_currency(result.total_discount)"/>
+                    </th>
+                </tr>
+            </table>
+
+            <h3 style="text-align:left; margin-bottom:3px">Refunds</h3>
+            <table width="100%" style="font-size:14px;">
+                 <tr>
+                    <td  colspan="2">Total Refund : </td>
+                    <td class="pos-right-align">
+                        <t t-esc="widget.format_currency(result.total_refund)"/>
+                    </td>
+                </tr>
+            </table>
+
+            <h3 style="text-align:left; margin-bottom:3px">Tax Collected</h3>
+            <table width="100%" style="font-size:14px;">
+                 <tr>
+                    <td  colspan="2">Total Tax Collected : </td>
+                    <td class="pos-right-align">
+                        <t t-esc="widget.format_currency(result.total_tax)"/>
+                    </td>
+                </tr>
+            </table>
+
+            <h3 style="text-align:left; margin-bottom:3px">Net Sales: <span style="float:right"><t t-esc="widget.format_currency(result.net_sale)"/></span></h3>
+
+            <h3 style="text-align:left; margin-bottom:3px">Payment Transactions</h3>
+            <table width="100%" style="font-size:14px;">
+                 <tr>
+                     <th colspan="2">Opening Cash</th>
+                 </tr>
+                <tr>
+                    <th colspan="2" class="pos_summary_ticket">Cash</th>
+                    <th class="pos-right-align"><t t-esc="widget.format_currency(result.opening_cash_amount)"/></th>
+                </tr>
+
+                <tr><td colspan="3" style="height:10px"></td></tr>
+                <tr>
+                    <tr>
+                        <th colspan="2">Cash Sales </th>
+                    </tr>
+                    <t t-foreach="result.amount_payment_journal" t-as="journal">
+                        <tr>
+                            <td  colspan="2" class="pos_summary_ticket"><t t-esc="journal[0] + ' : '"/></td>
+                            <td class="pos-right-align">
+                                <t t-esc="widget.format_currency(journal[1])"/>
+                            </td>
+                        </tr>
+                    </t>
+                    <tr style="border-top: 1px solid;"><td colspan="3" style="text-align: center;"></td></tr>
+                    <tr>
+                        <th colspan="2" class="pos_summary_ticket">Total Cash Sales</th>
+                        <th class="pos-right-align"><t t-esc="widget.format_currency(result.total_payment_amount)"/></th>
+                    </tr>
+                </tr>
+
+                <tr><td colspan="3" style="height:10px"></td></tr>
+                <tr>
+                    <tr>
+                         <th colspan="2">Summary</th>
+                    </tr>
+                    <t t-foreach="result.amount_summary_by_journal" t-as="sm_journal">
+                        <tr>
+                            <td  colspan="2" class="pos_summary_ticket"><t t-esc="sm_journal[0] + ' : '"/></td>
+                            <td class="pos-right-align">
+                                <t t-esc="widget.format_currency(sm_journal[1])"/>
+                            </td>
+                        </tr>
+                    </t>
+                </tr>
+
+                <tr style="border-top: double;"><td colspan="3" style="text-align: center;"></td></tr>
+                <tr>
+                    <th colspan="2" class="pos_summary_ticket" style="padding-top: 5px;">Net Total Sales</th>
+                    <th class="pos-right-align" style="padding-top: 5px;"><t t-esc="widget.format_currency(result.total_summary_amount)"/></th>
+                </tr>
+            </table>
+            <br/>
+            <div>**************************************************</div>
+            <t t-if="widget.pos.get_cashier()">
+                <div>Generated By:
+                    <t t-esc='widget.pos.get_cashier().name' />
+                </div>
+            </t>
+            <div font='b'>
+                <div><t t-esc='moment().format("DD-MM-YYYY HH:mm")' /></div>
+            </div>
+            <div>**************************************************</div>
+        </div>
+    </t>
+    
+	<t t-name="SessionReportButtonWidget">
+        <div class='control-button'>
+            <i class="fa fa-print"/>Print Session Summary
+        </div>
+    </t>
+
+	<t t-name="SessionReportPopup">
+		<div class="modal-dialog" id="sunny-test">
+			<div class="popup popup-textinput" style="height:410px !important">
+				<p class="title"><t t-esc=" widget.options.title || 'Session Report' " /></p>
+				<div class="body">
+                    <div style="text-align: left;
+                        padding-bottom: 42px;">
+                        <input type="checkbox" name="checkbox" style="width:20px;min-height:17px" id="running_session_summary" value="value"/>
+                        <label for="checkbox_id"><span>Print Running Session Summary</span></label>
+                    </div>
+                    <div id="datepicker-container" class="datepicker-container">
+                        <span class="outline-element-container">
+                        <table style="padding:12px">
+                            <tr>
+                                <th>From</th>
+                                <td> <input id="session_from_date" type="text" class="openemr-datepicker input-textbox outline-element incorrect" placeholder="From Date" objtype="7" name="action_element" objindex=""  aria-label="Select Date"/></td>
+                            </tr>
+                            <tr>
+                                <th>To</th>
+                               <td> <input id="session_to_date" type="text" class="openemr-datepicker input-textbox outline-element incorrect" placeholder="To Date" objtype="7" name="action_element" objindex=""  aria-label="Select Date"/></td>
+                            </tr>
+                        </table>
+                          <span class="correct-incorrect-icon"> </span>
+                        </span>
+                        <div id="datepicker"></div>
+                    </div>
+					<div id="error_div" style="background:#ffa566;height:20px;padding:10px;display:none" >
+					   <span id="customize_error" style="color:brown"></span>
+					</div>
+				</div>
+				<div class="footer">					
+					<div class="button print_summary">
+						Print
+					</div>
+					<div class="button cancel">
+						Cancel
+					</div>
+		   		</div>
+			</div>
+		</div>
+	</t>
+
+    <t t-name="SessionXmlReceipt">
+        <receipt align='center' width='40' value-thousands-separator=''>
+            <t t-if='company.logo'>
+                <img t-att-src='company.logo' />
+                <br/>
+            </t>
+            <t t-if='!company.name'>
+                <h1><t t-esc='company.name' /></h1>
+                <br/>
+            </t>
+            <div font='b'>
+                <t t-if='company.contact_address'>
+                    <div>
+                        <t t-esc='company.contact_address' />
+                    </div>
+                </t>
+                <t t-if='company.phone'>
+                    <div>Tel:
+                        <t t-esc='company.phone' />
+                    </div>
+                </t>
+                <t t-if='company.vat'>
+                    <div>VAT:
+                        <t t-esc='company.vat' />
+                    </div>
+                </t>
+                <t t-if='company.email'>
+                    <div>
+                        <t t-esc='company.email' />
+                    </div>
+                </t>
+                <t t-if='company.website'>
+                    <div>
+                        <t t-esc='company.website' />
+                    </div>
+                </t>
+            </div>
+            <br />
+            <br />
+            <h3>Order Summary</h3>
+            <br />
+            <div class='orderlines' line-ratio='1'>
+                <t t-if="session_info and session_info.name">
+                    <line>
+                        <left>Session: <t t-esc="session_info.name"/></left>
+                    </line>
+                </t>
+                <t t-if="widget.pos.config">
+                    <line>
+                        <left>Point Of Sale: <t t-esc="widget.pos.config.name"/></left>
+                    </line>
+                </t>
+                <t t-if="session_info and session_info.name">
+                    <line>
+                        <left>Start Date: <t t-esc="session_info.start_date"/></left>
+                    </line>
+                </t>
+                <t t-if="session_info">
+                    <line>
+                        <left>Opening Balance: <t t-esc="widget.format_currency(session_info.opening_balance)"/></left>
+                    </line>
+                </t>
+                <t t-if="session_info and  session_info.responsible">
+                    <line>
+                        <left>Responsible: <t t-esc="session_info.responsible"/></left>
+                    </line>
+                </t>
+               
+                <t t-if="from_date">
+                    <line>
+                        <left>From Date: <t t-esc="from_date"/></left>
+                    </line>
+                </t>
+                <t t-if="to_date">
+                    <line>
+                        <left>To Date: <t t-esc="to_date"/></left>
+                    </line>
+                </t>
+                <br/>
+            </div>
+
+            <div class='orderlines' line-ratio='0.5'>
+                <line>
+                    <left>Total Sale</left>
+                    <right><t t-esc="widget.format_currency(total_sale)"/></right>
+                </line>
+                <t t-foreach="total_sale_by_categ" t-as="data">
+                    <line>
+                        <left>Total Sale for <t t-esc="data[0]"/></left>
+                        <right><t t-esc="widget.format_currency(data[1])"/></right>
+                    </line>
+                </t>
+                 <line>
+                    <left>Total Discount</left>
+                    <right><t t-esc="widget.format_currency(total_discount)"/></right>
+                </line>
+                 <line>
+                    <left>Total Foc Discount</left>
+                    <right><t t-esc="widget.format_currency(total_foc_discount)"/></right>
+                </line>
+                 <line>
+                    <left>Total Refund</left>
+                    <right><t t-esc="widget.format_currency(total_refund)"/></right>
+                </line>
+            </div>
+            <br/>
+            <div>********************************************</div>
+            <t t-if="widget.pos.get_cashier()">
+                <div>Generated By:
+                    <t t-esc='widget.pos.get_cashier().name' />
+                </div>
+            </t>
+            <div font='b'>
+                <div><t t-esc='moment().format("DD-MM-YYYY HH:mm")' /></div>
+            </div>
+            <div>********************************************</div>
+        </receipt>
+    </t>	
+
+</templates>
+
+

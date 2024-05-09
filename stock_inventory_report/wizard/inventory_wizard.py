@@ -32,7 +32,7 @@ class inventory_reports(models.TransientModel):
 
     company_id = fields.Many2one('res.company', string='Company')
     warehouse_ids = fields.Many2many('stock.warehouse', string='Warehouse')
-    location_id = fields.Many2one('stock.location', string='Location', context={'active_test': False})
+    location_id = fields.Many2one('stock.location', string='Location', context={'active_test': False},required=True)
     warehouse_id = fields.Many2one('stock.warehouse', string='Warehouse')
 
     product_category_id = fields.Many2one('product.category', string='Categories')
@@ -41,7 +41,7 @@ class inventory_reports(models.TransientModel):
     end_date = fields.Date('End Date', required=True, default=fields.Date.context_today)
 
     sort_order = fields.Selection([('warehouse', 'Warehouse'), ('product_category', 'Product Category')], 'Group By', required=True, default='warehouse')
-    include_zero = fields.Boolean('Include Zero Movement?', help="True, if you want to see zero movements of products.\nNote: It will consider only movements done in-between dates.")
+    include_zero = fields.Boolean('Include Zero Movement?', help="True, if you want to see zero movements of products.\nNote: It will consider only movements done in-between dates.",default=True)
     filter_product_ids = fields.Many2many('product.product', string='Products')
     filter_product_categ_ids = fields.Many2many('product.category', string='Categories')
     display_all_products = fields.Boolean('Display Products?', help="True, if you want to display only warehouse/categories total.", default=True)

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : <https://store.webkul.com/license.html/> -->
+<odoo>
+    <data>
+        <report
+            id="action_wk_report_pos_session_summary"
+            string="Session Summary"
+            model="pos.session"
+            report_type="qweb-pdf"
+            name="wk_pos_session_report_analysis.report_session_summary"
+            file="wk_pos_session_report_analysis.report_session_summary"
+         />
+
+          <report
+            id="action_wk_report_pos_session_summary_by_date"
+            string="Session Summary"
+            model="wk.pos.details.wizard"
+            report_type="qweb-pdf"
+            name="wk_pos_session_report_analysis.report_session_summary_by_date"
+            file="wk_pos_session_report_analysis.report_session_summary_by_date"
+         />
+    </data>
+</odoo>

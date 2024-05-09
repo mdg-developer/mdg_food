@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
-    <t t-name="PartnerDetailsEdit" t-inherit="point_of_sale.PartnerDetailsEdit" t-inherit-mode="extension" owl="1">
-        <xpath expr="//div[hasclass('partner-details-left')]" position="inside">
-            <div class="partner-detail">
+    <t t-name="PartnerDetailsEdit" t-inherit="point_of_sale.ClientDetailsEdit" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('client-details-left')]" position="inside">
+            <div class="client-detail">
                 <span class="label">Birthday</span>
                 <input class="detail" name="birthday" type="date" t-on-change="captureChange" t-att-value="props.partner.birthday"/>
             </div>
         </xpath>
-        <xpath expr="//div[hasclass('partner-details-right')]" position="replace">
-            <div class="partner-details-right">
-                <div class="partner-detail" style="display: none;">
+        <xpath expr="//div[hasclass('client-details-right')]" position="replace">
+            <div class="client-details-right">
+                <div class="client-detail" style="display: none;">
                     <span class="label">Language</span>
                     <select class="detail" name="lang"
                             t-on-change="captureChange">
@@ -21,47 +21,47 @@
                         </t>
                     </select>
                 </div>
-                <div class="partner-detail">
+                <div class="client-detail">
                     <span class="label">Email</span>
                     <input class="detail" name="email" type="email"
                            t-on-change="captureChange"
                            t-att-value="props.partner.email || ''" />
                 </div>
-                <div class="partner-detail">
+                <div class="client-detail">
                     <span class="label">Phone</span>
                     <input class="detail" name="phone" type="tel"
                            t-on-change="captureChange"
                            t-att-value="props.partner.phone || ''" />
                 </div>
-                <div class="partner-detail">
+                <div class="client-detail">
                     <span class="label">Mobile</span>
                     <input class="detail" name="mobile" type="tel"
                            t-on-change="captureChange"
                            t-att-value="props.partner.mobile || ''" />
                 </div>
-                <div class="partner-detail">
-                    <span class="label">Member ID</span>
+                <div class="client-detail">
+                    <span class="label">MemberID</span>
                     <input class="detail barcode" name="barcode" t-on-change="captureChange"
                            t-att-value="props.partner.barcode || ''" />
                 </div>
-                <div class="partner-detail" style="display: none;">
-                    <span class="label">Tax ID</span>
-                    <input class="detail vat" name="vat" t-on-change="captureChange"
-                           t-att-value="props.partner.vat || ''" />
-                </div>
-                <div t-if="env.pos.pricelists.length gt 1" class="partner-detail">
-                    <span class="label">Pricelist</span>
-                    <select class="detail" name="property_product_pricelist"
-                            t-on-change="captureChange">
-                        <t t-foreach="env.pos.pricelists" t-as="pricelist"
-                           t-key="pricelist.id">
-                            <option t-att-value="pricelist.id"
-                                    t-att-selected="props.partner.property_product_pricelist ? (pricelist.id === props.partner.property_product_pricelist[0] ? true : undefined) : pricelist.id === env.pos.default_pricelist.id ? true : undefined">
-                                <t t-esc="pricelist.display_name" />
-                            </option>
-                        </t>
-                    </select>
-                </div>
+                 <div class="client-detail">
+                        <span class="label">Tax ID</span>
+                        <input class="detail vat" name="vat" t-on-change="captureChange"
+                               t-att-value="props.partner.vat || ''" />
+                    </div>
+                    <div t-if="env.pos.pricelists.length gt 1" class="client-detail">
+                        <span class="label">Pricelist</span>
+                        <select class="detail needsclick" name="property_product_pricelist"
+                                t-on-change="captureChange">
+                            <t t-foreach="env.pos.pricelists" t-as="pricelist"
+                               t-key="pricelist.id">
+                                <option t-att-value="pricelist.id"
+                                        t-att-selected="props.partner.property_product_pricelist ? (pricelist.id === props.partner.property_product_pricelist[0] ? true : undefined) : pricelist.id === env.pos.default_pricelist.id ? true : undefined">
+                                    <t t-esc="pricelist.display_name" />
+                                </option>
+                            </t>
+                        </select>
+                    </div>
             </div>
         </xpath>
     </t>

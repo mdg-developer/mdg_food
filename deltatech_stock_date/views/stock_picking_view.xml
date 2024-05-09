@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_stock_picking_inventory_date" model="ir.ui.view">
+            <field name="name">stock.picking.form</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date_deadline']" position="before">
+                    <div class="o_td_label">
+                        <label for="actual_date" string="Issue Date" style="font-weight:bold;" attrs="{'invisible': [('picking_type_code', 'in', ['internal', 'incoming'])]}"/>
+                        <label for="actual_date" string="Actual Date" style="font-weight:bold;" attrs="{'invisible': [('picking_type_code', 'in', ['outgoing'])]}"/>
+                    </div>
+                    <field name="actual_date"  nolabel="1"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_stock_picking_tree_note" model="ir.ui.view">
+            <field name="name">stock.picking.tree.inherit.note</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.vpicktree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='state']" position="after">
+                    <field name="note"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

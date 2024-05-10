@@ -38,9 +38,9 @@
                                  <td><nobr>:</nobr></td>
                                  <td style="width:70%; text-align: initial;padding-left: 5px;">
                                      <span>
-                                         <t t-if="env.pos.get_client()">
-                                                 <t t-esc="env.pos.get_client().barcode"/>
-                                             </t>
+                                         <t t-if="env.pos.get_client().barcode">
+                                             <t t-esc="env.pos.get_client().barcode"/>
+                                         </t>
                                             <t t-else="">---</t>
                                      </span></td>
                              </tr>

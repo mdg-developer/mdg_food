@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+	<t t-extend="ProductItem" t-inherit="point_of_sale.ProductItem" t-inherit-mode="extension">
+		<xpath expr="//i[hasclass('product-info-button')]" position="replace">
+			<t t-if="env.pos.config.hide_info_product">
+				<t t-if="props.product.sh_qty_in_bag">
+					<i role="img" aria-label="Info" title="Info" class="product-info-button product-info-bag-button fa fa-info-circle" t-on-click.stop="onProductInfoClick()" />
+				</t>
+			</t>
+			<t t-else="">
+				<i role="img" aria-label="Info" title="Info" class="product-info-button fa fa-info-circle" t-on-click.stop="onProductInfoClick()" />
+			</t>
+		</xpath>
+
+	</t>
+
+
+</templates>

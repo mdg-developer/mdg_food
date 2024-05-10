@@ -15,12 +15,12 @@
     ],
     'assets': {
         'point_of_sale.assets': [
-            'pos_member_type/static/src/js/models.js',
-            'pos_member_type/static/src/js/Screens/PartnerListScreen/PartnerDetailsEdit.js',
+            # 'pos_member_type/static/src/js/models.js',
+            # 'pos_member_type/static/src/js/Screens/PartnerListScreen/PartnerDetailsEdit.js',
             'pos_member_type/static/src/xml/Screens/PartnerListScreen/PartnerDetailsEdit.xml',
             'pos_member_type/static/src/xml/Screens/PartnerListScreen/PartnerLine.xml',
             'pos_member_type/static/src/xml/Screens/PartnerListScreen/PartnerListScreen.xml',
-            'pos_member_type/static/src/js/Screens/ProductScreen/Loyalty.js',
+            # 'pos_member_type/static/src/js/Screens/ProductScreen/Loyalty.js',
         ]
     },
     'installable': True,

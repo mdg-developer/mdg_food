@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="button_hide_res_config_settings" model="ir.ui.view">
+        <field name="name">pos.config.settings.button.hide</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.pos_config_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='accounting_section']" position="after">
+                <h3>Button Hide</h3>
+                <div class="row mt16 o_settings_container">
+                    <div id="autocomplete_address" class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="hide_info_button" />
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="hide_info_button" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt16 o_settings_container">
+                    <div id="autocomplete_address" class="col-xs-12 col-md-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="hide_info_product" />
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="hide_info_product" />
+                        </div>
+                    </div>
+                </div>
+                <br />
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

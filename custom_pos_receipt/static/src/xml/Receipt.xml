@@ -54,19 +54,26 @@
                                  <td><nobr>:</nobr></td>
                                  <td style="width:70%;text-align: initial;padding-left: 5px;"><span><t t-esc="receipt.cashier" /></span></td>
                              </tr>
+<!--                             <tr>-->
+<!--                                 <td style="width:30%; text-align:start;"><strong>Date</strong></td>-->
+<!--                                 <td><nobr>:</nobr></td>-->
+<!--                                 <td style="width:70%; text-align: initial;padding-left: 5px;">-->
+<!--                                      <span>-->
+<!--                                            <t t-if="receipt.date.localestring">-->
+<!--                                                <span><t t-esc="receipt.date.localestring"/></span>-->
+<!--                                                <t t-log="receipt.date.validation_date"/>-->
+<!--                                            </t>-->
+<!--                                            <t t-else="">-->
+<!--                                                <span><t t-esc="receipt.date.validation_date"  /></span>-->
+<!--                                            </t>-->
+<!--                                      </span>-->
+<!--                                 </td>-->
+<!--                             </tr>-->
                              <tr>
                                  <td style="width:30%; text-align:start;"><strong>Date</strong></td>
                                  <td><nobr>:</nobr></td>
                                  <td style="width:70%; text-align: initial;padding-left: 5px;">
-                                      <span>
-                                            <t t-if="receipt.date.localestring">
-                                                <span><t t-esc="receipt.date.localestring"/></span>
-                                                <t t-log="receipt.date.validation_date"/>
-                                            </t>
-                                            <t t-else="">
-                                                <span><t t-esc="receipt.date.validation_date"  /></span>
-                                            </t>
-                                      </span>
+                                      <span class="pos-receipt-validation-date" t-esc="env.pos.getValidationDate()"/>
                                  </td>
                              </tr>
                          </table>

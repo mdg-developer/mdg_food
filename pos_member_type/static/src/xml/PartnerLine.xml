@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="PartnerLine" t-inherit="point_of_sale.ClientLine" t-inherit-mode="extension" owl="1">
+        <xpath expr="//td[hasclass('client-line-email')]" position="replace">
+            <td>
+                <t t-esc="props.partner.barcode or ''" />
+            </td>
+            <td>
+                <t t-esc="props.partner.pos_member_type_id or ''" />
+            </td>
+            <td class="client-line-email">
+                <t t-esc="props.partner.email or ''" />
+                <span t-if="highlight"><br/></span>
+            </td>
+        </xpath>
+    </t>
+</templates>

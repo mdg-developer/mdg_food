@@ -11,7 +11,8 @@
     'maintainer': 'Myanmar Distribution Group',
     'website': 'https://www.myanmardistributiongroup.com/',
     'depends': ['point_of_sale'],
-    'data': ['views/res_partner_inherit_view.xml',],
+    'data': [
+        'views/res_partner_inherit_view.xml'],
     'assets': {
         'point_of_sale.assets': [
             'custom_pos_receipt/static/src/js/Receipt.js',

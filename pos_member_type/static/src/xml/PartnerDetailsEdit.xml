@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="ClientDetailsEdit" t-inherit="point_of_sale.ClientDetailsEdit" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('client-details-right')]" position="inside">
+            <div class="partner-detail">
+                <span class="label">Member Type</span>
+                <select class="detail" name="pos_member_type_id"
+                                t-on-change="captureChange">
+                    <option value="">Gold</option>
+                    <option value="">Silver</option>
+                    <option value="">Platinum</option>
+                </select>
+            </div>
+        </xpath>
+    </t>
+</templates>

@@ -18,6 +18,6 @@ odoo.define('pos_member_type.pos_member', function (require) {
         },
     ]);
 
-    models.load_fields('res.partner', ['pos_member_type_id']);
+    models.load_fields('res.partner', ['pos_member_type_id','birthday']);
 
 });

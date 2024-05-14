@@ -1,30 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
     <t t-name="ClientListScreen" t-inherit="point_of_sale.ClientListScreen" t-inherit-mode="extension" owl="1">
-        <xpath expr="//table[hasclass('client-list')]" position="replace">
-            <table class="client-list">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th t-if="!env.isMobile">Address</th>
-                        <th>Member Type</th>
-                        <th>Member ID</th>
-                        <th>Email</th>
-                        <th class="customer-due pos-right-align">Amount Due <i class="fa fa-refresh cursor-pointer" t-on-click="refreshTotalDue"></i></th>
-                        <th class="client-line-open-link"></th>
-                        <th class="partner-line-last-column-placeholder oe_invisible"></th>
-                    </tr>
-                </thead>
-                <tbody class="client-list-contents">
-                    <t t-foreach="clients" t-as="partner"
-                       t-key="partner.id">
-                        <ClientLine partner="partner"
-                                    selectedClient="state.selectedClient"
-                                    detailIsShown="state.detailIsShown"
-                                    t-on-click-client="clickClient" />
-                    </t>
-                </tbody>
-            </table>
+        <xpath expr="//div[hasclass('client-window')]" position="replace">
+            <div class="client-window">
+                        <section class="subwindow collapsed">
+                            <div class="subwindow-container collapsed">
+                                <div t-if="state.detailIsShown" class="client-details-contents subwindow-container-fix">
+                                    <ClientDetailsEdit t-props="state.editModeProps"
+                                                       t-on-cancel-edit="cancelEdit"/>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="subwindow list">
+                            <div class="subwindow-container">
+                                <div t-if="!state.detailIsShown" class="subwindow-container-fix scrollable-y">
+                                    <table class="client-list">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th t-if="!env.isMobile">Address</th>
+                                                <th>Member Type</th>
+                                                <th>Member ID</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="client-list-contents">
+                                            <t t-foreach="clients" t-as="partner"
+                                               t-key="partner.id">
+                                                <ClientLine partner="partner"
+                                                            selectedClient="state.selectedClient"
+                                                            detailIsShown="state.detailIsShown"
+                                                            t-on-click-client="clickClient" />
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
         </xpath>
     </t>
 </templates>

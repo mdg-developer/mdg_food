@@ -1,4 +1,4 @@
-odoo.define('pos_member_type.PartnerDetailsEdit', function(require) {
+odoo.define('pos_member_type.ClientDetailsEdit', function(require) {
     'use strict';
 
     const { _t } = require('web.core');
@@ -8,7 +8,7 @@ odoo.define('pos_member_type.PartnerDetailsEdit', function(require) {
 
     const { onMounted, onWillUnmount } = owl;
 
-    class PartnerDetailsEdit extends PosComponent {
+    class ClientDetailsEdit extends PosComponent {
         setup() {
         console.log('setup');
             super.setup();
@@ -22,14 +22,12 @@ odoo.define('pos_member_type.PartnerDetailsEdit', function(require) {
             };
             if (!partner.property_product_pricelist)
                 this.changes['property_product_pricelist'] = this.env.pos.default_pricelist.id;
-
-            onMounted(() => {
-                this.env.bus.on('save-partner', this, this.saveChanges);
-            });
-
-            onWillUnmount(() => {
-                this.env.bus.off('save-partner', this);
-            });
+        }
+        mounted() {
+            this.env.bus.on('save-customer', this, this.saveChanges);
+        }
+        willUnmount() {
+            this.env.bus.off('save-customer', this);
         }
         get partnerImageUrl() {
             // We prioritize image_1920 in the `changes` field because we want
@@ -130,9 +128,9 @@ odoo.define('pos_member_type.PartnerDetailsEdit', function(require) {
             });
         }
     }
-    PartnerDetailsEdit.template = 'PartnerDetailsEdit';
+    ClientDetailsEdit.template = 'ClientDetailsEdit';
 
-    Registries.Component.add(PartnerDetailsEdit);
+    Registries.Component.add(ClientDetailsEdit);
 
-    return PartnerDetailsEdit;
+    return ClientDetailsEdit;
 });

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <t t-extend="ClientDetails">
+    <t t-extend="ClientDetailsEdit">
         <t t-jquery="div.client-details-box" t-operation="append">
             <div class="client-detail">
                 <span class="label">Member Type: </span>

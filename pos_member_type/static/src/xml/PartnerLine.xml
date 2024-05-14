@@ -14,7 +14,7 @@
                 <t t-esc="props.partner.address" />
             </td>
             <td>
-                <t t-esc="props.partner.pos_member_type_id[1]" />
+                <t t-esc="props.partner.pos_member_type_id[1] or ''" />
             </td>
             <td>
                 <t t-esc="props.partner.barcode or ''" />

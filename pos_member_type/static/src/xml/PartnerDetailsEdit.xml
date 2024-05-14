@@ -7,12 +7,12 @@
                 <select class="detail needsclick" name="pos_member_type_id"
                                 t-on-change="captureChange">
                         <option value="">None</option>
-<!--                        <t t-foreach="env.pos.pos_member_type" t-as="memberType" t-key="memberType.id">-->
-<!--                            <option t-att-value="memberType.id"-->
-<!--                                    t-att-selected="props.partner.pos_member_type_id ? ((memberType.id === props.partner.pos_member_type_id[0]) ? true : undefined) : undefined">-->
-<!--                                <t t-esc="memberType.name" />-->
-<!--                            </option>-->
-<!--                        </t>-->
+                        <t t-foreach="env.pos.member_types" t-as="memberType" t-key="memberType.id">
+                            <option t-att-value="memberType.id"
+                                    t-att-selected="props.partner.pos_member_type_id ? ((memberType.id === props.partner.pos_member_type_id[0]) ? true : undefined) : undefined">
+                                <t t-esc="memberType.name" />
+                            </option>
+                        </t>
                 </select>
             </div>
         </xpath>

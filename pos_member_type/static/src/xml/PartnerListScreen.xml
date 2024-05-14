@@ -21,6 +21,7 @@
                                                 <th t-if="!env.isMobile">Address</th>
                                                 <th>Member Type</th>
                                                 <th>Member ID</th>
+                                                <th>Phone</th>
                                             </tr>
                                         </thead>
                                         <tbody class="client-list-contents">

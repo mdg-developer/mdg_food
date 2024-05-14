@@ -19,6 +19,9 @@
             <td>
                 <t t-esc="props.partner.barcode or ''" />
             </td>
+            <td>
+                <t t-esc="props.partner.phone or ''" />
+            </td>
             <td class="client-line-last-column-placeholder oe_invisible"></td>
         </tr>
 

@@ -56,29 +56,29 @@
 
             <div class='orderlines' line-ratio='0.6'>
                 <t t-foreach='products' t-as='line'>
-<!--                    <line>-->
-<!--                        <left><t t-esc='line.product_name.substr(0,20)' /></left>-->
-<!--                        <right>-->
-<!--                            <value value-decimals='2' value-autoint='on'>-->
-<!--                                <t t-esc='line.quantity' />-->
-<!--                            </value>-->
-<!--                            <t t-if='line.uom !== "Unit(s)"'>-->
-<!--                                <t t-esc='line.uom' /> -->
-<!--                            </t>-->
-<!--                        </right>-->
-<!--                        <right>-->
-<!--                            <value><t t-esc='line.price_unit' /></value>-->
-<!--                        </right>-->
-<!--                    </line>-->
-<!--                    <t t-if='line.discount !== 0'>-->
-<!--                        <line indent='1'><left>Discount: <t t-esc='line.discount' />%</left></line>-->
-<!--                    </t>-->
+                    <line>
+                        <left><t t-esc='line.product_name.substr(0,20)' /></left>
+                        <right>
+                            <value value-decimals='2' value-autoint='on'>
+                                <t t-esc='line.quantity' />
+                            </value>
+                            <t t-if='line.uom !== "Unit(s)"'>
+                               <t t-esc='line.uom' />
+                            </t>
+                        </right>
+                        <right>
+                            <value><t t-esc='line.price_unit' /></value>
+                        </right>
+                    </line>
+                    <t t-if='line.discount !== 0'>
+                        <line indent='1'><left>Discount: <t t-esc='line.discount' />%</left></line>
+                    </t>
                 </t>
             </div>
 
-<!--            <br/>-->
-<!--            <line><left>&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</left></line>-->
-<!--            <br/>-->
+            <br/>
+            <line><left>&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</left></line>
+            <br/>
 
             <line>
                 <left>Payments:</left>
@@ -133,65 +133,68 @@
                     <h1><t t-esc='company.name' /></h1>
                     <br/>
                 </t>
+                <t t-esc='company_name' />
             </div>
             <br /><br />
-            <table class='receipt-orderlines' width="100%">
+            <table class='receipt-orderlines' width="100%" style="font-size: 11px;">
                 <colgroup>
                     <col width='50%' />
                     <col width='25%' />
                     <col width='25%' />
                 </colgroup>
                 <tr t-foreach='products' t-as='line'>
-<!--                    <td>-->
-<!--                        <t t-esc='line.product_name.substr(0,20)' />-->
-<!--                        <t t-if='line.discount !== 0'>-->
-<!--                            <div class="pos-disc-font">-->
-<!--                                Discount: <t t-esc='line.discount' />%-->
-<!--                            </div>-->
-<!--                        </t>-->
-<!--                    </td>-->
-<!--                    <td>-->
-<!--                        <value value-decimals='2' value-autoint='on'>-->
-<!--                            <t t-esc='line.quantity' />-->
-<!--                        </value>-->
-<!--                        <t t-if='line.uom !== "Unit(s)"'>-->
-<!--                            <t t-esc='line.uom' /> -->
-<!--                        </t>-->
-<!--                    </td>-->
-<!--                    <td>-->
-<!--                        <t t-esc='pos.format_currency(line.price_unit)' />-->
-<!--                    </td>-->
-                </tr>
-            </table>
-
-<!--            <br/>-->
-<!--            <line><left>&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</left></line>-->
-<!--            <br/>-->
-
-            <line>
-                <left>Payments:</left>
-            </line>
-            <table class='receipt-orderlines' width="100%">
-                <colgroup>
-                    <col width='50%' />
-                    <col width='50%' />
-                </colgroup>
-                <tr t-foreach='payments' t-as='payment'>
-                    <td><t t-esc='payment.name' /></td>
                     <td>
-                        <t t-esc='pos.format_currency(payment.total)'/>
+                        <t t-esc='line.product_name.substr(0,20)' />
+                        <t t-if='line.discount !== 0'>
+                            <div class="pos-disc-font">
+                                Discount: <t t-esc='line.discount' />%
+                            </div>
+                        </t>
+                    </td>
+                    <td>
+                        <value value-decimals='2' value-autoint='on'>
+                            <t t-esc='line.quantity' />
+                        </value>
+                        <t t-if='line.uom !== "Unit(s)"'>
+                           <t t-esc='line.uom' />
+                        </t>
+                    </td>
+                    <td>
+                        <t t-esc='pos.format_currency(line.price_unit)' />
                     </td>
                 </tr>
             </table>
 
             <br/>
+            <line><left>&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</left></line>
+            <br/>
+
+            <line style="font-size: 14px;">
+                <left>Payments:</left>
+            </line>
+            <br/>
+            <line t-foreach='payments' t-as='payment'>
+                <table width="100%" style="font-size: 14px;">
+                    <colgroup>
+                    <col width='50%' />
+                    <col width='50%' />
+                    </colgroup>
+                    <tr>
+                        <td><t t-esc='payment.name' /></td>
+                        <td>
+                            <t t-esc='pos.format_currency(payment.total)'/>
+                        </td>
+                    </tr>
+                </table>
+            </line>
+            <br/>
             <line><left>------------------------</left></line>
             <br/>
 
             <line>
-                <left>Taxes:</left>
+                <left><div style="font-size: 14px;">Taxes:</div></left>
             </line>
-            <table class='receipt-orderlines' width="100%">
+            <table class='receipt-orderlines' width="100%" style="font-size: 14px;">
                 <colgroup>
                     <col width='50%' />
                     <col width='50%' />
@@ -207,7 +210,7 @@
             <br/>
             <line><left>------------------------</left></line>
             <br/>
-            <table width="100%">
+            <table width="100%" style="font-size: 14px;">
                 <tr class="emph">
                     <td>Total:</td>
                     <td class="pos-right-align"><t t-esc='pos.format_currency(total_paid)'/></td>
@@ -215,7 +218,7 @@
             </table>
             <br/>
             <div font='b'>
-                <div><t t-esc='date' /></div>
+                <div style="font-size: 14px;"><t t-esc='date' /></div>
             </div>
 
         </div>

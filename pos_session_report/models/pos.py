@@ -95,7 +95,8 @@ class ReportSaleDetails(models.AbstractModel):
             'session_end': fields.datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
             'total_paid': user_currency.round(total),
             'payments': list(payments.values()),
-            'company_name': self.env.user.company_id.name,
+            # 'company_name': self.env.user.company_id.name,
+            'company_name': self.env.company.name,
             'taxes': list(taxes.values()),
             'products': sorted([{
                 'product_id': product.id,

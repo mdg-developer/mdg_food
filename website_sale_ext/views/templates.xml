@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="products_description_inherit" name="Product"
+              inherit_id="website_sale.product">
+        <xpath expr="//p[@t-field='product.description_sale']" position="replace">
+            <t t-if="product.product_tab_description">
+                <div class="product-single__description rte" itemprop="description" style="width: 80%;">
+                    <!--Accordion wrapper-->
+                    <div aria-multiselectable="true" role="tablist" id="accordionEx" class="accordion md-accordion">
+                        <!-- Accordion card -->
+                        <div class="card">
+                            <!-- Card header -->
+                            <div style="color: #fff;" id="headingOne1" role="tab" class="card-header"
+                                 data-mce-style="color: #fff;">
+                                <a aria-controls="description" aria-expanded="true" href="#description"
+                                   data-parent="#accordionEx" data-toggle="collapse" class="text-link">
+                                    <h5 class="mb-0">Description</h5>
+                                </a>
+                            </div>
+                            <!-- Card body -->
+                            <div class="card-body">
+                                <div t-field="product.product_tab_description" class="oe_structure oe_empty mt16" t-attf-id="product-alan-description-{{product.id}}" />
+                            </div>
+                            <!-- Card Footer-->
+                            <div class="card-footer">
+    <!--                            <p>Model Height: 5'4"-->
+    <!--                                <br/>-->
+    <!--                                Earn 76 points with this purchase-->
+    <!--                            </p>-->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Accordion wrapper -->
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="product_price_inherit" inherit_id="website_sale.product_price">
+        <xpath expr="//div[hasclass('product_price')]/h3/span[1]" position="replace">
+          <span class="oe_price" style="white-space: nowrap;" t-esc="'{0:,.0f}'.format(combination_info['price'])"/>
+          <span itemprop="currencyName" t-esc="website.currency_id.symbol"/>
+        </xpath>
+    </template>
+
+    <template id="products_item_inherit" inherit_id="website_sale.products_item">
+        <xpath expr="//div[hasclass('product_price')]/span[1]" position="replace">
+          <span class="h5" t-if="combination_info['price']" t-esc="'{0:,.0f}'.format(combination_info['price'])"/>
+          <span itemprop="currencyName" t-esc="website.currency_id.symbol"/>
+        </xpath>
+    </template>
+
+    <template id="cart_lines_inherit" inherit_id="website_sale.cart_lines">
+        <xpath expr="/t[1]/table[1]/tbody[1]/t[1]/tr[1]/td[5]/span[2]" position="replace">
+            <span style="white-space: nowrap;" t-esc="'{0:,.0f}'.format(combination_info['price'])" groups="account.group_show_line_subtotals_tax_included"/>
+            <span itemprop="currencyName" t-esc="website.currency_id.symbol"/>
+        </xpath>
+    </template>
+
+    <template id="cart_delivery_inherit" inherit_id="website_sale_delivery.cart_delivery">
+        <xpath expr="//tr[@id='order_delivery']/td[1]" position="replace">
+            <td class="text-left border-0 text-muted" style="padding-left: 90px;" title="Delivery will be updated after choosing a new delivery method">Delivery:</td>
+        </xpath>
+    </template>
+
+    <template id="total_inherit" inherit_id="website_sale.total">
+        <xpath expr="//div/table/tr[@id='order_total_untaxed']/td[1]" position="replace">
+            <td class="text-left border-0" style="padding-left: 90px;">Subtotal:</td>
+        </xpath>
+        <xpath expr="//div/table/tr[@id='order_total_taxes']/td[1]" position="replace">
+            <td class="text-left border-0" style="padding-left: 90px;">Taxes:</td>
+        </xpath>
+        <xpath expr="//div/table/tr[@id='order_total']/td[1]" position="replace">
+            <td class="text-left" style="padding-left: 90px;"><strong>Total:</strong></td>
+        </xpath>
+    </template>
+
+    <template id="cart_summary_inherit" inherit_id="website_sale.cart_summary">
+        <xpath expr="//div/div/div[3]/table/tbody/tr/td[4]" position="replace">
+            <td class='text-center td-qty'>
+                <div class='text-center' t-esc="line.product_uom_qty" />
+            </td>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_inherit" inherit_id="portal.portal_my_home">
+        <xpath expr="//div[hasclass('o_portal_my_home')]" position="before">
+            <t t-set="loyalty_obj" t-value="website.get_active_loyalty_obj(sale_order=website_sale_order)"/>
+            <t t-set="partner" t-value="env.user.partner_id"/>
+            <t t-set="wk_website_loyalty_points" t-value="website.format_loyalty_points(partner.loyalty_points)"/>
+            <t t-if="request.uid">
+              <t t-if="len(loyalty_obj)!=0">
+                  <h5 class="_o_custom_text_color" style="padding-top: 10px; padding-bottom: 20px;"> You are now a Yangoods Insider. You have
+                    <b>
+                      <t t-esc="wk_website_loyalty_points"/>
+                    </b>
+                  Loyalty Points.</h5>
+              </t>
+            </t>
+        </xpath>
+    </template>
+    <template id="website_address_inherit" inherit_id="website_sale.address">
+         <xpath expr="//form[hasclass('checkout_autoformat')]" position="replace">
+            <form action="/shop/address" method="post" class="checkout_autoformat">
+                <div class="form-row">
+                    <div t-attf-class="form-group #{error.get('name') and 'o_has_error' or ''} col-lg-12 div_name">
+                        <label class="col-form-label" for="name">Name</label>
+                        <span class="s_website_form_mark"> *</span>
+                        <input type="text" name="name" t-attf-class="form-control #{error.get('name') and 'is-invalid' or ''}" t-att-value="'name' in checkout and checkout['name']" />
+                    </div>
+                    <div class="w-100"/>
+                    <div t-attf-class="form-group #{error.get('email') and 'o_has_error' or ''} col-lg-6" id="div_email">
+                        <label t-attf-class="col-form-label #{mode[1] == 'shipping' and 'label-optional' or ''}" for="email">Email</label>
+                        <span class="s_website_form_mark"> *</span>
+                        <input type="email" name="email" t-attf-class="form-control #{error.get('email') and 'is-invalid' or ''}" t-att-value="'email' in checkout and checkout['email']" />
+                    </div>
+                    <div t-attf-class="form-group #{error.get('phone') and 'o_has_error' or ''} col-lg-6" id="div_phone">
+                        <label class="col-form-label" for="phone">Phone</label>
+                        <span class="s_website_form_mark"> *</span>
+                        <input type="tel" name="phone" t-attf-class="form-control #{error.get('phone') and 'is-invalid' or ''}" t-att-value="'phone' in checkout and checkout['phone']" />
+                    </div>
+                    <div class="w-100"/>
+                    <div t-attf-class="form-group #{error.get('street') and 'o_has_error' or ''} col-lg-12 div_street">
+                        <label class="col-form-label" for="street">Street <span class="d-none d-md-inline"> and Number</span></label>
+                        <span class="s_website_form_mark"> *</span>
+                        <input type="text" name="street" t-attf-class="form-control #{error.get('street') and 'is-invalid' or ''}" t-att-value="'street' in checkout and checkout['street']" />
+                    </div>
+                    <div t-attf-class="form-group #{error.get('street2') and 'o_has_error' or ''} col-lg-12 div_street2">
+                        <label class="col-form-label label-optional" for="street2">Street 2</label>
+                        <input type="text" name="street2" t-attf-class="form-control #{error.get('street2') and 'is-invalid' or ''}" t-att-value="'street2' in checkout and checkout['street2']" />
+                    </div>
+                    <div t-attf-class="form-group #{error.get('country_id') and 'o_has_error' or ''} col-lg-6 div_country">
+                        <label class="col-form-label" for="country_id">Country</label>
+                        <span class="s_website_form_mark"> *</span>
+                        <select id="country_id" name="country_id" t-attf-class="form-control #{error.get('country_id') and 'is-invalid' or ''}" t-att-mode="mode[1]">
+                            <option value="">Country...</option>
+                            <t t-foreach="countries" t-as="c">
+                                <option t-att-value="c.id" t-att-selected="c.id == (country and country.id or -1)">
+                                    <t t-esc="c.name" />
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+                     <div t-attf-class="form-group #{error.get('state_id') and 'o_has_error' or ''} col-lg-6 div_state" t-att-style="(not country or not country.state_ids) and 'display: none'">
+                        <label class="col-form-label" for="state_id">State / Province</label>
+                        <span class="s_website_form_mark"> *</span>
+                        <select id="state_id" name="state_id" t-attf-class="form-control #{error.get('state_id') and 'is-invalid' or ''}" data-init="1" t-att-mode="mode[1]">
+                            <t t-foreach="country_states" t-as="s">
+                                <t t-if="s.code != '04'">
+                                  <option t-att-value="s.id" t-att-selected="s.id == ('state_id' in checkout and country and checkout['state_id'] != '' and int(checkout['state_id']))">
+                                      <t t-esc="s.name"/>
+                                  </option>
+                                </t>
+                            </t>
+                        </select>
+                    </div>
+                    <div class="w-100"/>
+                    <t t-set='zip_city' t-value='country and [x for x in country.get_address_fields() if x in ["zip", "city"]] or ["city", "zip"]'/>
+                    <t t-if="'zip' in zip_city and zip_city.index('zip') &lt; zip_city.index('city')">
+                        <div t-attf-class="form-group #{error.get('zip') and 'o_has_error' or ''} col-md-4 div_zip">
+                            <label class="col-form-label label-optional" for="zip">Zip Code</label>
+                            <input type="text" name="zip" t-attf-class="form-control #{error.get('zip') and 'is-invalid' or ''}" t-att-value="'zip' in checkout and checkout['zip']" />
+                        </div>
+                    </t>
+                    <div t-attf-class="form-group #{error.get('city_id') and 'o_has_error' or ''} col-lg-8 div_city">
+                        <label class="col-form-label" for="city_id">City</label>
+                        <span class="s_website_form_mark"> *</span>
+                        <select id="city_id" name="city_id" t-attf-class="form-control #{error.get('city_id') and 'is-invalid' or ''}" t-att-mode="mode[1]">
+                            <option value="">City...</option>
+                            <t t-foreach="cities" t-as="ct">
+                                <option t-att-value="ct.id" t-att-selected="ct.id == (city and city.id or -1)">
+                                    <t t-esc="ct.name" />
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+                    <div t-attf-class="form-group #{error.get('city') and 'o_has_error' or ''} col-md-8 div_city_hidden">
+                        <label class="col-form-label" for="city">City</label>
+                        <input type="text" name="city" t-attf-class="form-control #{error.get('city') and 'is-invalid' or ''}" t-att-value="'city' in checkout and checkout['city']" />
+                    </div>
+                    <t t-if="'zip' in zip_city and zip_city.index('zip') &gt; zip_city.index('city')">
+                        <div t-attf-class="form-group #{error.get('zip') and 'o_has_error' or ''} col-md-4 div_zip">
+                            <label class="col-form-label label-optional" for="zip">Zip Code</label>
+                            <input type="text" name="zip" t-attf-class="form-control #{error.get('zip') and 'is-invalid' or ''}" t-att-value="'zip' in checkout and checkout['zip']" />
+                        </div>
+                    </t>
+
+                    <div class="w-100"/>
+                    <div t-attf-class="form-group #{error.get('township_id') and 'o_has_error' or ''} col-lg-12 div_township">
+                        <label class="col-form-label" for="township_id">Township</label>
+                        <span class="s_website_form_mark"> *</span>
+                        <select id="township_id" name="township_id" t-attf-class="form-control #{error.get('township_id') and 'is-invalid' or ''}" t-att-mode="mode[1]">
+                            <option value="">Township...</option>
+                            <t t-foreach="townshipes" t-as="t">
+                                <option t-att-value="t.id" t-att-selected="t.id == (township and township.id or -1)">
+                                    <t t-esc="t.name" />
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+
+                    <div class="w-100"/>
+                    <t t-if="mode == ('new', 'billing') and not only_services">
+                        <div class="col-lg-12">
+                            <div class="checkbox">
+                              <label>
+                                <input type="checkbox" id='shipping_use_same' class="mr8" name='use_same' value="1" checked='checked'/>Ship to the same address
+                                <span class='ship_to_other text-muted' style="display: none">&amp;nbsp;(<i>Your shipping address will be requested later) </i></span>
+                                </label>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                <input type="hidden" name="submitted" value="1" />
+                <input type="hidden" name="partner_id" t-att-value="partner_id or '0'" />
+                <input type="hidden" name="callback" t-att-value="callback" />
+                <!-- Example -->
+                <input type="hidden" name="field_required" t-att-value="'phone,name'" />
+
+                <div class="d-flex justify-content-between">
+                    <a role="button" t-att-href="mode == ('new', 'billing') and '/shop/cart' or '/shop/checkout'" class="btn btn-secondary mb32">
+                        <i class="fa fa-chevron-left"/>
+                        <span>Back</span>
+                    </a>
+                    <a role="button" href="#" class="btn btn-primary mb32 a-submit a-submit-disable a-submit-loading">
+                        <span>Next</span>
+                        <i class="fa fa-chevron-right"/>
+                    </a>
+                </div>
+            </form>
+        </xpath>
+    </template>
+
+    <template id="address_kanban_inherit" inherit_id="website_sale.address_kanban">
+        <xpath expr="//div[contains(@t-attf-class, 'card')]/div[hasclass('card-body')]" position="replace">
+            <div class="card-body" style="min-height: 130px;">
+                <a t-if="allow_edit" href="#" class="btn btn-link float-right p-0 js_edit_address no-decoration" role="button" title="Edit this address" aria-label="Edit this address"><i class="fa fa-edit"/></a>
+                  <span><t t-esc="contact.company_name"/>, <t t-esc="contact.name"/></span><br/>
+                  <t t-esc="contact.street"/><br/>
+                  <t t-if="contact.street2"><t t-esc="contact.street2"/><br/></t>
+                  <t t-esc="contact.township_id.name"/><br/>
+                  <t t-esc="contact.city_id.name"/><br/>
+                  <t t-esc="contact.state_id.name"/>  <t t-esc="contact.zip"/><br/>
+                  <t t-esc="contact.country_id.name"/><br/>
+                 <!--<t t-esc="contact" t-options="dict(widget='contact', fields=['name', 'township', 'address'], no_marker=True)"/> -->
+            </div>
+        </xpath>
+    </template>
+
+</odoo>

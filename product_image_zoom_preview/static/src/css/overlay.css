@@ -1,0 +1,28 @@
+
+.overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #191717ab;
+  overflow: hidden;
+  width: 100%;
+  height: 0;
+  transition: .5s ease;
+}
+
+.image_overlay:hover .overlay {
+  height: 100%;
+}
+.overlay-text {
+  color: white;
+  font-size: 16px;
+  position: absolute;
+  top: 15%;
+}
+.card div.mt-3 h6 {
+  color: black !important;
+}
+.image_overlay {
+    position: relative;
+}

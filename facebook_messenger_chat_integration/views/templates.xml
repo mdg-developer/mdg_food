@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="facebook_messenger_chat_integration.assets_frontend" inherit_id="website.layout" active="True"
+                  name="Show Facebook Messenger Chat">
+            <xpath expr="//html/body" position="inside">
+                <!-- Load Facebook SDK for JavaScript -->
+                <t t-if="res_company.fb_page_id">
+                    <div id="fb-root"/>
+                    <script>
+                        window.fbAsyncInit = function() {
+                        FB.init({
+                        xfbml : true,
+                        version : 'v8.0'
+                        });
+                        };
+
+                        (function(d, s, id) {
+                        var js, fjs = d.getElementsByTagName(s)[0];
+                        if (d.getElementById(id)) return;
+                        js = d.createElement(s); js.id = id;
+                        js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+                        fjs.parentNode.insertBefore(js, fjs);
+                        }(document, 'script', 'facebook-jssdk'));
+                    </script>
+
+                    <!-- Your Chat Plugin code -->
+                    <div class="fb-customerchat"
+                         attribution="setup_tool"
+                         t-att-page_id="res_company.fb_page_id"
+                         t-att-theme_color="res_company.fb_theme_color"
+                         t-att-logged_in_greeting="res_company.fb_logged_in_greeting"
+                         t-att-logged_out_greeting="res_company.fb_logged_out_greeting">
+                    </div>
+                </t>
+            </xpath>
+        </template>
+    </data>
+</odoo>

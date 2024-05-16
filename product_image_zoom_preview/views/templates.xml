@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template inherit_id='atharva_theme_base.product_image_gallary' id="product_picture_zoom" customize_show="True" name="Product Image Zoom">
+        <xpath expr="//div[hasclass('carousel-inner')]//div[hasclass('embed-responsive-16by9')]" position='attributes'>
+            <attribute name="class" separator=" " add="knk_zoom_img" />
+        </xpath>
+        <xpath expr="//div[hasclass('carousel-inner')]//div[@t-options]" position='attributes'>
+            <attribute name="t-options">{"widget": "image", "preview_image": "image_1024", "class": "knk_zoom_img product_detail_img mh-100", "alt-field": "name", "zoom": product_image.can_image_1024_be_zoomed and "image_1920", "itemprop": "image"}</attribute>
+        </xpath>
+    </template>
+</odoo>

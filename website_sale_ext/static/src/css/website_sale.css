@@ -1,0 +1,33 @@
+.s_website_form_mark {
+    color: red;
+}
+.div_city_hidden {
+    display: none;
+}
+
+.as-product-no-stock {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.as-product-no-stock span {
+    background: var(--danger);
+    padding: 10px 20px;
+    display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: inline-flex;
+    align-items: center;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 30px;
+    line-height: 20px;
+}

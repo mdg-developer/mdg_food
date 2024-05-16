@@ -1,0 +1,20 @@
+<odoo>
+    <data>
+        <!-- explicit list view definition -->
+        <record model="ir.ui.view" id="facebook_messenger_chat_integration.company_form">
+            <field name="name">facebook_messenger_chat_integration form</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='social_media']" position="after">
+                    <group string="Facebook Messenger Widget">
+                        <field name="fb_page_id"/>
+                        <field name="fb_theme_color" widget="color"/>
+                        <field name="fb_logged_in_greeting"/>
+                        <field name="fb_logged_out_greeting"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

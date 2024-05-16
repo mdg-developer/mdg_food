@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="alan_product_slider_layout" name="Alan Product Layout">
+        <section t-attf-class="as-product-snippet as-product-{{styleUI}} js_sale">
+            <div class="container">
+                <!-- <div class="section-title">
+                    <h3>Product Slider</h3>
+                </div> -->
+                <t t-if="products">
+                    <div class="swiper as-Swiper as-our-product">
+                        <div class="swiper-wrapper">
+                            <t t-foreach="products" t-as="product">
+                                <div class="swiper-slide">
+                                    <div class="as-product-box">
+                                        <form action="/shop/cart/update" method="post">
+                                            <t t-set="combination" t-value="product._get_first_possible_combination()"/>
+                                            <t t-set="combination_info" t-value="product._get_combination_info(combination, add_qty=add_qty or 1, pricelist=pricelist)"/>
+                                            <t t-set="product_variant" t-value="product.env['product.product'].browse(combination_info['product_id'])"/>
+                                            <input type="hidden" class="product_id" name="product_id" t-att-value="product_variant.id"/>
+                                            <input type="hidden" class="product_template_id" name="product_template_id" t-att-value="product.id"/>
+                                            <div class="as-product-thumb">
+                                                <t t-if="prod_label == True">
+                                                    <!-- Product label option -->
+                                                    <t t-call="theme_alan.as_product_label_option"/>
+                                                </t>
+                                                <div class="as-product-img">
+                                                    <a t-attf-href="/shop/product/#{slug(product)}">
+                                                        <img t-att-alt="product.name" t-att-src="website.image_url(product,'image_512','800x800')" t-att-title="product.name"/>
+                                                        <t t-if="product.hover_image">
+                                                            <span t-field="product.hover_image" t-options='{"class":"product-hover-img","widget":"image","resize":"800x800", "itemprop":"image"}' t-att-alt="product.name"/>
+                                                        </t>
+                                                    </a>
+                                                </div>
+                                                <t t-if="wish_list == True">
+                                                    <!-- Product wishlist option -->
+                                                    <t t-call="theme_alan.as_product_wishlist_option"/>
+                                                </t>
+                                                <div class="as-btn-action">
+                                                    <t t-if="prod_compare == True">
+                                                        <!-- Product compare option -->
+                                                        <t t-call="theme_alan.as_product_compare_option"/>
+                                                    </t>
+                                                    <t t-if="quickView == True">
+                                                        <!-- Product quickview option -->
+                                                        <t t-call="theme_alan.as_product_quickview_option"/>
+                                                    </t>
+                                                </div>
+                                                <t t-set="website" t-value="product.env['website'].get_current_website()"/>
+                                                <t t-set="free_qty" t-value="product.product_variant_id.with_context(warehouse=website._get_warehouse_available()).free_qty"/>
+                                                <t t-set="product_qty" t-value="free_qty - product.product_variant_id.sudo().cart_qty"/>
+                                                <div t-if="product_qty &lt; 1 and not product.product_variant_id.sudo().allow_out_of_stock_order" class="as-product-no-stock">
+                                                    <span><i><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag-x" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M6.146 8.146a.5.5 0 0 1 .708 0L8 9.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 10l1.147 1.146a.5.5 0 0 1-.708.708L8 10.707l-1.146 1.147a.5.5 0 0 1-.708-.708L7.293 10 6.146 8.854a.5.5 0 0 1 0-.708z"/><path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"/></svg></i>Out of stock</span>
+                                                </div>
+                                            </div>
+                                            <div class="as-product-info">
+                                                <t t-if="prod_rating == True">
+                                                    <!-- Product rating option -->
+                                                    <t t-call="theme_alan.as_product_rating_option"/>
+                                                </t>
+                                                <div class="as-product-title">
+                                                    <a t-attf-href="/shop/product/#{slug(product)}" t-att-title="product.name">
+                                                        <t t-esc="product.name" />
+                                                    </a>
+                                                </div>
+                                                <div class="as-product-price">
+                                                    <!-- Product price -->
+                                                    <t t-call="theme_alan.as_product_price"/>
+                                                </div>
+                                                <div class="as-product-action">
+                                                    <t t-if="prod_cart == True">
+                                                        <!-- Product Add to cart option -->
+                                                        <t t-call="theme_alan.as_product_cart_option"/>
+                                                    </t>
+                                                    <!-- <t t-if="prod_buy == True">
+                                                        Product Buy now option
+                                                        <t t-call="theme_alan.as_product_buyNow_option"/>
+                                                    </t> -->
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-pagination"></div>
+                        <div t-attf-class="#{'swiper-scrollbar' if sliderType == 7 else 'd-none'}"></div>
+                    </div>
+                </t>
+                <t t-else="">
+                    <span> No Product available </span>
+                </t>
+            </div>
+        </section>
+    </template>
+
+    <template id="alan_product_grid_layout" name="Alan Product Grid Layout">
+        <section t-attf-class="as-product-snippet as-product-grid-{{dataCount}} as-product-{{styleUI}} js_sale">
+            <div class="container">
+                <!-- <div class="section-title">
+                    <h3>Product Grid</h3>
+                </div> -->
+                <t t-if="products">
+                    <div class="as-product-row">
+                        <t t-foreach="products" t-as="product">
+                            <div class="as-product-col">
+                                <div class="as-product-box">
+                                    <form action="/shop/cart/update" method="post">
+                                        <t t-set="combination" t-value="product._get_first_possible_combination()"/>
+                                        <t t-set="combination_info" t-value="product._get_combination_info(combination, add_qty=add_qty or 1, pricelist=pricelist)"/>
+                                        <t t-set="product_variant" t-value="product.env['product.product'].browse(combination_info['product_id'])"/>
+                                        <input type="hidden" class="product_template_id" name="product_template_id" t-att-value="product.id"/>
+                                        <div class="as-product-thumb">
+                                            <t t-if="prod_label == True">
+                                                <!-- Product label option -->
+                                                <t t-call="theme_alan.as_product_label_option"/>
+                                            </t>
+                                            <div class="as-product-img">
+                                                <a t-attf-href="/shop/product/#{slug(product)}">
+                                                    <img t-att-alt="product.name" t-att-src="website.image_url(product,'image_512','800x800')" t-att-title="product.name"/>
+                                                    <t t-if="product.hover_image">
+                                                        <span t-field="product.hover_image" t-options='{"class":"product-hover-img","widget":"image","resize":"800x800", "itemprop":"image"}' t-att-alt="product.name"/>
+                                                    </t>
+                                                </a>
+                                            </div>
+                                            <t t-if="wish_list == True">
+                                                <!-- Product wishlist option -->
+                                                <t t-call="theme_alan.as_product_wishlist_option"/>
+                                            </t>
+                                            <div class="as-btn-action">
+                                                <t t-if="prod_compare == True">
+                                                    <!-- Product compare option -->
+                                                    <t t-call="theme_alan.as_product_compare_option"/>
+                                                </t>
+                                                <t t-if="quickView == True">
+                                                    <!-- Product quickview option -->
+                                                    <t t-call="theme_alan.as_product_quickview_option"/>
+                                                </t>
+                                            </div>
+                                        </div>
+                                        <div class="as-product-info">
+                                            <t t-if="prod_rating == True">
+                                                <!-- Product rating option -->
+                                                <t t-call="theme_alan.as_product_rating_option"/>
+                                            </t>
+                                            <div class="as-product-title">
+                                                <a t-attf-href="/shop/product/#{slug(product)}" t-att-title="product.name">
+                                                    <t t-esc="product.name" />
+                                                </a>
+                                            </div>
+                                            <div class="as-product-price">
+                                                <!-- Product price -->
+                                                <t t-call="theme_alan.as_product_price"/>
+                                            </div>
+                                            <div class="as-product-action">
+                                                <t t-if="prod_cart == True">
+                                                    <!-- Product Add to cart option -->
+                                                    <t t-call="theme_alan.as_product_cart_option"/>
+                                                </t>
+                                                <!-- <t t-if="prod_buy == True">
+                                                    Product Buy now option
+                                                    <t t-call="theme_alan.as_product_buyNow_option"/>
+                                                </t> -->
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+                <t t-else="">
+                    <span> No Product available </span>
+                </t>
+            </div>
+        </section>
+    </template>
+</odoo>

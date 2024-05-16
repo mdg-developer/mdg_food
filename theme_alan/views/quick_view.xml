@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Alan Div For Custom Icons -->
+    <template id="as_btn_container" name="AS Buttom Custom" inherit_id="website_sale.products_item" priority="10">
+        <xpath expr="//div[hasclass('oe_product_image')]" position="inside">
+            <div class="as-btn-actions"/>
+        </xpath>
+        <xpath expr="//form//div[hasclass('oe_product_image')]//span[@t-field='image_holder.image_1920']" position="replace">
+            <span t-field="image_holder.image_1920"
+                t-options="{'widget': 'image', 'preview_image': 'image_1024' if product_image_big else 'image_512', 'itemprop': 'image'}"
+                class="d-flex h-100 justify-content-center align-items-center"/>
+        </xpath>
+    </template>
+
+    <!-- Quick View Icon -->
+    <template id="as_quick_view" inherit_id="website_sale.products_item" customize_show="True" name="Quick View">
+        <xpath expr="//div[hasclass('as-btn-actions')]" position="inside">
+            <t t-set="product_variant_id" t-value="product._get_first_possible_variant_id()"/>
+            <input name="product_id" t-att-value="product_variant_id" type="hidden"/>
+            <t t-if="product_variant_id">
+                <button type="button" role="button" class="btn btn-outline-primary bg-white o_add_wishlist" title="Add to Wishlist" t-att-data-product-template-id="product.id" t-att-data-product-product-id="product.product_variant_ids[0].id" data-action="o_wishlist">
+                    <i class="fa fa-heart" role="img" aria-label="Add to wishlist"></i>
+                </button>
+                <a href="#" role="button" class="btn btn-primary as-quick-view show-view" aria-label="Quick View" title="Quick View"
+                t-att-data-product-id="product.id">
+                    <span class="fa fa-eye"/>
+                </a>
+            </t>
+            <t t-set="combination" t-value="product._get_first_possible_combination()"/>
+            <t t-set="combination_info" t-value="product._get_combination_info(combination, add_qty=add_qty or 1, pricelist=pricelist)"/>
+            <t t-set="product_variant" t-value="product.env['product.product'].browse(combination_info['product_id'])"/>
+            <t t-set="website" t-value="product_variant.env['website'].get_current_website()"/>
+            <t t-set="free_qty" t-value="product_variant.with_context(warehouse=website._get_warehouse_available()).free_qty"/>
+            <t t-if="website.user_id != user_id or website.user_id == user_id and not website.active_b2b">
+                <t t-set="product_qty" t-value="free_qty - product_variant.sudo().cart_qty"/>
+                <t t-if="product_qty &lt; 1">
+                    <a href="#" role="button" t-attf-class="btn btn-primary as-quick-submit show-view #{'' if product_variant.allow_out_of_stock_order else 'as-disabled'}" aria-label="Quick Cart" title="Quick Cart"
+                    t-attf-data-has-variant="#{'True' if product.product_variant_count > 1 else 'False' }"
+                    t-attf-data-product-id="#{product.id if product.product_variant_count > 1 else product_variant_id}">
+                        <span class="fa fa-shopping-cart"/>
+                    </a>
+                </t>
+                <t t-else="">
+                    <a href="#" role="button" class="btn btn-primary as-quick-submit show-view" aria-label="Quick Cart" title="Quick Cart"
+                    t-attf-data-has-variant="#{'True' if product.product_variant_count > 1 else 'False' }"
+                    t-attf-data-product-id="#{product.id if product.product_variant_count > 1 else product_variant_id}">
+                        <span class="fa fa-shopping-cart"/>
+                    </a>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- Quick View Template -->
+    <template id="quick_view" name="Quick view">
+        <t t-call="atharva_theme_base.as_quick_view"/>
+    </template>
+    <template id="quick_view_brand_info" name="Quick View Brand Logo" inherit_id="atharva_theme_base.as_quick_view">
+        <xpath expr="//div[hasclass('js_main_product')]" position="after">
+            <div class="as-pd-brand" t-if="product.product_brand_id">
+               <t t-set="brand_image" t-value="request.website.image_url(product.product_brand_id,'logo')"/>
+               <div class="as-pd-brand-img" t-att-style="'background-image:url('+ brand_image + ');'" />
+               <div class="as-pd-brand-info">
+                   <h6 t-esc="product.product_brand_id.name"/>
+                   <div class="desc" t-esc="product.product_brand_id.brand_description"/>
+               </div>
+            </div>
+            <div class="as-pd-offers-box">
+        		<ul>
+		            <t t-foreach="product.product_offer_ids" t-as="offer">
+		                <li t-if="offer.types == 'offer'">
+		                    <div class="as-offer-icon"><span t-attf-class="fa fa-{{offer.icon}}"/></div>
+		                    <div class="as-offer-text"><p><strong t-esc="offer.name"/> <t t-esc="offer.short_description"/></p> <span class="show-extra-prod-info" t-att-data-info_id="offer.id"> Detail <i class="fa fa-angle-right" /> </span></div>
+		                </li>
+		            </t>
+        		</ul>
+        	</div>
+            <t t-call="atharva_theme_base.product_detail_page_tags"/>
+       </xpath>
+   </template>
+</odoo>

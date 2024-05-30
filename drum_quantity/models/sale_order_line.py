@@ -25,8 +25,8 @@ class SaleOrderLine(models.Model):
         else:
             self.product_uom_qty = 0
 
-    # def _prepare_invoice_line(self, **optional_values):
-    #     res = super(SaleOrderLine, self)._prepare_invoice_line()
-    #     res['drum_qty'] = self.drum_qty
-    #     return res
+    def _prepare_invoice_line(self, **optional_values):
+        res = super(SaleOrderLine, self)._prepare_invoice_line()
+        res['drum_qty'] = self.drum_qty
+        return res
 

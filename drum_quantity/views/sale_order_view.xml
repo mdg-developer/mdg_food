@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--Add Drum Qty in Sale Order Line -->
+    <record id="view_order_form_inherit" model="ir.ui.view">
+        <field name="name">sale.order.view.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="company_name" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree//field[@name='product_uom_qty']" position="before">
+                <field name="drum_qty" attrs="{'column_invisible': [('parent.company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

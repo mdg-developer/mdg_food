@@ -13,9 +13,11 @@
   "assets"               :  {
                               'point_of_sale.assets': [
                                 "/pos_foc_button/static/src/js/pos_foc_button.js",
+                                "/pos_foc_button/static/src/js/clientscreen_button.js",
                               ],
                               'web.assets_qweb': [
                                 "/pos_foc_button/static/src/xml/focButton.xml",
+                                "/pos_foc_button/static/src/xml/clientscreenButton.xml",
                               ],
                             },
   'qweb': [],

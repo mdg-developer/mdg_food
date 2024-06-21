@@ -10,7 +10,9 @@
   "description"          :  """POS FOC Button""",
   "live_test_url"        :  "http://odoodemo.webkul.com/?module=pos_manage_packages&custom_url=/pos/web/#action=pos.ui",
   "depends"              :  ['point_of_sale'],
-  "assets"               :  {
+   "data"                : ['views/product_category_view.xml', ],
+
+    "assets"               :  {
                               'point_of_sale.assets': [
                                 "/pos_foc_button/static/src/js/pos_foc_button.js",
                                 "/pos_foc_button/static/src/js/clientscreen_button.js",

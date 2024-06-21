@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="CustomerFacingDisplayOrder" t-inherit="point_of_sale.CustomerFacingDisplayOrder"
+       t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('pos-payment_info_details')]" position="before">
+            <div class="customer-info">
+                <div t-if="order.get_client()">
+                    Hi '<span t-esc="order.get_client().name"></span>'
+                </div>
+                <div t-if="order.get_client() and order.get_client().pos_member_type_id">
+                    <span t-esc="order.get_client().pos_member_type_id[1]" style="padding-left: 25px;"></span> Member
+                </div>
+            </div>
+        </xpath>
+    </t>
+</templates>

@@ -65,6 +65,8 @@ class inventory_report(models.AbstractModel):
             'get_warehouse_name': self.get_warehouse_name,
             'get_company': self._get_company,
             'get_product_name': self._product_name,
+            'get_categ':self._get_categ,
+            'get_main_categ': self._get_main_categ,
             'get_warehouse': self._get_warehouse,
             'get_lines': self._get_lines,
             'get_beginning_inventory': self._get_beginning_inventory,
@@ -402,6 +404,30 @@ class inventory_report(models.AbstractModel):
         code = self.env['product.product'].browse(product_id).default_code
         return code
 
+    def _get_categ(self, product_id ):
+        """
+        Find category name with id
+        """
+        self._cr.execute ( '''
+        select pc.name from product_product pp ,product_template pt ,product_category pc
+        where pp.product_tmpl_id =pt.id
+        and pc.id = pt.categ_id
+        and pp.id = %s
+        ''', (product_id,))
+        categ_name = self._cr.fetchone()[0]
+        return categ_name
+    def _get_main_categ(self, product_id ):
+        """
+        Find category name with id
+        """
+        self._cr.execute ( '''
+        select (select name from product_category where id =pc.parent_id) as main_categ from product_product pp ,product_template pt ,product_category pc
+        where pp.product_tmpl_id =pt.id
+        and pc.id = pt.categ_id
+        and pp.id = %s
+        ''', (product_id,))
+        categ_name = self._cr.fetchone()[0]
+        return categ_name
     def _product_volume(self, product_id):
         volume = self.env['product.product'].browse(product_id).volume
         if volume:
@@ -545,19 +571,22 @@ class inventory_report(models.AbstractModel):
         sheet.set_column(0, 0, 20)
         sheet.merge_range(y_offset, 1, y_offset, 2, _('Product'), style_result['format_header_one'])
         sheet.set_column(1, 2, 20)
-        sheet.write(y_offset, 3,_('Beginning'), style_result['format_header_one'])
-        sheet.set_column(3, 3, 20)
-        sheet.write(y_offset, 4, _('In'), style_result['format_header_one'])
+        sheet.write(y_offset, 3,_('Main Category'), style_result['format_header_one'])
         sheet.set_column(4,4, 20)
-        sheet.write(y_offset, 5, _('Out'), style_result['format_header_one'])
-        sheet.set_column(5,5, 20)   
-        sheet.write(y_offset, 6, _('Internal'), style_result['format_header_one'])
-        sheet.set_column(6, 6, 20)   
-        sheet.write(y_offset, 7, _('Adjustment'), style_result['format_header_one'])
-        sheet.set_column(7, 7, 20)          
-        sheet.write(y_offset, 8, _('Ending'), style_result['format_header_one'])
+        sheet.write(y_offset, 4,_('Sub Category'), style_result['format_header_one'])
+        sheet.set_column(5,5, 20)
+        sheet.write(y_offset, 5,_('Beginning'), style_result['format_header_one'])
+        sheet.set_column(6, 6, 20)
+        sheet.write(y_offset, 6, _('In'), style_result['format_header_one'])
+        sheet.set_column(7, 7, 20)
+        sheet.write(y_offset, 7, _('Out'), style_result['format_header_one'])
         sheet.set_column(8, 8, 20)
-        sheet.write(y_offset, 8, _('Ending'), style_result['format_header_one'])
+        sheet.write(y_offset, 8, _('Internal'), style_result['format_header_one'])
+        sheet.set_column(9, 9, 20)
+        sheet.write(y_offset, 9, _('Adjustment'), style_result['format_header_one'])
+        sheet.set_column(10, 10, 20)
+        sheet.write(y_offset, 10, _('Ending'), style_result['format_header_one'])
+        sheet.set_column(11, 11, 20)
         y_offset += 1
         wh_vol_total = 0
         global_vol_total = 0
@@ -567,6 +596,8 @@ class inventory_report(models.AbstractModel):
             for line in lines[line_wh]:
                 product_name=self._product_name(line.get('product_id'))
                 product_code = self._get_product_code(line.get('product_id'))
+                product_main_categ = self._get_main_categ(line.get('product_id'))
+                product_categ = self._get_categ(line.get('product_id'))
                 product_vol = self._product_volume(line.get('product_id'))
                 begin_qty=self._get_beginning_inventory(options,line_wh,line.get('product_id'),line)
                 total_begin+=begin_qty
@@ -583,18 +614,22 @@ class inventory_report(models.AbstractModel):
                 sheet.set_column(0, 0, 20)
                 sheet.merge_range(y_offset, 1, y_offset, 2, product_name or '', style_result['product_format'])
                 sheet.set_column(1, 2, 20)
-                sheet.write(y_offset,3, begin_qty or 0.0, style_result['format_border_top'])
-                sheet.set_column(3, 3, 20)            
-                sheet.write(y_offset, 4, line.get('product_qty_in', 0.0) or 0.0, style_result['format_border_top'])
+                sheet.write(y_offset, 3, product_main_categ or '', style_result['product_format'])
+                sheet.set_column(3, 3, 20)
+                sheet.write(y_offset, 4, product_categ or '', style_result['product_format'])
                 sheet.set_column(4, 4, 20)
-                sheet.write(y_offset, 5, line.get('product_qty_out', 0.0) or 0.0, style_result['format_border_top'])
-                sheet.set_column(5,5, 20)
-                sheet.write(y_offset, 6, line.get('product_qty_internal', 0.0) or 0.0, style_result['format_border_top'])
+                sheet.write(y_offset,5, begin_qty or 0.0, style_result['format_border_top'])
+                sheet.set_column(5, 5, 20)
+                sheet.write(y_offset, 6, line.get('product_qty_in', 0.0) or 0.0, style_result['format_border_top'])
                 sheet.set_column(6, 6, 20)
-                sheet.write(y_offset, 7, line.get('product_qty_adjustment', 0.0) or 0.0, style_result['format_border_top'])
+                sheet.write(y_offset, 7, line.get('product_qty_out', 0.0) or 0.0, style_result['format_border_top'])
                 sheet.set_column(7,7, 20)
-                sheet.write(y_offset, 8, (ending_qty) or 0.0, style_result['format_border_top'])
+                sheet.write(y_offset, 8, line.get('product_qty_internal', 0.0) or 0.0, style_result['format_border_top'])
                 sheet.set_column(8, 8, 20)
+                sheet.write(y_offset, 9, line.get('product_qty_adjustment', 0.0) or 0.0, style_result['format_border_top'])
+                sheet.set_column(9,9, 20)
+                sheet.write(y_offset, 10, (ending_qty) or 0.0, style_result['format_border_top'])
+                sheet.set_column(10, 10, 20)
                 y_offset += 1
                 
             if line_wh:            
@@ -605,20 +640,20 @@ class inventory_report(models.AbstractModel):
                 warehouse_name_group = 'All' 
             self._get_value_exist(line_wh, cid[0])
             toal_val=self._total_vals(cid[0])         
-            sheet.merge_range(y_offset, 0, y_offset, 2, warehouse_name_group or '', style_result['format_header_one'])
-            sheet.set_column(0, 2, 20) 
-            sheet.write(y_offset,3,"{:0,.2f}".format(total_begin) or 0.0, style_result['format_header_one'])
-            sheet.set_column(3, 3, 20)            
-            sheet.write(y_offset, 4,"{:0,.2f}".format(total_in) or 0.0, style_result['format_header_one'])
-            sheet.set_column(4, 4, 20)
-            sheet.write(y_offset, 5, "{:0,.2f}".format(total_out) or 0.0, style_result['format_header_one'])
-            sheet.set_column(5,5, 20)
-            sheet.write(y_offset, 6, "{:0,.2f}".format(total_int) or 0.0, style_result['format_header_one'])
+            sheet.merge_range(y_offset, 0, y_offset, 4, warehouse_name_group or '', style_result['format_header_one'])
+            sheet.set_column(0, 4, 20)
+            sheet.write(y_offset,5,"{:0,.2f}".format(total_begin) or 0.0, style_result['format_header_one'])
+            sheet.set_column(5, 5, 20)
+            sheet.write(y_offset, 6,"{:0,.2f}".format(total_in) or 0.0, style_result['format_header_one'])
             sheet.set_column(6, 6, 20)
-            sheet.write(y_offset, 7, "{:0,.2f}".format(total_adj) or 0.0, style_result['format_header_one'])
+            sheet.write(y_offset, 7, "{:0,.2f}".format(total_out) or 0.0, style_result['format_header_one'])
             sheet.set_column(7,7, 20)
-            sheet.write(y_offset, 8, "{:0,.2f}".format(total_end) or 0.0, style_result['format_header_one'])
+            sheet.write(y_offset, 8, "{:0,.2f}".format(total_int) or 0.0, style_result['format_header_one'])
             sheet.set_column(8, 8, 20)
+            sheet.write(y_offset, 9, "{:0,.2f}".format(total_adj) or 0.0, style_result['format_header_one'])
+            sheet.set_column(9,9, 20)
+            sheet.write(y_offset, 10, "{:0,.2f}".format(total_end) or 0.0, style_result['format_header_one'])
+            sheet.set_column(10, 10, 20)
             global_vol_total+=wh_vol_total
             wh_vol_total=0
             y_offset += 2
@@ -633,20 +668,20 @@ class inventory_report(models.AbstractModel):
                               
         
         total_toal_val=self._total_vals(cid[0])
-        sheet.merge_range(y_offset, 0, y_offset, 2, 'Total Inventory', style_result['format_header_one'])
-        sheet.set_column(0, 2, 20)
-        sheet.write(y_offset,3,"{:0,.2f}".format(total_wh_begin) or 0.0, style_result['format_header_one'])
-        sheet.set_column(3, 3, 20)            
-        sheet.write(y_offset, 4,"{:0,.2f}".format(total_wh_in) or 0.0, style_result['format_header_one'])
-        sheet.set_column(4, 4, 20)
-        sheet.write(y_offset, 5, "{:0,.2f}".format(total_wh_out) or 0.0, style_result['format_header_one'])
-        sheet.set_column(5,5, 20)
-        sheet.write(y_offset, 6,"{:0,.2f}".format(total_wh_int) or 0.0, style_result['format_header_one'])
+        sheet.merge_range(y_offset, 0, y_offset, 4, 'Total Inventory', style_result['format_header_one'])
+        sheet.set_column(0, 4, 20)
+        sheet.write(y_offset,5,"{:0,.2f}".format(total_wh_begin) or 0.0, style_result['format_header_one'])
+        sheet.set_column(5, 5, 20)
+        sheet.write(y_offset, 6,"{:0,.2f}".format(total_wh_in) or 0.0, style_result['format_header_one'])
         sheet.set_column(6, 6, 20)
-        sheet.write(y_offset, 7,"{:0,.2f}".format(total_wh_adj) or 0.0, style_result['format_header_one'])
+        sheet.write(y_offset, 7, "{:0,.2f}".format(total_wh_out) or 0.0, style_result['format_header_one'])
         sheet.set_column(7,7, 20)
-        sheet.write(y_offset, 8, "{:0,.2f}".format(total_wh_end) or 0.0, style_result['format_header_one'])
+        sheet.write(y_offset, 8,"{:0,.2f}".format(total_wh_int) or 0.0, style_result['format_header_one'])
         sheet.set_column(8, 8, 20)
+        sheet.write(y_offset, 9,"{:0,.2f}".format(total_wh_adj) or 0.0, style_result['format_header_one'])
+        sheet.set_column(9,9, 20)
+        sheet.write(y_offset, 10, "{:0,.2f}".format(total_wh_end) or 0.0, style_result['format_header_one'])
+        sheet.set_column(10, 10, 20)
         y_offset += 1
         workbook.close()
         output.seek(0)

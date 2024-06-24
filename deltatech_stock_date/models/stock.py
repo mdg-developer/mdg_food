@@ -92,6 +92,8 @@ class StockMove(models.Model):
         """ Returns the unit price for the move"""
         print('get_price_Unit ext')
         self.ensure_one()
+        if self.origin_returned_move_id or not self.purchase_line_id or self.product_id.id:
+            return super(StockMove, self)._get_price_unit()
         # if self._should_ignore_pol_price():
         #     return super(StockMove, self)._get_price_unit()
         price_unit_prec = self.env['decimal.precision'].precision_get('Product Price')
@@ -131,7 +133,7 @@ class StockMove(models.Model):
             price_unit = float_round(remaining_value / remaining_qty, precision_digits=price_unit_prec)
         else:
             # price_unit = line._get_gross_price_unit()
-            price_unit = line.price_unit
+            price_unit = line._get_stock_move_price_unit()
         if order.currency_id != order.company_id.currency_id:
             # The date must be today, and not the date of the move since the move move is still
             # in assigned state. However, the move date is the scheduled date until move is

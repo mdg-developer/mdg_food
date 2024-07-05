@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="sale_details_sql_view" model="bi.sql.view">
+        <field name="name">POS Sale Details Report</field>
+        <field name="technical_name">pos_sale_details_report_view</field>
+        <field name="view_name">x_bi_sql_view_False</field>
+        <field
+            name="query"
+        ><![CDATA[
+            SELECT po.name as x_name,
+                po.date_order as x_date_order,
+                po.session_id as x_session_id,
+                po.employee_id as x_employee_id,
+                po.partner_id as x_partner_id,
+                po.company_id as x_company_id,
+                pol.full_product_name as x_full_product_name,
+                pol.colour as x_colour,
+                pol.size as x_size,
+                pol.qty as x_qty,
+                pol.price_unit as x_price_unit,
+                pol.taxes as x_taxes,
+                pol.price_subtotal as x_amount,
+                pol.discount as x_discount,
+                (pol.price_subtotal + pol.taxes - pol.discount) as x_total
+            FROM pos_order po
+            LEFT JOIN (SELECT pol.order_id,
+                            pol.full_product_name,
+                            pol.qty,
+                            pol.price_unit,
+                            (pol.price_subtotal_incl - pol.price_subtotal) as taxes,
+                            pol.price_subtotal,
+                            (case when ds.price_subtotal_incl !=0 then -(ds.price_subtotal_incl/ct.pol_count) else 0 end) as discount,
+                            cl.name as colour,
+                            sz.name as size,
+                            pol.id as order_line_id
+                        FROM pos_order_line pol
+                        LEFT JOIN product_product pp on pp.id=pol.product_id
+                        LEFT JOIN product_template pt on pt.id=pp.product_tmpl_id
+                        LEFT JOIN pos_category pc on pc.id=pt.pos_categ_id
+                        LEFT JOIN (SELECT count(*) as pol_count,
+                                        pol.order_id
+                                    FROM pos_order_line pol
+                                    LEFT JOIN product_product pp on pp.id=pol.product_id
+                                    LEFT JOIN product_template pt on pt.id=pp.product_tmpl_id
+                                    LEFT JOIN pos_category pc on pc.id=pt.pos_categ_id
+                                    WHERE pc.name!='DISCOUNT' group by pol.order_id) ct on ct.order_id=pol.order_id
+                        LEFT JOIN (SELECT pol.order_id,
+                                        pol.price_subtotal_incl
+                                    FROM pos_order_line pol
+                                    LEFT JOIN product_product pp on pp.id=pol.product_id
+                                    LEFT JOIN product_template pt on pt.id=pp.product_tmpl_id
+                                    LEFT JOIN pos_category pc on pc.id=pt.pos_categ_id
+                                    WHERE pc.name='DISCOUNT') ds on ds.order_id=pol.order_id
+                        LEFT JOIN(SELECT pvc.product_product_id,
+                                pav.name,
+                                pav.attribute_id
+                            FROM product_variant_combination pvc 
+                            LEFT JOIN product_template_attribute_value ptav on ptav.id=pvc.product_template_attribute_value_id
+                            LEFT JOIN product_attribute_value pav on pav.id=ptav.product_attribute_value_id
+                            LEFT JOIN product_attribute pa on pa.id=pav.attribute_id
+                            LEFT JOIN product_template pt on pt.id = ptav.product_tmpl_id
+                            LEFT JOIN product_template_attribute_line ptal on ptal.id=ptav.attribute_line_id
+                            WHERE ptal.value_count >1 and pa.name='Colour') cl on cl.product_product_id=pp.id
+                        LEFT JOIN(SELECT pvc.product_product_id,
+                                pav.name,
+                                pav.attribute_id
+                            FROM product_variant_combination pvc 
+                            LEFT JOIN product_template_attribute_value ptav on ptav.id=pvc.product_template_attribute_value_id
+                            LEFT JOIN product_attribute_value pav on pav.id=ptav.product_attribute_value_id
+                            LEFT JOIN product_attribute pa on pa.id=pav.attribute_id
+                            LEFT JOIN product_template pt on pt.id = ptav.product_tmpl_id
+                            LEFT JOIN product_template_attribute_line ptal on ptal.id=ptav.attribute_line_id
+                            WHERE ptal.value_count >1 and pa.name='Size') sz on sz.product_product_id=pp.id
+                        WHERE pc.name!='DISCOUNT') pol on pol.order_id=po.id
+            order by pol.order_id,pol.order_line_id
+            ]]>
+            </field>
+            <field name="domain_force">[('x_company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

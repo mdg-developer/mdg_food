@@ -19,16 +19,16 @@
                 pol.qty as x_qty,
                 pol.price_unit as x_price_unit,
                 pol.taxes as x_taxes,
-                pol.price_subtotal as x_amount,
+                pol.price_subtotal_incl as x_amount,
                 pol.discount as x_discount,
-                (pol.price_subtotal + pol.taxes - pol.discount) as x_total
+                (pol.price_subtotal_incl - pol.discount) as x_total
             FROM pos_order po
             LEFT JOIN (SELECT pol.order_id,
                             pol.full_product_name,
                             pol.qty,
                             pol.price_unit,
                             (pol.price_subtotal_incl - pol.price_subtotal) as taxes,
-                            pol.price_subtotal,
+                            pol.price_subtotal_incl,
                             (case when ds.price_subtotal_incl !=0 then -(ds.price_subtotal_incl/ct.pol_count) else 0 end) as discount,
                             cl.name as colour,
                             sz.name as size,

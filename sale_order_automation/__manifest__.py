@@ -2,7 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     'name' : 'Sale Order Automation',
-    'version' : '1.1',
+    'version' : '1.0',
     'author':'Craftsync Technologies',
     'category': 'Sales',
     'maintainer': 'Craftsync Technologies',
@@ -15,7 +15,7 @@
     'website': 'https://www.craftsync.com/',
     'license': 'LGPL-3',
     'support':'info@craftsync.com',
-    'depends' : ['sale_stock'],
+    'depends' : ['sale_management','stock'],
     'data': [
         'views/stock_warehouse.xml',
     ],

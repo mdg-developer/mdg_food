@@ -1,4 +1,5 @@
 from odoo import api, fields, models, exceptions
+from datetime import datetime, timedelta, time
 
 
 class SaleOrder(models.Model):
@@ -23,3 +24,8 @@ class SaleOrder(models.Model):
                     invoice.action_post()
 
         return res  
+
+    def _prepare_invoice(self):
+        invoice_vals = super(SaleOrder, self)._prepare_invoice()
+        invoice_vals['invoice_date'] = self.backdate + timedelta(hours=6,minutes=30)
+        return invoice_vals

@@ -7,7 +7,7 @@
         <field
             name="query"
         ><![CDATA[
-            SELECT po.name as x_name,
+            SELECT distinct * FROM (SELECT po.name as x_name,
                 ref.ref_name as x_refund_order,
                 po.date_order as x_date_order,
                 po.session_id as x_session_id,
@@ -16,30 +16,30 @@
                 po.partner_id as x_partner_id,
                 po.company_id as x_company_id,
                 pol.full_product_name as x_full_product_name,
+                pol.default_code as x_item_code,
                 pol.colour as x_colour,
                 pol.size as x_size,
                 pol.qty as x_qty,
                 pol.price_unit as x_price_unit,
                 pol.taxes as x_taxes,
                 pol.price_subtotal_incl as x_amount,
-                pol.discount as x_discount,
+                case when pol.discount!=0 then pol.discount else 0 end as x_discount,
                 pol.cupon_discount as x_git_voucher,
                 (pol.price_subtotal_incl - pol.discount - pol.cupon_discount) as x_total
             FROM pos_order po
             LEFT JOIN pos_session ps on ps.id=po.session_id
             LEFT JOIN pos_config pc on pc.id=ps.config_id
-            left join(select distinct po.name as ref_name,pol.order_id from pos_order_line pol
-                left join pos_order_line rpol on rpol.refunded_orderline_id=pol.id
-                left join pos_order po on po.id=rpol.order_id
-                where rpol.refunded_orderline_id is not null 
-                order by pol.order_id) as ref on ref.order_id=po.id
             LEFT JOIN (SELECT pol.order_id,
-                            pol.full_product_name,
+                            pol.full_product_name,pp.default_code,pol.product_id,
                             pol.qty,
                             pol.price_unit,
                             (pol.price_subtotal_incl - pol.price_subtotal) as taxes,
                             pol.price_subtotal_incl,
-                            (case when ds.price_subtotal_incl !=0 then -(ds.price_subtotal_incl/ct.pol_count) else 0 end) as discount,
+                            (case when pcp.order_line_id=pol.id and pcp.tran_type='dis' then (pcp.pro_dis_amt+pcp.dis_amt)
+                                   when pcp.pos_order_id=pol.order_id and pcp.order_line_id=pol.id and pcp.tran_type='no_dis' then
+                                        -(coalesce(pcp.price_subtotal_incl,0)+coalesce(pcp.pro_dis_amt,0))/pcp.count_no
+                             else 
+                                (case when ds.price_subtotal_incl !=0 then -(ds.price_subtotal_incl/ct.pol_count) else 0 end) end ) as discount,
                             cl.name as colour,
                             sz.name as size,
                             pol.id as order_line_id,
@@ -69,6 +69,20 @@
                                     LEFT JOIN product_template pt on pt.id=pp.product_tmpl_id
                                     LEFT JOIN pos_category pc on pc.id=pt.pos_categ_id
                                     WHERE pt.detailed_type = 'service' and pol.coupon_id is not null group by pol.order_id) cpds on cpds.order_id=pol.order_id
+                        LEFT JOIN (SELECT pol.id as order_line_id,pol.order_id as pos_order_id,pol.product_id,ds.discount_amount as price_subtotal_incl, row_number() over (partition by pol.order_id) as count_no,
+                                0 as discount_line_product_id,pol.coupon_id,sp.dis_amt as pro_dis_amt,0 as dis_amt,'no_dis' as tran_type
+                            FROM pos_order_line pol
+                            LEFT JOIN product_product pp on pp.id=pol.product_id
+                            LEFT JOIN product_template pt on pt.id=pp.product_tmpl_id
+                            LEFT JOIN (select pos_order_id,sum(pro_dis_amt) as dis_amt,count(*) as count_no from pos_specific_products group by pos_order_id) sp on sp.pos_order_id=pol.order_id
+                            LEFT JOIN(select pol.order_id,sum(pol.price_subtotal_incl) as discount_amount  from pos_order_line pol
+                                LEFT JOIN product_product pp on pp.id=pol.product_id
+                                LEFT JOIN product_template pt on pt.id=pp.product_tmpl_id
+                                where pt.detailed_type = 'service' and (pol.program_id is null or pol.program_id not in (5,10)) group by pol.order_id) ds on ds.order_id=pol.order_id
+                            where pol.order_id in (select pos_order_id from pos_specific_products) and pol.id not in (select order_line_id from pos_specific_products)
+                            and pt.detailed_type != 'service'
+                            union all
+                            select *,'dis' as tran_type from pos_specific_products) pcp on pcp.pos_order_id=pol.order_id and pcp.order_line_id=pol.id
                         LEFT JOIN(SELECT pvc.product_product_id,
                                 pav.name,
                                 pav.attribute_id
@@ -90,7 +104,12 @@
                             LEFT JOIN product_template_attribute_line ptal on ptal.id=ptav.attribute_line_id
                             WHERE ptal.value_count >1 and pa.name='Size') sz on sz.product_product_id=pp.id
                         WHERE pt.detailed_type != 'service') pol on pol.order_id=po.id
-            order by pol.order_id,pol.order_line_id
+            left join(select distinct po.name as ref_name,pol.order_id,rpol.product_id as ref_product_id from pos_order_line pol
+                left join pos_order_line rpol on rpol.refunded_orderline_id=pol.id
+                left join pos_order po on po.id=rpol.order_id
+                where rpol.refunded_orderline_id is not null
+                order by pol.order_id) as ref on ref.order_id=po.id and ref.ref_product_id=pol.product_id
+    order by pol.order_id,pol.order_line_id) as a
             ]]>
             </field>
             <field name="domain_force">[('x_company_id', 'in', company_ids)]</field>

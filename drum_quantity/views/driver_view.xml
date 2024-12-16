@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form -->
+    <record id='view_driver_form' model='ir.ui.view'>
+        <field name='name'>Driver Form</field>
+        <field name='model'>res.driver</field>
+        <field name='arch' type='xml'>
+            <form string="Driver">
+                <group>
+                    <group>
+                        <field name="name" />
+                        <field name="nrc_no" />
+                    </group>
+                    <group>
+                        <field name="phone_one" />
+                        <field name="phone_two" />
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+    <!-- Tree View -->
+    <record id="view_driver_tree" model="ir.ui.view">
+        <field name="name">Driver Tree</field>
+        <field name="model">res.driver</field>
+        <field name="arch" type="xml">
+            <tree string="Driver">
+                <field name="name" />
+                <field name="nrc_no" />
+                <field name="phone_one" />
+                <field name="phone_two" />
+            </tree>
+        </field>
+    </record>
+    <!--    Filter   -->
+    <record id="view_driver_filter" model="ir.ui.view">
+        <field name="name">Driver</field>
+        <field name="model">res.driver</field>
+        <field name="arch" type="xml">
+            <search string="Search Driver">
+                <field name="name" />
+                <field name="nrc_no" />
+                <field name="phone_one" />
+                <field name="phone_two" />
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_driver" model="ir.actions.act_window">
+        <field name="name">Driver</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.driver</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_driver_tree"/>
+    </record>
+
+    <menuitem id="menu_driver" name="Driver" parent="sale.sale_order_menu" action="action_driver" sequence="49" groups="drum_quantity.group_ecoharmony"/>
+
+</odoo>

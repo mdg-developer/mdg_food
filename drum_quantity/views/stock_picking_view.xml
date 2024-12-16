@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_stock_picking_form_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.view.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="company_name" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='location_id']" position="after">
+                <field name='driver_id' attrs="{'invisible': ['|',('picking_type_code','not in',['outgoing','internal']), ('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])], 'readonly':[('state','in', ('done', 'cancel'))]}"/>
+                <field name='driver_nrc' attrs="{'invisible': ['|',('picking_type_code','not in',['outgoing','internal']), ('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])], 'readonly':[('state','in', ('done', 'cancel'))]}"/>
+                <field name='mobile_one' attrs="{'invisible': ['|',('picking_type_code','not in',['outgoing','internal']), ('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])], 'readonly':[('state','in', ('done', 'cancel'))]}"/>
+                <field name='mobile_two' attrs="{'invisible': ['|',('picking_type_code','not in',['outgoing','internal']), ('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])], 'readonly':[('state','in', ('done', 'cancel'))]}"/>         
+            </xpath>
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name='issue_date' readonly="1" attrs="{'invisible': ['|',('picking_type_code','not in',['outgoing','internal']), ('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}"/>
+                <field name='expire_date' attrs="{'invisible': ['|',('picking_type_code','not in',['outgoing','internal']), ('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])], 'readonly':[('state','in', ('done', 'cancel'))]}"/>
+                <field name='truck_no' attrs="{'invisible': ['|',('picking_type_code','not in',['outgoing','internal']), ('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])], 'readonly':[('state','in', ('done', 'cancel'))]}"/> 
+                <field name='oil_address' readonly="1" attrs="{'invisible': ['|',('picking_type_code','not in',['outgoing','internal']), ('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}"/> 
+            </xpath>
+            <xpath expr="//button[@name='button_scrap']" position="before">
+                <button string="Delivery Order Report" type="object" name="do_print_action" attrs="{'invisible': [('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

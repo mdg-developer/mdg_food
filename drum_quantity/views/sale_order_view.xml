@@ -12,6 +12,20 @@
             <xpath expr="//field[@name='order_line']/tree//field[@name='product_uom_qty']" position="before">
                 <field name="drum_qty" attrs="{'column_invisible': [('parent.company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}"/>
             </xpath>
+            <xpath expr="//field[@name='partner_invoice_id']" position="before">
+                <field name='customer_nrc' attrs="{'readonly':[('state','in', ('sale', 'done', 'cancel'))], 'invisible': [('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}" />
+                <field name='customer_phone' attrs="{'readonly':[('state','in', ('sale', 'done', 'cancel'))], 'invisible': [('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}" />
+                <field name='driver_id' readonly="0" attrs="{'invisible': [('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}"/>
+                <field name='driver_nrc' readonly="0" attrs="{'invisible': [('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}"/>
+                <field name='mobile_one' readonly="0" attrs="{'invisible': [('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}"/>
+                <field name='mobile_two' readonly="0" attrs="{'invisible': [('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}"/> 
+            </xpath>
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name='issue_date' readonly="0" attrs="{'invisible': [('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}"/>
+                <field name='truck_no' readonly="0" attrs="{'invisible': [('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}"/>
+                <field name='oil_address' attrs="{'readonly':[('state','in', ('sale', 'done', 'cancel'))], 'invisible': [('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}"/>
+                <field name='remark' attrs="{'readonly':[('state','in', ('sale', 'done', 'cancel'))], 'invisible': [('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}"/>
+            </xpath>
         </field>
     </record>
 </odoo>

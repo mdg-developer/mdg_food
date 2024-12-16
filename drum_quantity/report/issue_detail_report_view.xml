@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="issue_detail_report_from" model="ir.ui.view">
+            <field name="name">Issue.Detail.Report</field>
+            <field name="model">issue.detail.report</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="date_from" required="1"/>
+                        </group>
+                        <group>
+                            <field name="date_to" required="1"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button string="Export" name="action_export_excel" type="object" class="oe_highlight" data-hotkey="q"/>
+                        <button string="Cancel" class="btn btn-secondary" special="cancel" data-hotkey="z"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_issue_detail_report" model="ir.actions.act_window">
+            <field name="name">Issue Detail Report</field>
+            <field name="res_model">issue.detail.report</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem action="action_issue_detail_report" name="Car List Report" id="menu_issue_detail_report" parent="stock.menu_warehouse_report" sequence="4" groups="drum_quantity.group_ecoharmony"/>
+
+        <record id="report_issue_detail_list_xlsx" model="ir.actions.report">
+            <field name="name">Car List Report</field>
+            <field name="model">issue.detail.report</field>
+            <field name="report_type">xlsx</field>
+            <field name="report_name">drum_quantity.report_issue_detail_xls</field>
+            <field name="report_file">drum_quantity.report_issue_detail_xls</field>
+            <field name="binding_type">report</field>
+        </record>
+    </data>
+</odoo>

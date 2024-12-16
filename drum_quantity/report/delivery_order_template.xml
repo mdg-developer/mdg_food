@@ -1,0 +1,682 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="delivery_order_report_external_layout_standard">
+        <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout"  t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <center>
+                <img src='/drum_quantity/static/src/img/logo_img.png' style="display: flex;justify-content: adjust;"/>
+            <t t-if="o.picking_type_code=='internal'">
+                <h4 style="font-family:Pyidaungsu;padding-top: 12px;margin-bottom:-20px;">ပစည်းထုတ်ခွင့်လက်မှတ် - DELIVERY ORDER</h4>
+            </t>
+            <t t-if="o.picking_type_code!='internal'">
+                <h4 style="font-family:Pyidaungsu;padding-top: 12px;">ပစည်းထုတ်ခွင့်လက်မှတ် -</h4>
+                <h4 class="font-weight-bold" style="margin-top:-1px;margin-bottom:-20px;">DELIVERY ORDER</h4>
+            </t>
+            </center>
+            <t t-call="web.address_layout"/>
+            <t t-raw="0"/>
+        </div>
+    </template>
+    <template id="delivery_order_report_external_layout">
+        <t t-if="not o" t-set="o" t-value="doc"/>
+        <t t-if="not company">
+            <t t-if="company_id">
+                <t t-set="company" t-value="company_id"/>
+            </t>
+            <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+            <t t-else="else">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+        </t>
+        <t t-call="drum_quantity.delivery_order_report_external_layout_standard">
+            <t t-raw="0"/></t>
+    </template>
+
+   <template id="delivery_order_print_template">
+      <t t-call="web.html_container">
+         <t t-foreach="docs" t-as="o">
+            <t t-set="o" t-value="o.with_context(lang=lang)" />
+            <t t-call="drum_quantity.delivery_order_report_external_layout">
+                <t t-if="o.picking_type_code!='internal'">
+                    <div class="row">
+                        <table class="table table-sm o_main_table table-borderless mt-4" style="width:100%;font-size:14px;color:black;">
+                            <thead>
+                                <tr>
+                                    <td colspan="6">
+                                        <div style="width:100%;">
+                                            <table class="table table-sm o_main_table table-borderless mt-4" style="width:100%; font-size:14px; color:black;text-align: bottom;font-family:Pyidaungsu;">
+                                                <tr style="line-height: 20px;">
+                                                    <td style="padding-left: 3px;width: 1.5in;border-left:solid 2px black;border-top:solid 2px black;border-bottom:solid 1px black;">ကုန်ထုတ်အမှတ်စဥ်</td>
+                                                    <td style="width: 0.1in;border-top:solid 2px black;border-bottom:solid 1px black;">:</td>
+                                                    <td style="width: 3in;border-top:solid 2px black;border-bottom:solid 1px black;">
+                                                        <span t-field="o.origin" />
+                                                    </td>
+                                                    <td style="width: 2.2in;border-top:solid 2px black;border-bottom:solid 1px black;text-align: right;">ကုန်ထုတ်ရက်</td>
+                                                    <td style="width: 0.2in;border-top:solid 2px black;border-bottom:solid 1px black;">:</td>
+                                                    <td style="width: 1.5in;border-bottom:solid 1px black;border-right:solid 2px black;border-top:solid 2px black;"><span t-field="o.issue_date" t-options='{"widget": "date", "format": "dd.MM.yyyy"}'/></td>
+
+                                                </tr>
+                                                <tr style="line-height: 0.3in;">
+                                                    <td style="padding-left: 3px;border-left:solid 2px black;border-bottom:solid 1px black;">ကုန်သည်အမည်</td>
+                                                    <td style="border-bottom:solid 1px black;">:</td>
+                                                    <td colspan="4" style="border-right:solid 2px black;border-bottom:solid 1px black;"><span t-field="o.partner_id.name"/></td>
+                                                </tr>
+                                                <tr style="line-height: 0.3in;">
+                                                    <td style="padding-left: 3px;border-left:solid 2px black;border-bottom:solid 1px black;">မှတ်ပုံတင်</td>
+                                                    <td style="border-bottom:solid 1px black;">:</td>
+                                                    <td colspan="4" style="border-right:solid 2px black;border-bottom:solid 1px black;">
+                                                        <t t-if="o.sale_id">
+                                                            <span t-field="o.sale_id.customer_nrc" />
+                                                        </t>
+                                                </td>
+                                                </tr>
+                                                <tr style="line-height: 0.3in;">
+                                                    <td style="padding-left: 3px;border-left:solid 2px black;border-bottom:solid 1px black;">ဖုန်း</td>
+                                                    <td style="border-bottom:solid 1px black;">:</td>
+                                                    <td colspan="4" style="border-right:solid 2px black;border-bottom:solid 1px black;">
+                                                        <t t-if="o.sale_id">
+                                                            <span t-field="o.sale_id.customer_phone" />
+                                                        </t>
+                                                </td>
+                                                </tr>
+                                                <tr style="line-height: 0.3in;">
+                                                    <td style="padding-left: 3px;border-left:solid 2px black;border-bottom:solid 1px black;">အရောင်းအမှတ်စဥ်</td>
+                                                    <td style="border-bottom:solid 1px black;">:</td>
+                                                    <td colspan="4" style="border-right:solid 2px black;border-bottom:solid 1px black;"><span t-field="o.name" /></td>
+                                                </tr>
+                                                <tr style="line-height: 0.3in;">
+                                                    <td style="padding-left: 3px;border-left:solid 2px black;border-bottom:solid 1px black;">OTP အမှတ်စဥ်</td>
+                                                    <td style="border-bottom:solid 1px black;">:</td>
+                                                    <td colspan="4" style="border-right:solid 2px black;border-bottom:solid 1px black;"></td>                               
+                                                </tr>
+                                                <tr style="line-height: 0.3in;">
+                                                    <td style="padding-left: 3px;border-left:solid 2px black;border-bottom:solid 2px black;">ကုန်ချလိပ်စာ</td>
+                                                    <td style="border-bottom:solid 2px black;">:</td>
+                                                    <td colspan="4" style="border-right:solid 2px black;border-bottom:solid 2px black;"><span t-field="o.oil_address" /></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div>
+                                            <table class="table table-sm o_main_table table-borderless mt-4" style="width:100%;font-size:14px;color:black;">
+                                                <tr style="line-height: 0.4cm;">
+                                                    <th style="width: 1.2in;border:solid 1px black;font-family:Pyidaungsu;text-align: center;">ယာဥ်မောင်းအမည်</th>
+                                                    <th style="width: 1.5in;border:solid 1px black; "><div style="font-family:Pyidaungsu;text-align: center;">မှတ်ပုံတင်အမှတ်</div></th>
+                                                    <th style="width: 1.1in;border:solid 1px black; font-family:Pyidaungsu;text-align: center;">ဖုန်းနံပါတ်</th>
+                                                    <th style="border:solid 1px black;width: 0.8in; "><div style="font-family:Pyidaungsu;text-align: center;">ယာဥ်အမှတ်</div></th>
+                                                    <th style="border:solid 1px black;width: 1.5in; font-family:Pyidaungsu;text-align: center;">အရေအတွက်(ပေပါ)</th>
+                                                    <th style="width: 0.7in;border:solid 1px black; "><div style="font-family:Pyidaungsu;text-align: center;">ပိဿာ</div></th>
+                                                    <th style="border:solid 1px black;width: 1.7in;"><div style="font-family:Pyidaungsu;text-align: center;">စျေးနှုန်း(ကျပ်)</div></th>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border:solid 1px black;text-align: center;">
+                                                        <span t-field="o.driver_id.name" style="font-family:Pyidaungsu;"/>
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                        <span t-field="o.driver_nrc" style="font-family:Pyidaungsu;"/>
+                                                    </td>
+                                                    <td style="border:solid 1px black;text-align: center;">
+                                                        <span t-field="o.mobile_one" style="font-family:Pyidaungsu;"/>
+                                                        <span t-field="o.mobile_two" style="font-family:Pyidaungsu;"/>
+                                                    </td>
+                                                    <td style="border:solid 1px black;text-align: center;">
+                                                        <span t-field="o.truck_no" style="font-family:Pyidaungsu;"/>
+                                                    </td>
+                                                    <t t-if="o.sale_id">
+                                                        <t t-set="total_order_qty" t-value="0.0" />
+                                                            <t t-foreach="o.sale_id.order_line" t-as="l">
+                                                        </t>
+                                                        <t t-set="total_order_qty" t-value="total_order_qty + l.product_uom_qty"/>
+                                                        <td style="border:solid 1px black;text-align: center;">
+                                                            <t t-esc="total_order_qty/179.6" t-options='{"widget": "float", "precision": 3}'/>
+                                                        </td>
+                                                        <td style="border:solid 1px black;text-align: center;">
+                                                            <t t-if="total_order_qty > 0">
+                                                                <t t-esc="total_order_qty/1000" t-options='{"widget": "float", "precision": 3}'/>
+                                                            </t>
+                                                        </td>
+                                                        <td style="border:solid 1px black;text-align: center;">
+                                                            <t t-esc="o.sale_id.order_line[0].price_unit" t-options='{"widget": "float", "precision": 3}'/>
+                                                        </td>
+                                                    </t>
+                                                    <t t-if="not o.sale_id">
+                                                        <t t-if="o.move_ids_without_package">
+                                                            <t t-set="total_order_qty" t-value="0.0" />
+                                                                <t t-foreach="o.move_ids_without_package" t-as="l">
+                                                            </t>
+                                                            <t t-set="total_order_qty" t-value="total_order_qty + l.product_uom_qty"/>
+                                                            <td style="border:solid 1px black;text-align: center;">
+                                                                <t t-esc="total_order_qty/179.6" t-options='{"widget": "float", "precision": 3}'/>
+                                                            </td>
+                                                            <td style="border:solid 1px black;text-align: center;">
+                                                                <t t-if="total_order_qty > 0">
+                                                                    <t t-esc="total_order_qty/1000" t-options='{"widget": "float", "precision": 3}'/>
+                                                                </t>
+                                                            </td>
+                                                            <td style="border:solid 1px black;text-align: center;">
+                                                                <!-- <t t-esc="o.sale_id.order_line[0].price_unit" t-options='{"widget": "float", "precision": 3}'/> -->
+                                                            </td>
+                                                        </t>
+                                                    </t>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border:solid 1px black;padding-top: 20px;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border:solid 1px black;padding-top: 20px;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border:solid 1px black;padding-top: 20px;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border:solid 1px black;padding-top: 20px;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border:solid 1px black;padding-top: 20px;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border:solid 1px black;padding-top: 20px;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border:solid 1px black;padding-top: 20px;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border:solid 1px black;padding-top: 20px;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border:solid 1px black;padding-top: 20px;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border:solid 1px black;padding-top: 20px;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border:solid 1px black;padding-top: 20px;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="4" style="border:solid 1px black;text-align: center;">Total
+                                                    </td>
+                                                    <!-- <t t-if="o.sale_id"> -->
+                                                        <td style="border:solid 1px black;text-align: center;">
+                                                            <t t-esc="total_order_qty/179.6" t-options='{"widget": "float", "precision": 3}'/>
+                                                        </td>
+                                                        <td style="border:solid 1px black;text-align: center;">
+                                                            <t t-esc="total_order_qty/1000" t-options='{"widget": "float", "precision": 3}'/>
+                                                        </td>
+                                                        <td style="border:solid 1px black;text-align: center;">
+                                                        </td>
+                                                    <!-- </t> -->
+                                                    <!-- <t t-if="not o.sale_id">
+                                                        <t t-if="o.move_ids_without_package">
+                                                        </t>
+                                                    </t> -->
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div style="padding-top: 1in;">
+                                            <table class="table table-sm o_main_table table-border mt-4" style="width:100%;font-size:14px;color:black;font-family:Pyidaungsu;">
+                                                <tr>
+                                                    <td style="width: 2.7in;">
+                                                    </td>
+                                                    <td style="width: 0.1in;">
+                                                    </td>
+                                                    <td />
+                                                    <td style="width: 1in;">
+                                                        တာဝန်ခံ
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                    </td>
+                                                    <td>
+                                                        အမည်
+                                                    </td>
+                                                    <td style="width: 0.013in;">
+                                                        :
+                                                    </td>
+                                                    <td>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                    </td>
+                                                    <td>
+                                                        ဖုန်းနံပါတ်
+                                                    </td>
+                                                    <td>
+                                                        :
+                                                    </td>
+                                                    <td>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </t>
+                <t t-if="o.picking_type_code=='internal'">
+                    <div class="row">
+                        <table class="table table-sm o_main_table table-borderless mt-4" style="width:100%;font-size:14px;color:black;">
+                            <thead>
+                                <tr>
+                                    <td colspan="6">
+                                        <div style="width:100%;">
+                                            <table class="table table-sm o_main_table table-borderless mt-4" style="width:100%; font-size:14px; color:black;text-align: bottom;font-family:Pyidaungsu;">
+                                                <tr style="line-height: 20px;">
+                                                    <td style="padding-left: 3px;width: 1.5in;border-left:solid 2px black;border-top:solid 2px black;border-bottom:solid 1px black;">ကုန်ထုတ်အမှတ်စဥ်</td>
+                                                    <td style="width: 0.1in;border-top:solid 2px black;border-bottom:solid 1px black;">:</td>
+                                                    <td style="width: 3in;border-top:solid 2px black;border-bottom:solid 1px black;">
+                                                        <span t-field="o.origin" />
+                                                    </td>
+                                                    <td style="width: 2.2in;border-top:solid 2px black;border-bottom:solid 1px black;text-align: right;">ကုန်ထုတ်ရက်</td>
+                                                    <td style="width: 0.2in;border-top:solid 2px black;border-bottom:solid 1px black;">:</td>
+                                                    <td style="width: 1.5in;border-bottom:solid 1px black;border-right:solid 2px black;border-top:solid 2px black;"><span t-field="o.issue_date" t-options='{"widget": "date", "format": "dd.MM.yyyy"}'/></td>
+
+                                                </tr>
+                                                <tr style="line-height: 0.3in;">
+                                                    <td style="padding-left: 3px;border-left:solid 2px black;border-bottom:solid 1px black;">ကုန်သည်အမည်</td>
+                                                    <td style="border-bottom:solid 1px black;">:</td>
+                                                    <td colspan="4" style="border-right:solid 2px black;border-bottom:solid 1px black;"><span t-field="o.partner_id.name"/></td>
+                                                </tr>
+                                                <tr style="line-height: 0.3in;">
+                                                    <td style="padding-left: 3px;border-left:solid 2px black;border-bottom:solid 1px black;">မှတ်ပုံတင်</td>
+                                                    <td style="border-bottom:solid 1px black;">:</td>
+                                                    <td colspan="4" style="border-right:solid 2px black;border-bottom:solid 1px black;">
+                                                        <t t-if="o.sale_id">
+                                                            <span t-field="o.sale_id.customer_nrc" />
+                                                        </t>
+                                                </td>
+                                                </tr>
+                                                <tr style="line-height: 0.3in;">
+                                                    <td style="padding-left: 3px;border-left:solid 2px black;border-bottom:solid 1px black;">ဖုန်း</td>
+                                                    <td style="border-bottom:solid 1px black;">:</td>
+                                                    <td colspan="4" style="border-right:solid 2px black;border-bottom:solid 1px black;">
+                                                        <t t-if="o.sale_id">
+                                                            <span t-field="o.sale_id.customer_phone" />
+                                                        </t>
+                                                </td>
+                                                </tr>
+                                                <tr style="line-height: 0.3in;">
+                                                    <td style="padding-left: 3px;border-left:solid 2px black;border-bottom:solid 1px black;">အရောင်းအမှတ်စဥ်</td>
+                                                    <td style="border-bottom:solid 1px black;">:</td>
+                                                    <td colspan="4" style="border-right:solid 2px black;border-bottom:solid 1px black;"><span t-field="o.name" /></td>
+                                                </tr>
+                                                <tr style="line-height: 0.3in;">
+                                                    <td style="padding-left: 3px;border-left:solid 2px black;border-bottom:solid 1px black;">OTP အမှတ်စဥ်</td>
+                                                    <td style="border-bottom:solid 1px black;">:</td>
+                                                    <td colspan="4" style="border-right:solid 2px black;border-bottom:solid 1px black;"></td>                               
+                                                </tr>
+                                                <tr style="line-height: 0.3in;">
+                                                    <td style="padding-left: 3px;border-left:solid 2px black;border-bottom:solid 2px black;">ကုန်ချလိပ်စာ</td>
+                                                    <td style="border-bottom:solid 2px black;">:</td>
+                                                    <td colspan="4" style="border-right:solid 2px black;border-bottom:solid 2px black;"><span t-field="o.oil_address" /></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div>
+                                            <table class="table table-sm o_main_table table-borderless mt-4" style="width:100%;font-size:14px;color:black;">
+                                                <tr style="line-height: 0.4cm;">
+                                                    <th style="width: 1.2in;border:solid 1px black;font-family:Pyidaungsu;text-align: center;">ယာဥ်မောင်းအမည်</th>
+                                                    <th style="width: 1.5in;border:solid 1px black; "><div style="font-family:Pyidaungsu;text-align: center;">မှတ်ပုံတင်အမှတ်</div></th>
+                                                    <th style="width: 1.1in;border:solid 1px black; font-family:Pyidaungsu;text-align: center;">ဖုန်းနံပါတ်</th>
+                                                    <th style="border:solid 1px black;width: 0.8in; "><div style="font-family:Pyidaungsu;text-align: center;">ယာဥ်အမှတ်</div></th>
+                                                    <th style="border:solid 1px black;width: 1.5in; font-family:Pyidaungsu;text-align: center;">အရေအတွက်(ပေပါ)</th>
+                                                    <th style="width: 0.7in;border:solid 1px black; "><div style="font-family:Pyidaungsu;text-align: center;">ပိဿာ</div></th>
+                                                    <th style="border:solid 1px black;width: 1.7in;"><div style="font-family:Pyidaungsu;text-align: center;">စျေးနှုန်း(ကျပ်)</div></th>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border:solid 1px black;text-align: center;">
+                                                        <span t-field="o.driver_id.name" style="font-family:Pyidaungsu;"/>
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                        <span t-field="o.driver_nrc" style="font-family:Pyidaungsu;"/>
+                                                    </td>
+                                                    <td style="border:solid 1px black;text-align: center;">
+                                                        <span t-field="o.mobile_one" style="font-family:Pyidaungsu;"/>
+                                                        <span t-field="o.mobile_two" style="font-family:Pyidaungsu;"/>
+                                                    </td>
+                                                    <td style="border:solid 1px black;text-align: center;">
+                                                        <span t-field="o.truck_no" style="font-family:Pyidaungsu;"/>
+                                                    </td>
+                                                    <t t-if="o.move_ids_without_package">
+                                                        <t t-set="total_order_qty" t-value="0.0" />
+                                                            <t t-foreach="o.move_ids_without_package" t-as="l">
+                                                        </t>
+                                                        <t t-set="total_order_qty" t-value="total_order_qty + l.product_uom_qty"/>
+                                                        <td style="border:solid 1px black;text-align: center;">
+                                                            <t t-esc="total_order_qty/179.6" t-options='{"widget": "float", "precision": 3}'/>
+                                                        </td>
+                                                        <td style="border:solid 1px black;text-align: center;">
+                                                            <t t-if="total_order_qty > 0">
+                                                                <t t-esc="total_order_qty/1000" t-options='{"widget": "float", "precision": 3}'/>
+                                                            </t>
+                                                        </td>
+                                                        <td style="border:solid 1px black;text-align: center;">
+                                                            <!-- <t t-esc="o.sale_id.order_line[0].price_unit" t-options='{"widget": "float", "precision": 3}'/> -->
+                                                        </td>
+                                                    </t>
+                                                    <t t-if="not o.move_ids_without_package">
+                                                        <td style="border:solid 1px black;text-align: center;">
+                                                            
+                                                        </td>
+                                                        <td style="border:solid 1px black;text-align: center;">
+                                                            
+                                                        </td>
+                                                        <td style="border:solid 1px black;text-align: center;">
+                                                            
+                                                        </td>
+                                                    </t>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border:solid 1px black;padding-top: 20px;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border:solid 1px black;padding-top: 20px;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border:solid 1px black;padding-top: 20px;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border:solid 1px black;padding-top: 20px;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                    <td style="border:solid 1px black;">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="4" style="border:solid 1px black;text-align: center;">Total
+                                                    </td>
+                                                    <t t-if="o.move_ids_without_package">
+                                                        <td style="border:solid 1px black;text-align: center;">
+                                                            <t t-esc="total_order_qty/179.6" t-options='{"widget": "float", "precision": 3}'/>
+                                                        </td>
+                                                        <td style="border:solid 1px black;text-align: center;">
+                                                            <t t-esc="total_order_qty/1000" t-options='{"widget": "float", "precision": 3}'/>
+                                                        </td>
+                                                        <td style="border:solid 1px black;text-align: center;">
+                                                        </td>
+                                                    </t>
+                                                    <t t-if="not o.move_ids_without_package">
+                                                        <td style="border:solid 1px black;text-align: center;">
+            
+                                                        </td>
+                                                        <td style="border:solid 1px black;text-align: center;">
+                                                    
+                                                        </td>
+                                                        <td style="border:solid 1px black;text-align: center;">
+                                                            
+                                                        </td>
+                                                    </t>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div style="padding-top: 1in;">
+                                            <table class="table table-sm o_main_table table-border mt-4" style="width:100%;font-size:14px;color:black;font-family:Pyidaungsu;">
+                                                <tr>
+                                                    <td style="width: 0.2in;" colspan="4">
+                                                    </td>
+                                                    <td style="width: 1in;">
+                                                         တာဝန်ခံ
+                                                    </td>
+                                                    <td>
+                                                    </td>
+                                                    <td style="width: 0.7in;">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="4">
+                                                    </td>
+                                                    <td>
+                                                        အမည်
+                                                    </td>
+                                                    <td>
+                                                        :
+                                                    </td>
+                                                    <td>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="4">
+                                                    </td>
+                                                    <td>
+                                                        ဖုန်းနံပါတ်
+                                                    </td>
+                                                    <td>
+                                                        :
+                                                    </td>
+                                                    <td>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </t>
+                <br/>
+            </t>
+         </t>
+      </t>
+   </template>
+
+   <record id="delivery_order_print" model="ir.actions.report">
+      <field name="name">Delivery Order Report</field>
+      <field name="model">stock.picking</field>
+      <field name="report_type">qweb-pdf</field>
+      <field name="report_name">drum_quantity.delivery_order_print_template</field>
+      <field name="report_file">drum_quantity.delivery_order_print_template</field>
+      <field name="print_report_name">'Picking Operations - %s' % (object.name)</field>
+      <!-- <field name="binding_model_id" ref="model_stock_picking"/> -->
+      <field name="binding_type">report</field>
+   </record>
+
+   <record id="delivery_order_report_paperformat" model="report.paperformat">
+      <field name="name">Customized A4(Delivery Order Report)</field>
+      <field name="format">A4</field>
+      <field name="orientation"></field>
+      <field name="margin_top" eval="5"/>
+      <field name="margin_bottom" eval="15"/>
+      <field name="margin_left" eval="10"/>
+      <field name="margin_right" eval="10"/>
+      <field name="header_line" eval="False"/>
+      <field name="header_spacing" eval="5"/>
+      <field name="dpi" eval="90"/>
+      <field name="report_ids" eval="[(4, ref('delivery_order_print'))]"/>
+   </record>
+</odoo>
+

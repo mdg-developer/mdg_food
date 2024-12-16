@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_purchase_order_form_inherit" model="ir.ui.view">
+        <field name="name">purchase.order.view.form.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="company_name" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='picking_type_id']" position="after">
+                <field name="estimate_arrival_date" attrs="{'readonly':[('state','in', ('purchase', 'done', 'cancel'))], 'invisible': [('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}"/>
+            </xpath>
+            <xpath expr="//field[@name='currency_id']" position="after">
+                <field name="loss_claim" width="10%;" attrs="{'readonly':[('state','in', ('purchase', 'done', 'cancel'))], 'invisible': [('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}"/>
+                <field name="loss_percent" attrs="{'readonly':[('state','in', ('purchase', 'done', 'cancel'))], 'invisible': ['|',('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED']), ('loss_claim', '=', 'no')]}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

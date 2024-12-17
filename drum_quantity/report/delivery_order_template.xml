@@ -5,10 +5,10 @@
             <center>
                 <img src='/drum_quantity/static/src/img/logo_img.png' style="display: flex;justify-content: adjust;"/>
             <t t-if="o.picking_type_code=='internal'">
-                <h4 style="font-family:Pyidaungsu;padding-top: 12px;margin-bottom:-20px;">ပစည်းထုတ်ခွင့်လက်မှတ် - DELIVERY ORDER</h4>
+                <h4 style="font-family:Pyidaungsu;padding-top: 12px;margin-bottom:-20px;">ပစ္စည်းထုတ်ခွင့်လက်မှတ် - DELIVERY ORDER</h4>
             </t>
             <t t-if="o.picking_type_code!='internal'">
-                <h4 style="font-family:Pyidaungsu;padding-top: 12px;">ပစည်းထုတ်ခွင့်လက်မှတ် -</h4>
+                <h4 style="font-family:Pyidaungsu;padding-top: 12px;">ပစ္စည်းထုတ်ခွင့်လက်မှတ် -</h4>
                 <h4 class="font-weight-bold" style="margin-top:-1px;margin-bottom:-20px;">DELIVERY ORDER</h4>
             </t>
             </center>

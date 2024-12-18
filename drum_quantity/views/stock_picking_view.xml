@@ -15,10 +15,10 @@
                 <field name='mobile_two' attrs="{'invisible': ['|',('picking_type_code','not in',['outgoing','internal']), ('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])], 'readonly':[('state','in', ('done', 'cancel'))]}"/>         
             </xpath>
             <xpath expr="//field[@name='origin']" position="after">
-                <field name='issue_date' readonly="1" attrs="{'invisible': ['|',('picking_type_code','not in',['outgoing','internal']), ('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}"/>
+                <field name='issue_date' attrs="{'invisible': ['|',('picking_type_code','not in',['outgoing','internal']), ('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])], 'readonly':[('state','in', ('done', 'cancel'))]}"/>
                 <field name='expire_date' attrs="{'invisible': ['|',('picking_type_code','not in',['outgoing','internal']), ('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])], 'readonly':[('state','in', ('done', 'cancel'))]}"/>
                 <field name='truck_no' attrs="{'invisible': ['|',('picking_type_code','not in',['outgoing','internal']), ('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])], 'readonly':[('state','in', ('done', 'cancel'))]}"/> 
-                <field name='oil_address' readonly="1" attrs="{'invisible': ['|',('picking_type_code','not in',['outgoing','internal']), ('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}"/> 
+                <field name='oil_address' attrs="{'invisible': ['|',('picking_type_code','not in',['outgoing','internal']), ('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])], 'readonly':[('state','in', ('done', 'cancel'))]}"/> 
             </xpath>
             <xpath expr="//button[@name='button_scrap']" position="before">
                 <button string="Delivery Order Report" type="object" name="do_print_action" attrs="{'invisible': [('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}"/>

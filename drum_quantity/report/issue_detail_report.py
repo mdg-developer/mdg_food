@@ -6,6 +6,7 @@ class IssueDetailReport(models.TransientModel):
 
     date_from = fields.Date('From Date', default=fields.Datetime.now)
     date_to = fields.Date('To Date', default=fields.Datetime.now)
+    warehouse_id = fields.Many2one('stock.warehouse', string='Warehouse')
 
     def action_export_excel(self):
         return self.env.ref('drum_quantity.report_issue_detail_list_xlsx').report_action(self)
@@ -43,7 +44,7 @@ class IssueDetailXlsx(models.AbstractModel):
             'စဉ်','DO NO.','ကားနံပါတ်','ယာဥ်မောင်းအမည်','ယာဥ်မောင်းမှတ်ပုံတင်အမှတ်','ဖုန်းနံပါတ်','ဆီထုတ်ယူမည့် (ပေပါ)','ဆီချမည့်လိပ်စာ',
             'ကိုယ်စားလှယ်အမည်','တိုင်း/ပြည်နယ်','ကိုယ်စားလှယ် မှတ်ပုံတင်အမှတ်','ဖုန်းနံပါတ်', 'နေရပ်လိပ်စာ', 'မှတ်ချက်'
         ]
-        title = "(" +partners.date_from.strftime("%d.%m.%Y")+ ") ရက်နေ့ ( Ecoharmony  Co.,Ltd မှ ROS ဆီကန်တွင် ဆီထုတ်ယူမည့် ကားစာရင်း )"
+        title = "(" +partners.date_from.strftime("%d.%m.%Y")+ ") ရက်နေ့ ( Ecoharmony  Co.,Ltd မှ "+ partners.warehouse_id.name +" ဆီကန်တွင် ဆီထုတ်ယူမည့် ကားစာရင်း )"
         sheet.merge_range('A2:N2',title,title_format)
         
         row = 3
@@ -102,6 +103,9 @@ class IssueDetailXlsx(models.AbstractModel):
         if partners.date_to:
             where_cause += """ AND so.issue_date <= %s"""
             param.append(partners.date_to)
+        if partners.warehouse_id:
+            where_cause += """ AND so.warehouse_id = %s"""
+            param.append(partners.warehouse_id.id)
 
         order = """ 
                 ORDER BY so.issue_date,so.id """

@@ -15,6 +15,18 @@
                 <field name="loss_claim" width="10%;" attrs="{'readonly':[('state','in', ('purchase', 'done', 'cancel'))], 'invisible': [('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}"/>
                 <field name="loss_percent" attrs="{'readonly':[('state','in', ('purchase', 'done', 'cancel'))], 'invisible': ['|',('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED']), ('loss_claim', '=', 'no')]}"/>
             </xpath>
+            <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                <button class="oe_stat_button" name="open_fesc" type="object" icon="fa-pencil-square-o" attrs="{'invisible': [('fesc_count', '=', 0)]}">
+                    <div class="o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="fesc_count" invisible="1"/>
+                        </span>
+                        <span class="o_stat_text">
+                            FESC
+                        </span>
+                    </div>
+                </button>
+            </xpath>
         </field>
     </record>
 </odoo>

@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_res_driver,driver_group_user,model_res_driver,,1,1,1,1
 access_issue_detail,issue_detail_group_user,model_issue_detail_report,,1,1,1,1
+access_fesc,fesc_group_user,model_res_fesc,,1,1,1,1

@@ -1,0 +1,16 @@
+<odoo>
+    <data noupdate="1">
+        <record id="seq_fest_request" model="ir.sequence">
+            <field name="name">FESC Sequence</field>
+            <field name="code">res.fesc</field>
+            <field name="prefix">FESC/%(year)s/</field>
+            <field name="padding">7</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="fesc_request_comp_rule" model="ir.rule">
+            <field name="name">FESC multi company rule</field>
+            <field name="model_id" ref="drum_quantity.model_res_fesc"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', company_ids)]</field>
+        </record>
+    </data>
+</odoo>

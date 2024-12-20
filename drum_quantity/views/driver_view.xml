@@ -6,16 +6,18 @@
         <field name='model'>res.driver</field>
         <field name='arch' type='xml'>
             <form string="Driver">
-                <group>
+                <sheet>
                     <group>
-                        <field name="name" />
-                        <field name="nrc_no" />
+                        <group>
+                            <field name="name" />
+                            <field name="nrc_no" />
+                        </group>
+                        <group>
+                            <field name="phone_one" />
+                            <field name="phone_two" />
+                        </group>
                     </group>
-                    <group>
-                        <field name="phone_one" />
-                        <field name="phone_two" />
-                    </group>
-                </group>
+                </sheet>
             </form>
         </field>
     </record>

@@ -5,3 +5,4 @@ from . import account_invoice_report
 from . import driver
 from . import stock_picking
 from . import purchase_order
+from . import fesc

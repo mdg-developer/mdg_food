@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form -->
+    <record id='view_fesc_form' model='ir.ui.view'>
+        <field name='name'>FESC Form</field>
+        <field name='model'>res.fesc</field>
+        <field name='arch' type='xml'>
+            <form string="FESC">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="licence_no" />
+                            <field name="bank_id" required="1" options="{'no_create_edit': True, 'no_quick_create' : True, 'no_create': True}"/>
+                            <field name="import_declaration_no" />
+                            <field name="partner_id" />
+                            <field name="purchase_id" required="1" options="{'no_create_edit': True, 'no_quick_create' : True, 'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="date" required="1"/>
+                            <field name="mt_qty" />
+                            <field name="price" />
+                            <field name="subtotal" readonly="1" force_save="1"/>
+                            <field name="percent" />
+                            <field name="balance" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- Tree View -->
+    <record id="view_fesc_tree" model="ir.ui.view">
+        <field name="name">FESC Tree</field>
+        <field name="model">res.fesc</field>
+        <field name="arch" type="xml">
+            <tree string="FESC">
+                <field name="name" />
+                <field name="date" />
+                <field name="licence_no" />
+                <field name="bank_id" optional="hide"/>
+                <field name="import_declaration_no" />
+                <field name="partner_id" />
+                <field name="mt_qty" />
+                <field name="price" />
+                <field name="subtotal" />
+                <field name="percent" />
+                <field name="balance" />
+                <field name="purchase_id" />
+            </tree>
+        </field>
+    </record>
+    <!--    Filter   -->
+    <record id="view_fesc_filter" model="ir.ui.view">
+        <field name="name">FESC</field>
+        <field name="model">res.fesc</field>
+        <field name="arch" type="xml">
+            <search string="Search FESC">
+                <field name="name" />
+                <field name="licence_no" />
+                <field name="partner_id" />
+                <field name="import_declaration_no" />
+                <field name="purchase_id" />
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_fesc" model="ir.actions.act_window">
+        <field name="name">FESC Form</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.fesc</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_fesc_tree"/>
+    </record>
+
+    <menuitem id="menu_fesc" name="FESC Form" parent="purchase.menu_procurement_management" action="action_fesc" sequence="49" groups="drum_quantity.group_ecoharmony"/>
+
+</odoo>

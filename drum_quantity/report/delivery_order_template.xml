@@ -124,15 +124,17 @@
                                                     </td>
                                                     <t t-if="o.sale_id">
                                                         <t t-set="total_order_qty" t-value="0.0" />
+                                                        <t t-set="total_drum_qty" t-value="0.0" />
                                                             <t t-foreach="o.sale_id.order_line" t-as="l">
                                                         </t>
                                                         <t t-set="total_order_qty" t-value="total_order_qty + l.product_uom_qty"/>
+                                                        <t t-set="total_drum_qty" t-value="total_drum_qty + l.drum_qty"/>
                                                         <td style="border:solid 1px black;text-align: center;">
-                                                            <t t-esc="total_order_qty/179.6" t-options='{"widget": "float", "precision": 3}'/>
+                                                            <t t-esc="total_drum_qty" t-options='{"widget": "float", "precision": 3}'/>
                                                         </td>
                                                         <td style="border:solid 1px black;text-align: center;">
                                                             <t t-if="total_order_qty > 0">
-                                                                <t t-esc="total_order_qty/1000" t-options='{"widget": "float", "precision": 3}'/>
+                                                                <t t-esc="total_order_qty" t-options='{"widget": "float", "precision": 3}'/>
                                                             </t>
                                                         </td>
                                                         <td style="border:solid 1px black;text-align: center;">
@@ -142,15 +144,17 @@
                                                     <t t-if="not o.sale_id">
                                                         <t t-if="o.move_ids_without_package">
                                                             <t t-set="total_order_qty" t-value="0.0" />
+                                                            <t t-set="total_drum_qty" t-value="0.0" />
                                                                 <t t-foreach="o.move_ids_without_package" t-as="l">
                                                             </t>
                                                             <t t-set="total_order_qty" t-value="total_order_qty + l.product_uom_qty"/>
+                                                            <t t-set="total_drum_qty" t-value="total_drum_qty + l.drum_qty"/>
                                                             <td style="border:solid 1px black;text-align: center;">
-                                                                <t t-esc="total_order_qty/179.6" t-options='{"widget": "float", "precision": 3}'/>
+                                                                <t t-esc="total_drum_qty" t-options='{"widget": "float", "precision": 3}'/>
                                                             </td>
                                                             <td style="border:solid 1px black;text-align: center;">
                                                                 <t t-if="total_order_qty > 0">
-                                                                    <t t-esc="total_order_qty/1000" t-options='{"widget": "float", "precision": 3}'/>
+                                                                    <t t-esc="total_order_qty" t-options='{"widget": "float", "precision": 3}'/>
                                                                 </t>
                                                             </td>
                                                             <td style="border:solid 1px black;text-align: center;">
@@ -340,10 +344,10 @@
                                                     </td>
                                                     <!-- <t t-if="o.sale_id"> -->
                                                         <td style="border:solid 1px black;text-align: center;">
-                                                            <t t-esc="total_order_qty/179.6" t-options='{"widget": "float", "precision": 3}'/>
+                                                            <t t-esc="total_drum_qty" t-options='{"widget": "float", "precision": 3}'/>
                                                         </td>
                                                         <td style="border:solid 1px black;text-align: center;">
-                                                            <t t-esc="total_order_qty/1000" t-options='{"widget": "float", "precision": 3}'/>
+                                                            <t t-esc="total_order_qty" t-options='{"widget": "float", "precision": 3}'/>
                                                         </td>
                                                         <td style="border:solid 1px black;text-align: center;">
                                                         </td>
@@ -489,11 +493,11 @@
                                                         </t>
                                                         <t t-set="total_order_qty" t-value="total_order_qty + l.product_uom_qty"/>
                                                         <td style="border:solid 1px black;text-align: center;">
-                                                            <t t-esc="total_order_qty/179.6" t-options='{"widget": "float", "precision": 3}'/>
+                                                            <t t-esc="total_order_qty" t-options='{"widget": "float", "precision": 3}'/>
                                                         </td>
                                                         <td style="border:solid 1px black;text-align: center;">
                                                             <t t-if="total_order_qty > 0">
-                                                                <t t-esc="total_order_qty/1000" t-options='{"widget": "float", "precision": 3}'/>
+                                                                <t t-esc="total_order_qty" t-options='{"widget": "float", "precision": 3}'/>
                                                             </t>
                                                         </td>
                                                         <td style="border:solid 1px black;text-align: center;">
@@ -581,10 +585,10 @@
                                                     </td>
                                                     <t t-if="o.move_ids_without_package">
                                                         <td style="border:solid 1px black;text-align: center;">
-                                                            <t t-esc="total_order_qty/179.6" t-options='{"widget": "float", "precision": 3}'/>
+                                                            <t t-esc="total_order_qty" t-options='{"widget": "float", "precision": 3}'/>
                                                         </td>
                                                         <td style="border:solid 1px black;text-align: center;">
-                                                            <t t-esc="total_order_qty/1000" t-options='{"widget": "float", "precision": 3}'/>
+                                                            <t t-esc="total_order_qty" t-options='{"widget": "float", "precision": 3}'/>
                                                         </td>
                                                         <td style="border:solid 1px black;text-align: center;">
                                                         </td>

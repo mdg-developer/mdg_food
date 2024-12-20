@@ -5,6 +5,7 @@
     'summary': 'Add drum qty in sale order line',
     'depends': ['base', 'sale', 'account', 'stock', 'purchase', 'report_xlsx'],
     'data': [
+        'data/data.xml',
         'security/ir.model.access.csv',
         'security/security.xml',
         'views/sale_order_view.xml',
@@ -13,7 +14,8 @@
         'views/stock_picking_view.xml',
         'views/purchase_order_view.xml',
         'report/delivery_order_template.xml',
-        'report/issue_detail_report_view.xml'
+        'report/issue_detail_report_view.xml',
+        'views/fesc_view.xml'
     ],
 
     'installable': True,

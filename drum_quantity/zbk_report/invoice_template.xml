@@ -95,7 +95,7 @@
                                                         :
                                                     </th>
                                                     <th>
-                                                        <span t-field="o.picking_id.scheduled_date" t-options='{"widget": "date", "format": "dd.MM.yyyy"}'/>
+                                                        <span t-field="o.picking_id.actual_date" t-options='{"widget": "date", "format": "dd.MM.yyyy"}'/>
                                                     </th>
                                                 </tr>
                                                 <tr>

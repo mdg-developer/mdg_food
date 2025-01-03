@@ -47,7 +47,7 @@
                                                     <td style="width: 0.6in;">Date</td>
                                                     <td >:</td>
                                                     <td colspan="5">
-                                                        <span t-field="o.issue_date" />
+                                                        <span t-field="o.actual_date" t-options='{"widget": "date", "format": "dd-MMM-yyyy"}'/>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -199,6 +199,7 @@
           <field name="report_type">qweb-pdf</field>
           <field name="report_name">drum_quantity.zbk_delivery_order_print_template</field>
           <field name="report_file">drum_quantity.zbk_delivery_order_print_template</field>
+          <field name="print_report_name">'Picking Operations - %s' % (object.name)</field>
           <!-- <field name="binding_model_id" ref="model_stock_picking"/> -->
           <field name="binding_type">report</field>
        </record>

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <template id="deliveryorder_report_external_layout_standard">
+        <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout"  t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <center>
+                <img src='/drum_quantity/static/src/img/zbk_logo.png' style="display: flex;justify-content: adjust;"/>
+                <h4 style="font-family:Calibri;padding-top: 15px;"><strong>Delivery Order</strong></h4>
+            </center>
+            <t t-call="web.address_layout"/>
+            <t t-raw="0"/>
+        </div>
+    </template>
+
+    <template id="deliveryorder_report_external_layout">
+        <t t-if="not o" t-set="o" t-value="doc"/>
+        <t t-if="not company">
+            <t t-if="company_id">
+                <t t-set="company" t-value="company_id"/>
+            </t>
+            <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+            <t t-else="else">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+        </t>
+        <t t-call="drum_quantity.deliveryorder_report_external_layout_standard">
+            <t t-raw="0"/></t>
+    </template>
+
+     <template id="zbk_delivery_order_print_template">
+          <t t-call="web.html_container">
+             <t t-foreach="docs" t-as="o">
+                <t t-set="o" t-value="o.with_context(lang=lang)" />
+                <t t-call="drum_quantity.deliveryorder_report_external_layout">
+                    <div class="row">
+                        <table class="table table-sm o_main_table table-borderless mt-4" style="width:100%;font-size:14px;color:black;">
+                            <thead>
+                                <tr>
+                                    <td colspan="6">
+                                        <div style="width:100%;">
+                                            <table class="table table-sm o_main_table table-borderless mt-4" style="width:100%; font-family:Calibri; color:black; font-weight:bold;font-size:12px;">
+                                                <tr>
+                                                    <td colspan="3" style="width: 2.9in;"></td>
+                                                    <td style="width: 2.2in;"></td>
+                                                    <td style="width: 0.6in;">Date</td>
+                                                    <td >:</td>
+                                                    <td colspan="5">
+                                                        <span t-field="o.issue_date" />
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="3" style="width: 2.9in;"></td>
+                                                    <td style="width: 2.2in;"></td>
+                                                    <td style="width: 0.6in;">DO No</td>
+                                                    <td >:</td>
+                                                    <td colspan="5">
+                                                        <span t-field="o.name" />
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="3" style="width: 2.9in;"></td>
+                                                    <td style="width: 2.2in;"></td>
+                                                    <td style="width: 1.5in;">Vehicle No</td>
+                                                    <td >:</td>
+                                                    <td colspan="5">
+                                                        <span t-field="o.truck_no"/>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div>
+                                            <table class="table table-sm o_main_table table-border mt-4" style="width:100%;font-size:12px;">
+                                                <!-- Table Header -->
+                                                <tr style="line-height: 0.7cm;font-weight:bold;">
+                                                    <th style="font-weight:bold;width: 0.1in;border:solid 1px black; text-align: center;">No.</th>
+                                                    <th style="font-weight:bold;width: 4in;border:solid 1px black; text-align: center;">Description</th>
+                                                    <th style="font-weight:bold;border:solid 1px black; text-align: center;">Pack Size</th>
+                                                    <th style="font-weight:bold;border:solid 1px black; text-align: center;">Unit</th>
+                                                    <th style="font-weight:bold;border:solid 1px black; text-align: center;">Qty</th>
+                                                </tr>
+
+                                                <!-- Initialize Counter -->
+                                                <t t-set="count" t-value="0" />
+                                                <t t-set="lines" t-value="o.move_lines.filtered(lambda x: x.product_uom_qty)" />
+
+                                                <!-- Table Body -->
+                                                <tr t-foreach="lines" t-as="move">
+                                                    <!-- Increment and Display Serial Number -->
+                                                    <t t-set="count" t-value="count + 1" />
+                                                    <td style="border:solid 1px black; text-align: center;">
+                                                        <t t-esc="count" />
+                                                    </td>
+
+                                                    <!-- Product Description -->
+                                                    <td style="border-bottom:solid 1px black;">
+                                                        <span t-field="move.product_id"/>
+                                                        <p t-if="move.description_picking != move.product_id.name and move.description_picking != move.product_id.display_name">
+                                                            <span t-field="move.description_picking"/>
+                                                        </p>
+                                                    </td>
+
+                                                    <!-- Pack Size -->
+                                                    <td style="border:solid 1px black; text-align: center;">
+                                                        <span>-</span>
+                                                    </td>
+
+                                                    <!-- Unit -->
+                                                    <td style="border:solid 1px black; text-align: center;">
+                                                        <span t-field="move.product_uom.name" />
+                                                    </td>
+
+                                                    <!-- Quantity -->
+                                                    <td style="border:solid 1px black; text-align: center;">
+                                                        <span t-field="move.product_uom_qty"  t-options='{"widget": "float", "precision": 3}'/>
+                                                    </td>
+                                                </tr>
+                                                 <tr>
+                                                     <td style="border:solid 1px black;text-align: center;">
+                                                     </td>
+                                                    <td colspan="1" style="font-weight:bold;border:solid 1px black;text-align: center;">Total
+                                                    </td>
+                                                     <td style="border:solid 1px black;text-align: center;">
+                                                     </td>
+                                                     <td style="border:solid 1px black;text-align: center;">
+                                                     </td>
+                                                     <td style="border:solid 1px black;text-align: center;">
+                                                        <span t-esc="sum(line.product_uom_qty for line in o.move_lines.filtered(lambda x: x.product_uom_qty))" t-options='{"widget": "float", "precision": 3}'/>
+                                                     </td>
+                                                </tr>
+
+                                            </table>
+                                        </div>
+                                        <div style="padding-top: 1in;">
+                                            <table style="width:100%;font-size:12px;color:black;font-family:Pyidaungsu;">
+                                                <tr>
+                                                    <td style="width: 50%; vertical-align: top;">
+                                                        <table style="width:100%; font-size:12px;">
+                                                            <tr>
+                                                                <td style="width: 1.5in;">Received By</td>
+                                                                <td>: </td>
+                                                                <td>
+                                                                    <span style="padding-left:8px;" />
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="width: 1.5in;">Name</td>
+                                                                <td>: </td>
+                                                                <td>
+                                                                    <span t-field="o.driver_id.name" style="font-family:Pyidaungsu; padding-left:8px;" />
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="width: 1.5in;">NRC No</td>
+                                                                <td>: </td>
+                                                                <td>
+                                                                    <span t-field="o.driver_nrc" style="font-family:Pyidaungsu; padding-left:8px;" />
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+
+                                                    <td style="width: 50%; vertical-align: top;">
+                                                        <table style="width:100%; font-size:12px;">
+                                                            <tr>
+                                                                <td style="width: 1.5in;">Issued By</td>
+                                                                <td>: </td>
+                                                                <td>
+                                                                    <span style="padding-left:8px;" />
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="width: 1.5in;">Name</td>
+                                                                <td>: </td>
+                                                                <td>
+                                                                    <span style="font-family:Pyidaungsu; padding-left:8px;" />
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                       </div>
+                                   </td>
+                               </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </t>
+             </t>
+          </t>
+     </template>
+
+
+        <record id="zbk_delivery_order_print" model="ir.actions.report">
+          <field name="name">Delivery Order Print Report</field>
+          <field name="model">stock.picking</field>
+          <field name="report_type">qweb-pdf</field>
+          <field name="report_name">drum_quantity.zbk_delivery_order_print_template</field>
+          <field name="report_file">drum_quantity.zbk_delivery_order_print_template</field>
+          <!-- <field name="binding_model_id" ref="model_stock_picking"/> -->
+          <field name="binding_type">report</field>
+       </record>
+
+       <record id="delivery_order_report_paperformat" model="report.paperformat">
+          <field name="name">Customized A4(Delivery Order Report)</field>
+          <field name="format">A4</field>
+          <field name="orientation"></field>
+          <field name="margin_top" eval="5"/>
+          <field name="margin_bottom" eval="15"/>
+          <field name="margin_left" eval="10"/>
+          <field name="margin_right" eval="10"/>
+          <field name="header_line" eval="False"/>
+          <field name="header_spacing" eval="5"/>
+          <field name="dpi" eval="90"/>
+          <field name="report_ids" eval="[(4, ref('zbk_delivery_order_print'))]"/>
+       </record>
+    </data>
+</odoo>

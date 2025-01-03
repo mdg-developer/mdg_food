@@ -25,5 +25,8 @@ class StockPicking(models.Model):
             self.mobile_two = self.driver_id.phone_two
 
     def do_print_action(self):
-        return self.env.ref('drum_quantity.delivery_order_print').report_action(self)
+        if self.company_name=='ECOHARMONY COMPANY LIMITED':
+            return self.env.ref('drum_quantity.delivery_order_print').report_action(self)
+        if self.company_name=='Zabukyaw Global Co.,Ltd.':
+            return self.env.ref('drum_quantity.zbk_delivery_order_print').report_action(self)
 

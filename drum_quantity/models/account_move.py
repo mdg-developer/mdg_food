@@ -7,6 +7,13 @@ class AccountMove(models.Model):
         return self.env.company.name        
 
     company_name = fields.Char(string='Company Name', default=_default_company_name)
+    picking_id = fields.Many2one( comodel_name="stock.picking",string="DO Number", domain="[('partner_id', '=', partner_id)]")
+
+    def invoice_print_action(self):
+        return self.env.ref('drum_quantity.invoice_print').report_action(self)
+
+    def payment_print_action(self):
+        return self.env.ref('drum_quantity.payment_print').report_action(self)
 
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'

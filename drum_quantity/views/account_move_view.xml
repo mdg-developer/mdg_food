@@ -12,6 +12,13 @@
             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='quantity']" position="before">
                 <field name="drum_qty" attrs="{'column_invisible': [('parent.company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}"/>
             </xpath>
+            <xpath expr="//button[@name='button_draft']" position="before">
+                <button string="Invoice Print" type="object" name="invoice_print_action" attrs="{'invisible': ['|',('company_name', 'not in', ['Zabukyaw Global Co.,Ltd.']),('move_type', '=', 'entry')]}"/>
+                <button string="Payment Print" type="object" name="payment_print_action" attrs="{'invisible': ['|',('company_name', 'not in', ['Zabukyaw Global Co.,Ltd.']),('move_type', '=', 'entry')]}"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name='picking_id' readonly="0" attrs="{'required': [('move_type', 'not in', ('out_invoice', 'out_refund','out_receipt', 'entry'))], 'invisible': ['|',('company_name', 'not in', ['Zabukyaw Global Co.,Ltd.']),('move_type', '=', 'entry')], 'readonly': [('state','in',('posted', 'cancel'))]}"/>
+            </xpath>
         </field>
     </record>
 </odoo>

@@ -21,7 +21,10 @@
                 <field name='oil_address' attrs="{'invisible': ['|',('picking_type_code','not in',['outgoing','internal']), ('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])], 'readonly':[('state','in', ('done', 'cancel'))]}"/> 
             </xpath>
             <xpath expr="//button[@name='button_scrap']" position="before">
-                <button string="Delivery Order Report" type="object" name="do_print_action" attrs="{'invisible': [('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}"/>
+                <button string="Delivery Order Print" type="object" name="do_print_action" attrs="{'invisible': [('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])]}"/>
+            </xpath>
+            <xpath expr="//button[@name='button_scrap']" position="before">
+                <button string="Delivery Order Print" type="object" name="do_print_action" attrs="{'invisible': [('company_name', 'not in', ['Zabukyaw Global Co.,Ltd.'])]}"/>
             </xpath>
         </field>
     </record>

@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="invoice_report_external_layout_standard">
+        <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout"  t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <center>
+                <img src='/drum_quantity/static/src/img/zbk_logo.png' style="display: flex;justify-content: adjust;"/>
+            </center>
+            <t t-call="web.address_layout"/>
+            <t t-raw="0"/>
+        </div>
+    </template>
+    <template id="invoice_report_external_layout">
+        <t t-if="not o" t-set="o" t-value="doc"/>
+        <t t-if="not company">
+            <t t-if="company_id">
+                <t t-set="company" t-value="company_id"/>
+            </t>
+            <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+            <t t-else="else">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+        </t>
+        <t t-call="drum_quantity.invoice_report_external_layout_standard">
+            <t t-raw="0"/></t>
+    </template>
+
+   <template id="invoice_print_template">
+      <t t-call="web.html_container">
+         <t t-foreach="docs" t-as="o">
+            <t t-set="o" t-value="o.with_context(lang=lang)" />
+            <t t-call="drum_quantity.invoice_report_external_layout">
+                    <div class="row">
+                        <table class="table table-sm o_main_table table-borderless mt-4" style="width:100%;font-size:14px;color:black;">
+                            <thead>
+                                <tr>
+                                    <td colspan="12">
+                                        <div style="width:100%;">
+                                            <table class="table table-sm o_main_table table-borderless mt-4" style="width:100%; font-family:Garamond;font-size:12px;">
+                                                <tr>
+                                                    <th colspan="9"/>
+                                                    <th style="width:1.5in;">
+                                                        Customer Copy
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="7" />
+                                                    <th style="width:1.5in;">
+                                                        Invoice No
+                                                    </th>
+                                                    <th style="width:0.2in;">
+                                                        :
+                                                    </th>
+                                                    <th>
+                                                        <span t-field="o.name"/>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="7" />
+                                                    <th>
+                                                        DO Reference
+                                                    </th>
+                                                    <th>
+                                                        :
+                                                    </th>
+                                                    <th>
+                                                        <span t-field="o.picking_id"/>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="4" style="width:3.5in;"/>
+                                                    <td rowspan="2" style="width:1.5in;">
+                                                        <h4>
+                                                            Invoice
+                                                        </h4>
+                                                    </td>
+                                                    <th colspan="2"/>
+                                                    <th>
+                                                        Invoice Date
+                                                    </th>
+                                                    <th>
+                                                        :
+                                                    </th>
+                                                    <th>
+                                                        <span t-field="o.invoice_date" t-options='{"widget": "date", "format": "dd.MM.yyyy"}'/>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="7" />
+                                                    <th>
+                                                        Delivery Date
+                                                    </th>
+                                                    <th>
+                                                        :
+                                                    </th>
+                                                    <th>
+                                                        <span t-field="o.picking_id.scheduled_date" t-options='{"widget": "date", "format": "dd.MM.yyyy"}'/>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <th style="width:0.5in;"/>
+                                                    <th style="width:1.5in;">
+                                                        Customer Name
+                                                    </th>
+                                                    <th style="width:0.2in;">
+                                                        :
+                                                    </th>
+                                                    <th>
+                                                        <span t-field="o.partner_id"/>
+                                                    </th>
+                                                </tr>
+                                                <tr />
+                                                <tr>
+                                                    <th />
+                                                    <th>
+                                                        ID Code
+                                                    </th>
+                                                    <th>
+                                                        :
+                                                    </th>
+                                                    <th>
+                                                        <span t-field="o.partner_id.barcode"/>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <th />
+                                                    <th>
+                                                        Address
+                                                    </th>
+                                                    <th>
+                                                        :
+                                                    </th>
+                                                    <th>
+                                                        <span t-field="o.partner_id.street" />
+                                                        <span t-field="o.partner_id.street2" />
+                                                        <span t-field="o.partner_id.city" />
+                                                        <span t-field="o.partner_id.state_id" />
+                                                        <span t-field="o.partner_id.zip" />
+                                                        <span t-field="o.partner_id.country_id" />
+                                                    </th>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div>
+                                            <table class="table table-sm o_main_table table-borderless mt-4" style="width:100%; font-family:Garamond;font-size:12px;">
+                                                <tr>
+                                                    <th style="width: 0.5in;border:solid 1px black;text-align: center;">
+                                                        No
+                                                    </th>
+                                                    <th style="width: 3.5in;border-right:solid 1px black; border-top:solid 1px black; border-bottom:solid 1px black;text-align: center;">
+                                                        Description
+                                                    </th>
+                                                    <th style="width: 1in;border-right:solid 1px black; border-top:solid 1px black; border-bottom:solid 1px black;text-align: center;">
+                                                        Pack Size
+                                                    </th>
+                                                    <th style="width: 0.5in;border-right:solid 1px black; border-top:solid 1px black; border-bottom:solid 1px black;text-align: center;">
+                                                        Unit
+                                                    </th>
+                                                    <th style="width: 0.5in;border-right:solid 1px black; border-top:solid 1px black; border-bottom:solid 1px black;text-align: center;">
+                                                        Qty
+                                                    </th>
+                                                    <th style="width: 1in;border-right:solid 1px black; border-top:solid 1px black; border-bottom:solid 1px black;text-align: center;">
+                                                        Price
+                                                    </th>
+                                                    <th style="width: 1.5in;border-right:solid 1px black; border-top:solid 1px black; border-bottom:solid 1px black;text-align: center;">
+                                                        Amount
+                                                    </th>
+                                                </tr>
+                                                <t t-set="line_count" t-value="0"/>
+                                                <t t-foreach="o.invoice_line_ids" t-as="l">
+                                                    <t t-set="line_count" t-value="line_count+1"/>
+                                                    <tr>
+                                                        <td style="border-right:solid 1px black; border-left:solid 1px black; border-bottom:solid 1px black;text-align: center;">
+                                                            <t t-esc="line_count" />
+                                                        </td>
+                                                        <td style="border-right:solid 1px black; border-bottom:solid 1px black;">
+                                                            <span t-field="l.product_id"/>
+                                                        </td>
+                                                        <td style="border-right:solid 1px black; border-bottom:solid 1px black;text-align: center;">
+                                                        </td>
+                                                        <td style="border-right:solid 1px black; border-bottom:solid 1px black;text-align: center;">
+                                                            <span t-field="l.product_uom_id"/>
+                                                        </td>
+                                                        <td style="border-right:solid 1px black; border-bottom:solid 1px black;text-align: right;">
+                                                            <span t-field="l.drum_qty"/>
+                                                        </td>
+                                                        <td style="border-right:solid 1px black; border-bottom:solid 1px black;text-align: right;">
+                                                            <span t-field="l.price_unit"/>
+                                                        </td>
+                                                        <td style="border-right:solid 1px black; border-bottom:solid 1px black;text-align: right;">
+                                                            <span t-field="l.price_total"/>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                                <tr>
+                                                    <td colspan="2">
+                                                    </td>
+                                                    <td colspan="3" style="text-align: center;">
+                                                        <strong>TOTAL AMOUNT</strong>
+                                                    </td>
+                                                    <td />
+                                                    <td style="border-left:solid 1px black;
+                                                    border-right:solid 1px black;border-bottom:solid 1px black; text-align: right;">
+                                                        <span t-field="o.amount_untaxed"/>
+                                                    </td>
+
+                                                </tr>
+                                                <tr style="line-height: 1px;">
+                                                    <td colspan="6">
+                                                    </td>
+                                                    <td style="border-left:solid 1px black;
+                                                    border-right:solid 1px black;border-bottom:solid 1px black; text-align: right;">
+                                                    </td>
+
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div style="padding-top: 0.5in;">
+                                            <table class="table table-sm o_main_table table-border mt-4" style="width:100%;color:black;">
+                                                <tr>
+                                                    <td style="width:0.5in;" />
+                                                    <td style="width:3.5in;">
+                                                        <strong>Remark:</strong>
+                                                    </td>
+                                                    <td style="width:1in;" />
+                                                    <td style="width:0.5in;" />
+                                                    <td style="width:0.5in;" />
+                                                    <td style="width:1in;" />
+                                                    <td style="width:1.5in;" />
+                                                </tr>
+                                                <tr>
+                                                    <td />
+                                                    <td colspan="3">
+                                                        <span t-field="o.narration" style="font-size: 12px;"/>
+                                                    </td>
+                                                    <td />
+                                                    <td colspan="2" style="width:2in;text-align: center;">
+                                                        <strong>AUTHORIZED SIGNATURE</strong>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                
+                <br/>
+            </t>
+         </t>
+      </t>
+   </template>
+
+   <record id="invoice_print" model="ir.actions.report">
+      <field name="name">Invoice Report</field>
+      <field name="model">account.move</field>
+      <field name="report_type">qweb-pdf</field>
+      <field name="report_name">drum_quantity.invoice_print_template</field>
+      <field name="report_file">drum_quantity.invoice_print_template</field>
+      <field name="print_report_name">'Invoice - %s' % (object.name)</field>
+      <!-- <field name="binding_model_id" ref="model_account_move"/> -->
+      <field name="binding_type">report</field>
+   </record>
+
+   <record id="invoice_report_paperformat" model="report.paperformat">
+      <field name="name">Customized A4(Invoice Report)</field>
+      <field name="format">A4</field>
+      <field name="orientation"></field>
+      <field name="margin_top" eval="5"/>
+      <field name="margin_bottom" eval="15"/>
+      <field name="margin_left" eval="10"/>
+      <field name="margin_right" eval="10"/>
+      <field name="header_line" eval="False"/>
+      <field name="header_spacing" eval="5"/>
+      <field name="dpi" eval="90"/>
+      <field name="report_ids" eval="[(4, ref('invoice_print'))]"/>
+   </record>
+</odoo>
+

@@ -15,7 +15,10 @@
         'views/purchase_order_view.xml',
         'report/delivery_order_template.xml',
         'report/issue_detail_report_view.xml',
-        'views/fesc_view.xml'
+        'views/fesc_view.xml',
+        'zbk_report/invoice_template.xml',
+        'zbk_report/payment_template.xml',
+        'zbk_report/zbk_delivery_order_template.xml'
     ],
 
     'installable': True,

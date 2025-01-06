@@ -3,8 +3,16 @@
     <data>
         <template id="deliveryorder_report_external_layout_standard">
         <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout"  t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <style>
+                .full-format-logo {
+                    width: 102.55%;
+                    height: auto;
+                    display: block;
+                    margin: 0 auto;
+                }
+            </style>
+            <img src='/drum_quantity/static/src/img/zbk_logo.png' style="margin-left: -0.109in;" class="full-format-logo"/>
             <center>
-                <img src='/drum_quantity/static/src/img/zbk_logo.png' style="display: flex;justify-content: adjust;"/>
                 <h4 style="font-family:Calibri;padding-top: 15px;"><strong>Delivery Order</strong></h4>
             </center>
             <t t-call="web.address_layout"/>

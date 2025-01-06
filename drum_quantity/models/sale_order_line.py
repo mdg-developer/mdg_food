@@ -1,7 +1,7 @@
 from odoo import tools
 from odoo import _, api, fields, models
 
-class SaleOrderLine(models.Model):
+class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     def _default_company_name(self):
@@ -53,6 +53,12 @@ class SaleOrderLine(models.Model):
         picking_ids.write(picking_data)
         return True
 
+    def _prepare_invoice(self):
+        invoice_vals = super(SaleOrder, self)._prepare_invoice()
+        picking_ids = self.env['stock.picking'].search([('sale_id','=',self.id)])
+        invoice_vals['picking_id'] = picking_ids[0].id if picking_ids else None
+        return invoice_vals
+
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
@@ -74,3 +80,7 @@ class SaleOrderLine(models.Model):
         res['drum_qty'] = self.drum_qty
         return res
 
+class ProductInherit(models.Model):
+    _inherit = 'product.template'
+
+    pack_size = fields.Char(string='Pack Size')

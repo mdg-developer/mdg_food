@@ -53,15 +53,25 @@
                                                         Invoice Number
                                                     </th>
                                                     <th colspan="2" style="padding-left: 10px;border:solid 1px gray;width: 2in;">
-                                                        <span t-field="o.name"/>
+                                                        <span t-field="o.ref"/>
                                                     </th>
                                                 </tr>
                                                 <tr>
+                                                    <t t-set="partials" t-value="o.move_id._get_reconciled_invoices_partials()"/>
+                                                    <t t-set="invoices" t-value="{partial[2].move_id for partial in partials}">
+                                                        <t t-foreach="invoices" t-as="inv">
+                                                            <t t-if="any(inv.currency_id != par[2].currency_id for par in inv._get_reconciled_invoices_partials())" t-set="otherCurrency" t-value="True"/>
+                                                        </t>
+                                                    </t>
                                                     <th colspan="2" style="padding-right: 20px;text-align: right;">
                                                         DO Number
                                                     </th>
                                                     <th colspan="2" style="padding-left: 10px;border-right:solid 1px gray;border-left:solid 1px gray;border-bottom:solid 1px gray;">
-                                                        <span t-field="o.picking_id"/>
+                                                        <t t-foreach="invoices" t-as="inv">
+                                                            <t t-if="inv.move_type != 'entry'">
+                                                                <span t-field="inv.picking_id"/>
+                                                            </t>
+                                                        </t>
                                                     </th>
                                                 </tr>
                                                 <tr>
@@ -75,7 +85,7 @@
                                                                 <i class="oe_form_field text-end oe_payment_label"><t t-esc="payment_vals['date']" t-options='{"widget": "date", "format": "dd-MMM-yyyy"}'/></i>
                                                             </t>
                                                         </t> -->
-                                                        <span t-field="o.invoice_date" t-options='{"widget": "date", "format": "dd-MMM-yyyy"}'/>
+                                                        <span t-field="o.date" t-options='{"widget": "date", "format": "dd-MMM-yyyy"}'/>
                                                     </th>
                                                 </tr>
                                             </table>
@@ -97,31 +107,26 @@
                                                     </th>
                                                 </tr>
                                                 <t t-set="line_count" t-value="0"/>
-                                                <t t-if="o.payment_state != 'invoicing_legacy'">
-                                                    <t t-set="payment_amount_total" t-value="0.0" />
-                                                    <t t-set="payments_vals" t-value="o.sudo()._get_reconciled_info_JSON_values()"/>
-                                                    <t t-foreach="payments_vals" t-as="payment_vals">
-                                                        <t t-set="payment_amount_total" t-value="payment_amount_total+payment_vals['amount']"/>
-                                                        <t t-set="line_count" t-value="line_count+1"/>
-                                                        <tr>
-                                                            <td style="border-left:solid 1px black;border-right:solid 1px black; border-top:solid 1px black; border-bottom:solid 1px black;text-align: center;">
-                                                                <t t-esc="line_count" />
-                                                            </td>
-                                                            <td style="border-right:solid 1px black; border-top:solid 1px black; border-bottom:solid 1px black;">
-                                                                <span t-esc="payment_vals['ref']"/>
-                                                            </td>
-                                                            <td style="border-right:solid 1px black; border-top:solid 1px black; border-bottom:solid 1px black;text-align: right;">
-                                                                <span t-esc="payment_vals['amount']" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
-                                                            </td>
-                                                            <td style="border-right:solid 1px black; border-top:solid 1px black; border-bottom:solid 1px black;" />
-                                                        </tr>                                                        
-                                                    </t>
-                                                </t>
+                                                <t t-set="line_count" t-value="line_count+1"/>
+                                                <tr>
+                                                    <td style="border-left:solid 1px black;border-right:solid 1px black; border-top:solid 1px black; border-bottom:solid 1px black;text-align: center;">
+                                                        <t t-esc="line_count" />
+                                                    </td>
+                                                    <td style="border-right:solid 1px black; border-top:solid 1px black; border-bottom:solid 1px black;">
+                                                        <span t-esc="o.name"/>
+                                                    </td>
+                                                    <td style="border-right:solid 1px black; border-top:solid 1px black; border-bottom:solid 1px black;text-align: right;">
+                                                        <span t-esc="o.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                    </td>
+                                                    <td style="border-right:solid 1px black; border-top:solid 1px black; border-bottom:solid 1px black;">
+                                                        <span t-esc="o.remark"/>
+                                                    </td>
+                                                </tr>                                                        
                                                 <tr>
                                                     <td style="border-left:solid 1px black;border-right:solid 1px black; border-top:solid 1px black; border-bottom:solid 1px black;"/>
                                                     <td style="border-right:solid 1px black; border-top:solid 1px black; border-bottom:solid 1px black;text-align: right;"/>
                                                     <td style="border-right:solid 1px black; border-top:solid 1px black; border-bottom:solid 1px black;text-align: right;">
-                                                        <t t-esc="payment_amount_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                        <t t-esc="o.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                                                     </td>
                                                     <td style="border-right:solid 1px black; border-top:solid 1px black; border-bottom:solid 1px black;" />
                                                 </tr>
@@ -145,12 +150,7 @@
                                                         <strong>Amount in Words (MMK) :</strong>
                                                     </td>
                                                     <td colspan="2">
-                                                        <t t-set="amount_total" t-value="0.0" />
-                                                        <t t-set="payments_vals" t-value="o.sudo()._get_reconciled_info_JSON_values()"/>
-                                                            <t t-foreach="payments_vals" t-as="payment_vals">
-                                                                <t t-set="amount_total" t-value="amount_total+payment_vals['amount']"/>
-                                                            </t>
-                                                        <t t-esc="o.currency_id.amount_to_text(amount_total)"/> Only
+                                                        <t t-esc="o.currency_id.amount_to_text(o.amount)"/> Only
                                                     </td>
                                                     <td style="width:1in;" />
                                                     <td style="width:1in;" />
@@ -171,19 +171,7 @@
                                                 <tr>
                                                     <td />
                                                     <td>
-                                                        [   ] Cash 
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td />
-                                                    <td>
-                                                        [   ] Bank Transfer
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td />
-                                                    <td>
-                                                        [   ] Cheque
+                                                        <span t-esc="o.journal_id.name"/>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -216,7 +204,7 @@
 
    <record id="payment_print" model="ir.actions.report">
       <field name="name">Payment Report</field>
-      <field name="model">account.move</field>
+      <field name="model">account.payment</field>
       <field name="report_type">qweb-pdf</field>
       <field name="report_name">drum_quantity.payment_print_template</field>
       <field name="report_file">drum_quantity.payment_print_template</field>

@@ -12,8 +12,12 @@ class AccountMove(models.Model):
     def invoice_print_action(self):
         return self.env.ref('drum_quantity.invoice_print').report_action(self)
 
-    def payment_print_action(self):
-        return self.env.ref('drum_quantity.payment_print').report_action(self)
+    def action_post(self):
+        """ Customize sequence for invoice """
+        if self.move_type == 'out_invoice':
+            self.name = self.env['ir.sequence'].next_by_code('invoice.sequence')
+            self.payment_reference = self.name
+        return super(AccountMove, self).action_post()
 
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
@@ -30,3 +34,15 @@ class AccountMoveLine(models.Model):
                 self.quantity = 0
         else:
             self.quantity = 0
+
+class AccountPayment(models.Model):
+    _inherit = 'account.payment'
+
+    def _default_company_name(self):
+        return self.env.company.name  
+        
+    remark = fields.Char(string='Remark')
+    company_name = fields.Char(string='Company Name', default=_default_company_name)
+
+    def payment_print_action(self):
+        return self.env.ref('drum_quantity.payment_print').report_action(self)

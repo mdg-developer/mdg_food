@@ -12,5 +12,13 @@
             <field name="model_id" ref="drum_quantity.model_res_fesc"/>
             <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', company_ids)]</field>
         </record>
+
+        <record id="sequence_invoice" model="ir.sequence">
+            <field name="name">Invoice</field>
+            <field name="code">invoice.sequence</field>
+            <field name="prefix">ZBKG-Inv-%(year)s-</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
     </data>
 </odoo>

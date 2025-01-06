@@ -181,9 +181,10 @@
                                                             <t t-esc="line_count" />
                                                         </td>
                                                         <td style="border-right:solid 1px black; border-bottom:solid 1px black;">
-                                                            <span t-field="l.product_id"/>
+                                                            <span t-field="l.name"/>
                                                         </td>
                                                         <td style="border-right:solid 1px black; border-bottom:solid 1px black;text-align: center;">
+                                                            <span t-field="l.product_id.product_tmpl_id.pack_size"/>
                                                         </td>
                                                         <td style="border-right:solid 1px black; border-bottom:solid 1px black;text-align: center;">
                                                             <span t-field="l.product_uom_id"/>

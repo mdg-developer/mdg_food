@@ -126,7 +126,7 @@
                                                     <td style="border-left:solid 1px black;border-right:solid 1px black; border-top:solid 1px black; border-bottom:solid 1px black;"/>
                                                     <td style="border-right:solid 1px black; border-top:solid 1px black; border-bottom:solid 1px black;text-align: right;"/>
                                                     <td style="border-right:solid 1px black; border-top:solid 1px black; border-bottom:solid 1px black;text-align: right;">
-                                                        <t t-esc="o.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                                        <strong><t t-esc="o.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></strong>
                                                     </td>
                                                     <td style="border-right:solid 1px black; border-top:solid 1px black; border-bottom:solid 1px black;" />
                                                 </tr>

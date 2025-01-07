@@ -11,6 +11,9 @@
                 }
             </style>
             <img src='/drum_quantity/static/src/img/zbk_logo.png' style="margin-left: -0.109in;" class="full-format-logo"/>
+            <!-- <center>
+                <h4 style="font-family:Garamond;padding-top: 18px;"><strong>Invoice</strong></h4>
+            </center> -->
             <t t-call="web.address_layout"/>
             <t t-raw="0"/>
         </div>
@@ -51,7 +54,16 @@
                                                     </th>
                                                 </tr>
                                                 <tr>
-                                                    <th colspan="7" />
+                                                    <th style="width:1.5in;">
+                                                        Customer Name
+                                                    </th>
+                                                    <th style="width:0.2in;">
+                                                        :
+                                                    </th>
+                                                    <th>
+                                                        <span t-field="o.partner_id"/>
+                                                    </th>
+                                                    <th colspan="4" />
                                                     <th style="width:1.5in;">
                                                         Invoice No
                                                     </th>
@@ -63,7 +75,16 @@
                                                     </th>
                                                 </tr>
                                                 <tr>
-                                                    <th colspan="7" />
+                                                    <th>
+                                                        ID Code
+                                                    </th>
+                                                    <th>
+                                                        :
+                                                    </th>
+                                                    <th>
+                                                        <span t-field="o.partner_id.barcode"/>
+                                                    </th>
+                                                    <th colspan="4" />
                                                     <th>
                                                         DO Reference
                                                     </th>
@@ -75,11 +96,25 @@
                                                     </th>
                                                 </tr>
                                                 <tr>
-                                                    <td colspan="4" style="width:3.5in;"/>
+                                                    <th>
+                                                        Address
+                                                    </th>
+                                                    <th>
+                                                        :
+                                                    </th>
+                                                    <th>
+                                                        <span t-field="o.partner_id.street" />
+                                                        <span t-field="o.partner_id.street2" />
+                                                        <span t-field="o.partner_id.city" />
+                                                        <span t-field="o.partner_id.state_id" />
+                                                        <span t-field="o.partner_id.zip" />
+                                                        <span t-field="o.partner_id.country_id" />
+                                                    </th>
+                                                    <td style="width:1in;"/>
                                                     <td rowspan="2" style="width:1.5in;">
-                                                        <h4>
+                                                        <h4><strong>
                                                             Invoice
-                                                        </h4>
+                                                        </strong></h4>
                                                     </td>
                                                     <th colspan="2"/>
                                                     <th>
@@ -104,7 +139,7 @@
                                                         <span t-field="o.picking_id.actual_date" t-options='{"widget": "date", "format": "dd.MM.yyyy"}'/>
                                                     </th>
                                                 </tr>
-                                                <tr>
+                                                <!-- <tr>
                                                     <th style="width:0.5in;"/>
                                                     <th style="width:1.5in;">
                                                         Customer Name
@@ -115,8 +150,8 @@
                                                     <th>
                                                         <span t-field="o.partner_id"/>
                                                     </th>
-                                                </tr>
-                                                <tr />
+                                                </tr> -->
+                                                <!-- <tr />
                                                 <tr>
                                                     <th />
                                                     <th>
@@ -128,8 +163,8 @@
                                                     <th>
                                                         <span t-field="o.partner_id.barcode"/>
                                                     </th>
-                                                </tr>
-                                                <tr>
+                                                </tr> -->
+                                                <!-- <tr>
                                                     <th />
                                                     <th>
                                                         Address
@@ -145,7 +180,7 @@
                                                         <span t-field="o.partner_id.zip" />
                                                         <span t-field="o.partner_id.country_id" />
                                                     </th>
-                                                </tr>
+                                                </tr> -->
                                             </table>
                                         </div>
                                         <div>
@@ -201,32 +236,32 @@
                                                     </tr>
                                                 </t>
                                                 <tr>
-                                                    <td colspan="2">
+                                                    <td colspan="2" style="border-left:solid 1px black;border-bottom:solid 1px black;">
                                                     </td>
-                                                    <td colspan="3" style="text-align: center;">
+                                                    <td colspan="3" style="text-align: center;border-bottom:solid 1px black;">
                                                         <strong>TOTAL AMOUNT</strong>
                                                     </td>
-                                                    <td />
+                                                    <td style="border-bottom:solid 1px black;"/>
                                                     <td style="border-left:solid 1px black;
                                                     border-right:solid 1px black;border-bottom:solid 1px black; text-align: right;">
-                                                        <span t-field="o.amount_untaxed"/>
+                                                        <strong><span t-field="o.amount_untaxed"/></strong>
                                                     </td>
 
                                                 </tr>
-                                                <tr style="line-height: 1px;">
+                                                <!-- <tr style="line-height: 1px;">
                                                     <td colspan="6">
                                                     </td>
                                                     <td style="border-left:solid 1px black;
                                                     border-right:solid 1px black;border-bottom:solid 1px black; text-align: right;">
                                                     </td>
 
-                                                </tr>
+                                                </tr> -->
                                             </table>
                                         </div>
                                         <div style="padding-top: 0.5in;">
                                             <table class="table table-sm o_main_table table-border mt-4" style="width:100%;color:black;">
                                                 <tr>
-                                                    <td style="width:0.5in;" />
+                                                    <!-- <td style="width:0.5in;" /> -->
                                                     <td style="width:3.5in;">
                                                         <strong>Remark:</strong>
                                                     </td>
@@ -237,7 +272,7 @@
                                                     <td style="width:1.5in;" />
                                                 </tr>
                                                 <tr>
-                                                    <td />
+                                                    <!-- <td /> -->
                                                     <td colspan="3">
                                                         <span t-field="o.narration" style="font-size: 12px;"/>
                                                     </td>

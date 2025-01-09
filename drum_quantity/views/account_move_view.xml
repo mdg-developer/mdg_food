@@ -17,6 +17,7 @@
             </xpath>
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name='picking_id' readonly="0" attrs="{'required': [('move_type', 'not in', ('out_invoice', 'out_refund','out_receipt', 'entry'))], 'invisible': ['|',('company_name', 'not in', ['Zabukyaw Global Co.,Ltd.']),('move_type', '=', 'entry')], 'readonly': [('state','in',('posted', 'cancel'))]}"/>
+                <field name='print_count' invisible="1"/>
             </xpath>
         </field>
     </record>

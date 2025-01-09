@@ -14,6 +14,9 @@
             <center>
                 <h4 style="font-family:Garamond;padding-top: 18px;"><strong>Offical Receipt</strong></h4>
             </center>
+            <div t-attf-class="footer o_standard_footer" class="full-format-logo" style="width: 100%;">
+                <img src='/drum_quantity/static/src/img/footer_logo.png' style="margin-left: -0.109in;"/>
+            </div>
             
             <t t-call="web.address_layout"/>
             <t t-raw="0"/>
@@ -218,7 +221,7 @@
       <field name="format">A4</field>
       <field name="orientation"></field>
       <field name="margin_top" eval="5"/>
-      <field name="margin_bottom" eval="15"/>
+      <field name="margin_bottom" eval="20"/>
       <field name="margin_left" eval="10"/>
       <field name="margin_right" eval="10"/>
       <field name="header_line" eval="False"/>

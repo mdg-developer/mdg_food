@@ -17,7 +17,7 @@
             <xpath expr="//field[@name='origin']" position="after">
                 <field name='issue_date' attrs="{'invisible': ['|',('picking_type_code','not in',['outgoing','internal']), ('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])], 'readonly':[('state','in', ('done', 'cancel'))]}"/>
                 <field name='expire_date' attrs="{'invisible': ['|',('picking_type_code','not in',['outgoing','internal']), ('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])], 'readonly':[('state','in', ('done', 'cancel'))]}"/>
-                <field name='truck_no' attrs="{'invisible': ['|',('picking_type_code','not in',['outgoing','internal']), ('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])], 'readonly':[('state','in', ('done', 'cancel'))]}"/> 
+                <field name='truck_no' attrs="{'invisible': ['|',('picking_type_code','not in',['outgoing','internal']), ('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED','Zabukyaw Global Co.,Ltd.'])], 'readonly':[('state','in', ('done', 'cancel'))]}"/> 
                 <field name='oil_address' attrs="{'invisible': ['|',('picking_type_code','not in',['outgoing','internal']), ('company_name', 'not in', ['ECOHARMONY COMPANY LIMITED'])], 'readonly':[('state','in', ('done', 'cancel'))]}"/> 
             </xpath>
             <xpath expr="//button[@name='button_scrap']" position="before">

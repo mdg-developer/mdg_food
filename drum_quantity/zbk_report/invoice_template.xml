@@ -11,9 +11,9 @@
                 }
             </style>
             <img src='/drum_quantity/static/src/img/zbk_logo.png' style="margin-left: -0.109in;" class="full-format-logo"/>
-            <!-- <center>
-                <h4 style="font-family:Garamond;padding-top: 18px;"><strong>Invoice</strong></h4>
-            </center> -->
+            <div t-attf-class="footer o_standard_footer" class="full-format-logo" style="width: 100%;">
+                <img src='/drum_quantity/static/src/img/footer_logo.png' style="margin-left: -0.109in;"/>
+            </div>
             <t t-call="web.address_layout"/>
             <t t-raw="0"/>
         </div>
@@ -38,6 +38,7 @@
    <template id="invoice_print_template">
       <t t-call="web.html_container">
          <t t-foreach="docs" t-as="o">
+            <t t-foreach="o.print_count" t-as="l">
             <t t-set="o" t-value="o.with_context(lang=lang)" />
             <t t-call="drum_quantity.invoice_report_external_layout">
                     <div class="row">
@@ -50,7 +51,12 @@
                                                 <tr>
                                                     <th colspan="9"/>
                                                     <th style="width:1.5in;">
-                                                        Customer Copy
+                                                        <t t-if="l==0">
+                                                            Customer Copy
+                                                        </t>
+                                                        <t t-if="l==1">
+                                                            Office Copy
+                                                        </t>
                                                     </th>
                                                 </tr>
                                                 <tr>
@@ -64,13 +70,13 @@
                                                         <span t-field="o.partner_id"/>
                                                     </th>
                                                     <th colspan="4" />
-                                                    <th style="width:1.5in;">
+                                                    <th style="padding-left: 1px;width:1.2in;">
                                                         Invoice No
                                                     </th>
                                                     <th style="width:0.2in;">
                                                         :
                                                     </th>
-                                                    <th>
+                                                    <th style="width:2.15in;">
                                                         <span t-field="o.name"/>
                                                     </th>
                                                 </tr>
@@ -82,10 +88,10 @@
                                                         :
                                                     </th>
                                                     <th>
-                                                        <span t-field="o.partner_id.barcode"/>
+                                                        <span t-field="o.partner_id.ref"/>
                                                     </th>
                                                     <th colspan="4" />
-                                                    <th>
+                                                    <th style="padding-left: 1px;">
                                                         DO Reference
                                                     </th>
                                                     <th>
@@ -110,14 +116,14 @@
                                                         <span t-field="o.partner_id.zip" />
                                                         <span t-field="o.partner_id.country_id" />
                                                     </th>
-                                                    <td style="width:0.5in;"/>
-                                                    <td rowspan="2" style="width:1.5in;">
+                                                    <td style="width:0.1in;"/>
+                                                    <td rowspan="2" style="width:1.55in;">
                                                         <h4><strong>
                                                             Invoice
                                                         </strong></h4>
                                                     </td>
                                                     <th colspan="2"/>
-                                                    <th>
+                                                    <th style="padding-left: 1px;">
                                                         Invoice Date
                                                     </th>
                                                     <th>
@@ -129,7 +135,7 @@
                                                 </tr>
                                                 <tr>
                                                     <th colspan="7" />
-                                                    <th>
+                                                    <th style="padding-left: 1px;">
                                                         Delivery Date
                                                     </th>
                                                     <th>
@@ -287,12 +293,12 @@
                                 </tr>
                             </thead>
                         </table>
-                    </div>
-                
+                    </div>                
                 <br/>
             </t>
          </t>
       </t>
+    </t>
    </template>
 
    <record id="invoice_print" model="ir.actions.report">
@@ -311,7 +317,7 @@
       <field name="format">A4</field>
       <field name="orientation"></field>
       <field name="margin_top" eval="5"/>
-      <field name="margin_bottom" eval="15"/>
+      <field name="margin_bottom" eval="20"/>
       <field name="margin_left" eval="10"/>
       <field name="margin_right" eval="10"/>
       <field name="header_line" eval="False"/>

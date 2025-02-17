@@ -299,7 +299,7 @@ class inventory_report(models.AbstractModel):
         self._cr.execute('''
                         SELECT pp.id AS product_id,
                             sum((
-                                CASE WHEN spt.code in ('outgoing') AND sm.location_id in %s AND sourcel.usage !='inventory' and destl.usage !='inventory' 
+                                CASE WHEN spt.code in ('outgoing','incoming') AND sm.location_id in %s AND sourcel.usage !='inventory' and destl.usage !='inventory' 
                                 THEN -(sm.qty_done * pu.factor / pu2.factor)
                                 ELSE 0.0 
                                 END

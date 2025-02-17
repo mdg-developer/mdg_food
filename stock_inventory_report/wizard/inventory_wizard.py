@@ -304,7 +304,7 @@ class inventory_reports(models.TransientModel):
             
         fp = io.BytesIO()
         workbook.save(fp)
-        export_id = self.env['stock.ledger.report'].create({'excel_file': base64.encodestring(fp.getvalue()), 'file_name': filename})
+        export_id = self.env['stock.ledger.report'].create({'excel_file': base64.b64encode(fp.getvalue()), 'file_name': filename})
         res = {'view_mode': 'form',
                'res_id': export_id.id,
                'name': 'Stock Ledger Report',
@@ -329,7 +329,6 @@ class inventory_reports(models.TransientModel):
                                                       ('state','=','done'),                                                      
                                                       ('date','>=',self.start_date.strftime('%Y-%m-%d 00:00:00')),
                                                       ('date','<=',self.end_date.strftime('%Y-%m-%d 23:59:59'))])
-            print("Stock Move Lines: " + str(len(moves)))
             opening_balance = self._get_beginning_inventory_ProductLedger(self.start_date.strftime('%Y-%m-%d 00:00:00'),
                                                                           self.location_id.id, self.warehouse_id.id,
                                                                           product_id.id)
